@@ -1,28 +1,14 @@
-// --- 1. 基础类型定义 ---
-
-// 颜色字符串的通用类型，可以是 RGB 或 RGBA 格式
 type ColorString = string;
-
-// 字体字重可以是数字字符串或 '400', '500' 等
 type FontWeight = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | string;
 
-// --- 2. 接口定义 ---
-
-/**
- * 定义字体风格对象（如 displayLarge, titleMedium）的结构
- */
 interface FontStyle {
     fontFamily: string;
     letterSpacing: number;
     fontWeight: FontWeight;
-    // lineHeight 和 fontSize 是可选的，因为 'default' 中没有
     lineHeight?: number;
     fontSize?: number;
-}
+};
 
-/**
- * 定义整个 Fonts 对象的结构，它包含了各种 FontStyle
- */
 interface ThemeFonts {
     displayLarge: FontStyle;
     displayMedium: FontStyle;
@@ -39,12 +25,8 @@ interface ThemeFonts {
     bodyLarge: FontStyle;
     bodyMedium: FontStyle;
     bodySmall: FontStyle;
-    default: Omit<FontStyle, 'lineHeight' | 'fontSize'>; // 默认字体没有行高和字号
-}
-
-/**
- * 定义 Colors.elevation 对象的结构
- */
+    default: Omit<FontStyle, 'lineHeight' | 'fontSize'>; 
+};
 interface ColorElevation {
     level0: ColorString;
     level1: ColorString;
@@ -52,11 +34,8 @@ interface ColorElevation {
     level3: ColorString;
     level4: ColorString;
     level5: ColorString;
-}
+};
 
-/**
- * 定义 Colors 对象的结构
- */
 interface ThemeColors {
     primary: ColorString;
     onPrimary: ColorString;
@@ -91,17 +70,12 @@ interface ThemeColors {
     surfaceDisabled: ColorString;
     onSurfaceDisabled: ColorString;
     backdrop: ColorString;
-
-    // 额外颜色属性
     border: ColorString;
     card: ColorString;
     notification: ColorString;
     text: ColorString;
-}
+};
 
-/**
- * 定义完整的主题对象结构
- */
 interface Theme {
     dark: boolean;
     roundness: number;
@@ -114,8 +88,7 @@ interface Theme {
     };
 }
 
-// --- 3. 常量声明与赋值 (确保符合 Theme 接口) ---
-
+//SeaCloud Light Theme
 export const scLightTheme: Theme = {
     "dark": false,
     "roundness": 4,
@@ -284,7 +257,7 @@ export const scLightTheme: Theme = {
         "scale": 1
     }
 };
-
+// Seacloud Dark Name
 export const scDarkTheme: Theme = {
     "dark": true,
     "roundness": 4,
@@ -454,12 +427,7 @@ export const scDarkTheme: Theme = {
     }
 };
 
-// --- 4. 合并主题（使用 Utility Types 模拟合并逻辑） ---
-
-// 由于原始代码使用了解构赋值来合并对象，但在 TS 中直接解构可能会丢失详细类型信息
-// 这里使用 Record<string, any> 来简化外部合并，因为没有 MD3LightTheme 或 LightTheme 的定义
-// 但对于 CombinedDefaultTheme 和 CombinedDarkTheme，我们强制其结果类型仍是 Theme
-
+// Combine Theme
 export const CombinedDefaultTheme: Theme = {
     ...scLightTheme,
     colors: {
