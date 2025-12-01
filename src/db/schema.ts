@@ -1,15 +1,16 @@
 import { SQLBatchTuple } from "react-native-quick-sqlite";
-export const createTableSql: SQLBatchTuple[] = [
+
+export const createTableSQL: SQLBatchTuple[] = [
     // appinfo table
     [`CREATE TABLE IF NOT EXISTS 
-    appinfo(appname TEXT NOT NULL UNIQUE,appversion TEXT,dbid TEXT,serveraddr TEXT,globalpath TEXT,token TEXT,serverinfo JSON,isoffline INTEGER,userinfo JSON,isfinish INTEGER,
+    appinfo(appname TEXT NOT NULL UNIQUE,appversion TEXT,dbid TEXT,serveraddr TEXT,globalpath TEXT,token TEXT,serverinfo JSON,isoffline INTEGER,userinfo JSON,isfinish INTEGER  DEFAULT 0,
     PRIMARY KEY('appname'))`],
-    // lang table
+    // locale table
     [`CREATE TABLE IF NOT EXISTS 
-    lang(id INTEGER NOT NULL UNIQUE,countrycode TEXT,languagecode TEXT,languagetag TEXT,isrtl INTEGER DEFAULT 0,
-    PRIMARY KEY('id'));`],
+    locale(appname TEXT NOT NULL UNIQUE,countrycode TEXT,languagecode TEXT,languagetag TEXT,isrtl INTEGER DEFAULT 0,
+    PRIMARY KEY('appname'));`],
     // tsinfo table
-    [`CREATE TABLE IF NOT EXISTS tsinfo(docname TEXT NOT NULL UNIQUE,ts TEXT,PRIMARY KEY('docname'));`],
+    [`CREATE TABLE IF NOT EXISTS tsinfo(dataname TEXT NOT NULL UNIQUE,ts TEXT,PRIMARY KEY('dataname'));`],
     // department table
     [`CREATE TABLE IF NOT EXISTS department(id INTEGER NOT NULL UNIQUE,code TEXT,name TEXT,ts TEXT,value JSON,PRIMARY KEY('id'))`],
     [`CREATE TABLE IF NOT EXISTS department_recent(autoid INTEGER,id INTEGER NOT NULL UNIQUE,code TEXT,name TEXT,ts TEXT,value JSON,PRIMARY KEY('autoid' AUTOINCREMENT))`],
@@ -64,4 +65,44 @@ export const createTableSql: SQLBatchTuple[] = [
     [`CREATE TABLE IF NOT EXISTS executionorder(id INTEGER,creatorid INTEGER,value JSON,PRIMARY KEY('id' AUTOINCREMENT))`],
     // issueresolutionform table
     [`CREATE TABLE IF NOT EXISTS issueresolutionform(id INTEGER,creatorid INTEGER,value JSON,PRIMARY KEY('id' AUTOINCREMENT))`]
+];
+
+export const dropAllTableSQL: SQLBatchTuple[] = [
+    ['drop table if exists appinfo'],
+    ['drop table if exists locale'],
+    ['drop table if exists tsinfo'],
+    ['drop table if exists department'],
+    ['drop table if exists department_recent'],
+    ['drop table if exists epa'],
+    ['drop table if exists epa_recent'],
+    ['drop table if exists epc'],
+    ['drop table if exists epc_recent'],
+    ['drop table if exists ept'],
+    ['drop table if exists ept_recent'],
+    ['drop table if exists person'],
+    ['drop table if exists person_recent'],
+    ['drop table if exists csa'],
+    ['drop table if exists csa_recent'],
+    ['drop table if exists csc'],
+    ['drop table if exists csc_recent'],
+    ['drop table if exists cso'],
+    ['drop table if exists udc'],
+    ['drop table if exists udc_recent'],
+    ['drop table if exists risklevel'],
+    ['drop table if exists risklevel_recent'],
+    ['drop table if exists dc'],
+    ['drop table if exists dc_recent'],
+    ['drop table if exists position'],
+    ['drop table if exists position_recent'],
+    ['drop table if exists tc'],
+    ['drop table if exists tc_recent'],
+    ['drop table if exists ppe'],
+    ['drop table if exists ppe_recent'],
+    ['drop table if exists udc'],
+    ['drop table if exists udc_recent'],
+    ['drop table if exists workorderref'],
+    ['drop table if exists executionorderref'],
+    ['drop table if exists workorder'],
+    ['drop table if exists executionorder'],
+    ['drop table if exists issueresolutionform'],
 ];
