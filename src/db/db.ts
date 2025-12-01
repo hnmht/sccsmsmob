@@ -3,7 +3,6 @@ import { dbName, appVersion, name } from "../../app.json";
 import { createTableSQL, dropAllTableSQL } from "./schema";
 import { UserInfo } from "../dataType/types/user";
 import { getLocales, Locale } from "react-native-localize"
-import { normalizeLocale } from "../utils/normalizeLocale";
 
 // Open or Create Database
 export const DB: QuickSQLiteConnection = open({ name: dbName, location: "default" });
@@ -46,11 +45,10 @@ export function initDb() {
         // Get the current device language
         const locales = getLocales();
         const currentLocale: Locale = locales[0];
-        const isRTL: number = currentLocale.isRTL ? 1 : 0;
-        const languageTag = normalizeLocale(currentLocale.languageCode)
+        const isRTL: number = currentLocale.isRTL ? 1 : 0; 
 
         DB.execute(`insert into locale(appname,countrycode,languagecode,languagetag,isrtl) 
-            VALUES('${name}','${currentLocale.countryCode}','${currentLocale.languageCode}','${languageTag}',${isRTL})`);
+            VALUES('${name}','${currentLocale.countryCode}','${currentLocale.languageCode}','${currentLocale.languageTag}',${isRTL})`);
     }
     console.log("Complete DB Initialize...");
 

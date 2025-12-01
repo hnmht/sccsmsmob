@@ -1,4 +1,4 @@
-/* import i18n from "i18next";
+import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
 import dayjs from 'dayjs';
@@ -10,6 +10,8 @@ import updateLocale from "dayjs/plugin/updateLocale";
 import localData from "dayjs/plugin/localeData";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import { getLocale, setLocale } from "../db/crud/locale";
+import { normalizeLocale } from "../utils/normalizeLocale";
 // import dayjs local package
 import "./locale/en-us";
 import "./locale/zh-cn";
@@ -39,7 +41,8 @@ const detectorLanguage = () => {
     // Check if the item "sccsmsLanguage" exists in localStorage
     let lang = "en-US";
     try {
-        lang = localStorage.getItem("sccsmsLanguage");
+        const locale = getLocale();
+        lang = normalizeLocale(locale.languageTag);
     } catch (err) {
         console.error(err);
     }
@@ -48,16 +51,11 @@ const detectorLanguage = () => {
         dayjs.locale(lang);
         return lang;
     } else {
-        // Get the browser language  
-        const browserLang = navigator.language;
-        if (Object.keys(resources).includes(browserLang)) {
-            dayjs.locale(browserLang);
-            return browserLang;
-        }
         dayjs.locale("en-US");
         return "en-US";
     }
 };
+
 const lang = detectorLanguage();
 
 i18n
@@ -77,8 +75,8 @@ i18n
     });
 
 i18n.on("languageChanged", (lng) => {
-    localStorage.setItem("sccsmsLanguage", lng);
+    // Set Locale
     dayjs.locale(lng || 'en-US');
 });
 
-export { i18n, dayjs }; */
+export { i18n, dayjs }; 
