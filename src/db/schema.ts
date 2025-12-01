@@ -5,9 +5,9 @@ export const createTableSQL: SQLBatchTuple[] = [
     [`CREATE TABLE IF NOT EXISTS 
     appinfo(appname TEXT NOT NULL UNIQUE,appversion TEXT,dbid TEXT,serveraddr TEXT,globalpath TEXT,token TEXT,serverinfo JSON,isoffline INTEGER,userinfo JSON,isfinish INTEGER  DEFAULT 0,
     PRIMARY KEY('appname'))`],
-    // locale table
+    // lang table
     [`CREATE TABLE IF NOT EXISTS 
-    locale(appname TEXT NOT NULL UNIQUE,countrycode TEXT,languagecode TEXT,languagetag TEXT,isrtl INTEGER DEFAULT 0,
+    lang(appname TEXT NOT NULL UNIQUE,languagetag TEXT, 
     PRIMARY KEY('appname'));`],
     // tsinfo table
     [`CREATE TABLE IF NOT EXISTS tsinfo(dataname TEXT NOT NULL UNIQUE,ts TEXT,PRIMARY KEY('dataname'));`],
@@ -69,7 +69,7 @@ export const createTableSQL: SQLBatchTuple[] = [
 
 export const dropAllTableSQL: SQLBatchTuple[] = [
     ['drop table if exists appinfo'],
-    ['drop table if exists locale'],
+    ['drop table if exists lang'],
     ['drop table if exists tsinfo'],
     ['drop table if exists department'],
     ['drop table if exists department_recent'],

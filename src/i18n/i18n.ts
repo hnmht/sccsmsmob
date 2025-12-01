@@ -10,8 +10,7 @@ import updateLocale from "dayjs/plugin/updateLocale";
 import localData from "dayjs/plugin/localeData";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { getLocale, setLocale } from "../db/crud/locale";
-import { normalizeLocale } from "../utils/normalizeLocale";
+import { getLocale, setLocale } from "../db/crud/lang";
 // import dayjs local package
 import "./locale/en-us";
 import "./locale/zh-cn";
@@ -38,11 +37,10 @@ const resources = {
 };
 
 const detectorLanguage = () => {
-    // Check if the item "sccsmsLanguage" exists in localStorage
     let lang = "en-US";
+    // Check if the lang exists in the local database
     try {
-        const locale = getLocale();
-        lang = normalizeLocale(locale.languageTag);
+        lang = getLocale();
     } catch (err) {
         console.error(err);
     }
@@ -67,15 +65,13 @@ i18n
         supportedLngs: ["en-US", "zh-CN"],
         interpolation: {
             escapeValue: false,
-        },
-        detection: {
-            orderBy: ["localStorage", "navigator"],
-            caches: ["localStorage"]
         }
     });
 
 i18n.on("languageChanged", (lng) => {
     // Set Locale
+    setLocale(lng);
+    // Set Dayjs locale
     dayjs.locale(lng || 'en-US');
 });
 

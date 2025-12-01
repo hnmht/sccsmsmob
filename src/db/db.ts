@@ -3,6 +3,7 @@ import { dbName, appVersion, name } from "../../app.json";
 import { createTableSQL, dropAllTableSQL } from "./schema";
 import { UserInfo } from "../dataType/types/user";
 import { getLocales, Locale } from "react-native-localize"
+import { normalizeLocale } from "../utils/normalizeLocale";
 
 // Open or Create Database
 export const DB: QuickSQLiteConnection = open({ name: dbName, location: "default" });
@@ -14,12 +15,16 @@ export function initDb() {
         console.error("Open Database failed!")
         return
     }
+
+    //Drop all Table
+    // DB.executeBatch(dropAllTableSQL);
     // Check if the sysinfo exist
     let res: QueryResult = DB.execute("select name from sqlite_master where type='table' and name='appinfo'");
     if (res.rows && res.rows.length === 0) {
         // create table
         DB.executeBatch(createTableSQL);
     }
+
     // Check if there is data in the sysinfo table
     res = DB.execute(`select isfinish from appinfo where appname='${name}'`);
     if (res.rows && res.rows.length === 0) {
@@ -40,20 +45,18 @@ export function initDb() {
         '','${JSON.stringify({})}',0,1,'${userStr}')`);
     }
     // Check if the locale table contains data
-    res = DB.execute(`select appname from locale where appname='${name}'`);
+    res = DB.execute(`select languagetag from lang where appname='${name}'`);
     if (res.rows && res.rows.length === 0) {
         // Get the current device language
         const locales = getLocales();
         const currentLocale: Locale = locales[0];
-        const isRTL: number = currentLocale.isRTL ? 1 : 0; 
-
-        DB.execute(`insert into locale(appname,countrycode,languagecode,languagetag,isrtl) 
-            VALUES('${name}','${currentLocale.countryCode}','${currentLocale.languageCode}','${currentLocale.languageTag}',${isRTL})`);
+        const languageTag = normalizeLocale(currentLocale.languageTag);
+        const sqlString = `insert into lang(appname,languagetag) VALUES('${name}','${languageTag}')`;
+        DB.execute(sqlString);
+    } else {
+        console.log("Current Language:",res.rows?._array[0]["languagetag"]);
     }
     console.log("Complete DB Initialize...");
-
-    //Drop all Table
-    //  DB.executeBatch(dropAllTableSQL)
 }
 
 // Close Database
@@ -64,7 +67,16 @@ export function closeDB() {
 }
 // Execute Query
 export function executeSQL(sqlString: string): QueryResult {
-    return DB.execute(sqlString);
+    try {
+        const dbRes = DB.execute(sqlString);
+        return dbRes;
+    } catch (err) {
+        console.error("DB.execute failed, sql:", sqlString);
+        const dbRes: QueryResult = {
+            rowsAffected: 0,
+        }
+        return dbRes;
+    }
 }
 
 // Get latest data TS
