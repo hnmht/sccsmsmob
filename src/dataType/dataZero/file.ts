@@ -1,5 +1,6 @@
-import dayjs from "dayjs";
+import { dayjs, EpochTime } from "../../i18n/dayjs";
 import { File } from "../types/file";
+
 export function getEmptyFile(): File {
     const file: File = {
         id: 0,
@@ -18,13 +19,12 @@ export function getEmptyFile(): File {
         size: 0,
         fileUrl: "",
         dateTimeOriginal: dayjs('1970-01-01 00:00:00').format("YYYYMMDDHHmm"),
-        uploadTime: dayjs('1970-01-01 00:00:00'),
+        uploadTime: EpochTime,
         source: "",
         creatorID: 0,
         creatorName: "",
         dr: 0,
-        ts: "",
+        ts: EpochTime,
     }
     return file;
-
 }

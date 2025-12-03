@@ -54,7 +54,7 @@ export function initDb() {
         const sqlString = `insert into lang(appname,languagetag) VALUES('${name}','${languageTag}')`;
         DB.execute(sqlString);
     } else {
-        console.log("Current Language:",res.rows?._array[0]["languagetag"]);
+        console.log("Current Language:", res.rows?._array[0]["languagetag"]);
     }
     console.log("Complete DB Initialize...");
 }
@@ -71,7 +71,7 @@ export function executeSQL(sqlString: string): QueryResult {
         const dbRes = DB.execute(sqlString);
         return dbRes;
     } catch (err) {
-        console.error("DB.execute failed, sql:", sqlString);
+        console.log("DB.execute failed, sql:", sqlString);
         const dbRes: QueryResult = {
             rowsAffected: 0,
         }

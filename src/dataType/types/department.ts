@@ -1,3 +1,4 @@
+import { Dayjs } from "dayjs";
 import { Person } from "./person";
 
 export interface SimpDept {
@@ -8,8 +9,8 @@ export interface SimpDept {
     leader?: Person;
     description?: string;
     status?: number;
-    createDate?: string;
-    ts?: string;
+    createDate?: Dayjs;
+    ts?: Dayjs;
     dr?: number;
 }
 
@@ -21,10 +22,10 @@ export interface Department {
     leader?: Person;
     description?: string;
     status?: number;
-    createDate?: string;
+    createDate?: Dayjs;
     creator?: Person;
     modifier?: Person;
-    modifyDate?: string;
-    ts?: string;
+    modifyDate?: Dayjs;
+    ts?: Dayjs;
     dr?: number;
 }

@@ -10,7 +10,7 @@ import updateLocale from "dayjs/plugin/updateLocale";
 import localData from "dayjs/plugin/localeData";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { getLocale, setLocale } from "../db/crud/lang";
+import { getLanguage, setLanguage } from "../db/crud/lang";
 // import dayjs local package
 import "./locale/en-us";
 import "./locale/zh-cn";
@@ -40,7 +40,7 @@ const detectorLanguage = () => {
     let lang = "en-US";
     // Check if the lang exists in the local database
     try {
-        lang = getLocale();
+        lang = getLanguage();
     } catch (err) {
         console.error(err);
     }
@@ -70,7 +70,7 @@ i18n
 
 i18n.on("languageChanged", (lng) => {
     // Set Locale
-    setLocale(lng);
+    setLanguage(lng);
     // Set Dayjs locale
     dayjs.locale(lng || 'en-US');
 });

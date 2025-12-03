@@ -1,4 +1,5 @@
-import { File } from "./types/file";
+import { File } from "./file";
+import { Dayjs } from "dayjs";
 
 export interface Person {
     id: number,
@@ -17,7 +18,7 @@ export interface Person {
     gender?: number,
     systemFlag?: number,
     status?: number,
-    createDate?: string,
-    ts?: string,
-    dr?: string,
+    createDate?: Dayjs,
+    ts?: Dayjs,
+    dr?: number,
 }

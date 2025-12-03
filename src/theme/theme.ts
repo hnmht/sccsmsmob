@@ -1,100 +1,21 @@
-type ColorString = string;
-type FontWeight = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | string;
+import {
+    MD3LightTheme as PaperLightTheme,
+    MD3DarkTheme as PaperDarkTheme,
+    MD3Theme,
+} from 'react-native-paper';
+import {
+    DefaultTheme as NavigationLightTheme,
+    DarkTheme as NavigationDarkTheme,
+    Theme as NavigationTheme,
+} from '@react-navigation/native';
 
-interface FontStyle {
-    fontFamily: string;
-    letterSpacing: number;
-    fontWeight: FontWeight;
-    lineHeight?: number;
-    fontSize?: number;
-};
-
-interface ThemeFonts {
-    displayLarge: FontStyle;
-    displayMedium: FontStyle;
-    displaySmall: FontStyle;
-    headlineLarge: FontStyle;
-    headlineMedium: FontStyle;
-    headlineSmall: FontStyle;
-    titleLarge: FontStyle;
-    titleMedium: FontStyle;
-    titleSmall: FontStyle;
-    labelLarge: FontStyle;
-    labelMedium: FontStyle;
-    labelSmall: FontStyle;
-    bodyLarge: FontStyle;
-    bodyMedium: FontStyle;
-    bodySmall: FontStyle;
-    default: Omit<FontStyle, 'lineHeight' | 'fontSize'>; 
-};
-interface ColorElevation {
-    level0: ColorString;
-    level1: ColorString;
-    level2: ColorString;
-    level3: ColorString;
-    level4: ColorString;
-    level5: ColorString;
-};
-
-interface ThemeColors {
-    primary: ColorString;
-    onPrimary: ColorString;
-    primaryContainer: ColorString;
-    onPrimaryContainer: ColorString;
-    secondary: ColorString;
-    onSecondary: ColorString;
-    secondaryContainer: ColorString;
-    onSecondaryContainer: ColorString;
-    tertiary: ColorString;
-    onTertiary: ColorString;
-    tertiaryContainer: ColorString;
-    onTertiaryContainer: ColorString;
-    error: ColorString;
-    onError: ColorString;
-    errorContainer: ColorString;
-    onErrorContainer: ColorString;
-    background: ColorString;
-    onBackground: ColorString;
-    surface: ColorString;
-    onSurface: ColorString;
-    surfaceVariant: ColorString;
-    onSurfaceVariant: ColorString;
-    outline: ColorString;
-    outlineVariant: ColorString;
-    shadow: ColorString;
-    scrim: ColorString;
-    inverseSurface: ColorString;
-    inverseOnSurface: ColorString;
-    inversePrimary: ColorString;
-    elevation: ColorElevation;
-    surfaceDisabled: ColorString;
-    onSurfaceDisabled: ColorString;
-    backdrop: ColorString;
-    border: ColorString;
-    card: ColorString;
-    notification: ColorString;
-    text: ColorString;
-};
-
-interface Theme {
-    dark: boolean;
-    roundness: number;
-    version: number;
-    isV3: boolean;
-    colors: ThemeColors;
-    fonts: ThemeFonts;
-    animation: {
-        scale: number;
-    };
-}
-
-//SeaCloud Light Theme
-export const scLightTheme: Theme = {
-    "dark": false,
-    "roundness": 4,
-    "version": 3,
-    "isV3": true,
+export type CombinedTheme = MD3Theme & NavigationTheme;
+export const CombinedDefaultTheme: CombinedTheme = {
+    ...PaperLightTheme,
+    ...NavigationLightTheme,
     colors: {
+        ...PaperLightTheme.colors,
+       ...NavigationLightTheme.colors,
         primary: 'rgb(52, 61, 255)',
         onPrimary: 'rgb(255, 255, 255)',
         primaryContainer: 'rgb(224, 224, 255)',
@@ -136,134 +57,26 @@ export const scLightTheme: Theme = {
         onSurfaceDisabled: 'rgba(27, 27, 31, 0.38)',
         backdrop: 'rgba(48, 48, 56, 0.4)',
 
-        border: "rgba(121, 116, 126, 1)",
-        card: "rgb(244, 242, 255)",
-        notification: "rgba(179, 38, 30, 1)",
-        text: "rgba(28, 27, 31, 1)"
+        // border: "rgba(121, 116, 126, 1)",
+        // card: "rgb(244, 242, 255)",
+        // notification: "rgba(179, 38, 30, 1)",
+        // text: "rgba(28, 27, 31, 1)"
+    }, 
+    fonts: {
+        ...PaperLightTheme.fonts,
+        ...NavigationLightTheme.fonts
     },
-    "fonts": {
-        "displayLarge": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 64,
-            "fontSize": 57
-        },
-        "displayMedium": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 52,
-            "fontSize": 45
-        },
-        "displaySmall": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 44,
-            "fontSize": 36
-        },
-        "headlineLarge": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 40,
-            "fontSize": 32
-        },
-        "headlineMedium": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 36,
-            "fontSize": 28
-        },
-        "headlineSmall": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 32,
-            "fontSize": 24
-        },
-        "titleLarge": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 28,
-            "fontSize": 22
-        },
-        "titleMedium": {
-            "fontFamily": "sans-serif-medium",
-            "letterSpacing": 0.15,
-            "fontWeight": "500",
-            "lineHeight": 24,
-            "fontSize": 16
-        },
-        "titleSmall": {
-            "fontFamily": "sans-serif-medium",
-            "letterSpacing": 0.1,
-            "fontWeight": "500",
-            "lineHeight": 20,
-            "fontSize": 14
-        },
-        "labelLarge": {
-            "fontFamily": "sans-serif-medium",
-            "letterSpacing": 0.1,
-            "fontWeight": "500",
-            "lineHeight": 20,
-            "fontSize": 14
-        },
-        "labelMedium": {
-            "fontFamily": "sans-serif-medium",
-            "letterSpacing": 0.5,
-            "fontWeight": "500",
-            "lineHeight": 16,
-            "fontSize": 12
-        },
-        "labelSmall": {
-            "fontFamily": "sans-serif-medium",
-            "letterSpacing": 0.5,
-            "fontWeight": "500",
-            "lineHeight": 16,
-            "fontSize": 11
-        },
-        "bodyLarge": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0.15,
-            "fontWeight": "400",
-            "lineHeight": 24,
-            "fontSize": 16
-        },
-        "bodyMedium": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0.25,
-            "fontWeight": "400",
-            "lineHeight": 20,
-            "fontSize": 14
-        },
-        "bodySmall": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0.4,
-            "fontWeight": "400",
-            "lineHeight": 16,
-            "fontSize": 12
-        },
-        "default": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400"
-        }
-    },
-    "animation": {
-        "scale": 1
-    }
+    isV3: true,
+    version: 3,
+
 };
-// Seacloud Dark Name
-export const scDarkTheme: Theme = {
-    "dark": true,
-    "roundness": 4,
-    "version": 3,
-    "isV3": true,
+
+export const CombinedDarkTheme: CombinedTheme = {
+    ...PaperDarkTheme,
+    ...NavigationDarkTheme,
     colors: {
+        ...NavigationDarkTheme.colors,
+        ...PaperDarkTheme.colors,
         primary: 'rgb(190, 194, 255)',
         onPrimary: 'rgb(0, 1, 172)',
         primaryContainer: 'rgb(0, 0, 239)',
@@ -304,140 +117,15 @@ export const scDarkTheme: Theme = {
         surfaceDisabled: 'rgba(229, 225, 230, 0.12)',
         onSurfaceDisabled: 'rgba(229, 225, 230, 0.38)',
         backdrop: 'rgba(48, 48, 56, 0.4)',
-
-        border: "rgba(147, 143, 153, 1)",
-        card: "rgb(44, 40, 49)",
-        notification: "rgba(242, 184, 181, 1)",
-        text: "rgba(230, 225, 229, 1)"
+        // border: "rgba(147, 143, 153, 1)",
+        // card: "rgb(44, 40, 49)",
+        // notification: "rgba(242, 184, 181, 1)",
+        // text: "rgba(230, 225, 229, 1)"
     },
-    "fonts": {
-        "displayLarge": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 64,
-            "fontSize": 57
-        },
-        "displayMedium": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 52,
-            "fontSize": 45
-        },
-        "displaySmall": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 44,
-            "fontSize": 36
-        },
-        "headlineLarge": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 40,
-            "fontSize": 32
-        },
-        "headlineMedium": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 36,
-            "fontSize": 28
-        },
-        "headlineSmall": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 32,
-            "fontSize": 24
-        },
-        "titleLarge": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400",
-            "lineHeight": 28,
-            "fontSize": 22
-        },
-        "titleMedium": {
-            "fontFamily": "sans-serif-medium",
-            "letterSpacing": 0.15,
-            "fontWeight": "500",
-            "lineHeight": 24,
-            "fontSize": 16
-        },
-        "titleSmall": {
-            "fontFamily": "sans-serif-medium",
-            "letterSpacing": 0.1,
-            "fontWeight": "500",
-            "lineHeight": 20,
-            "fontSize": 14
-        },
-        "labelLarge": {
-            "fontFamily": "sans-serif-medium",
-            "letterSpacing": 0.1,
-            "fontWeight": "500",
-            "lineHeight": 20,
-            "fontSize": 14
-        },
-        "labelMedium": {
-            "fontFamily": "sans-serif-medium",
-            "letterSpacing": 0.5,
-            "fontWeight": "500",
-            "lineHeight": 16,
-            "fontSize": 12
-        },
-        "labelSmall": {
-            "fontFamily": "sans-serif-medium",
-            "letterSpacing": 0.5,
-            "fontWeight": "500",
-            "lineHeight": 16,
-            "fontSize": 11
-        },
-        "bodyLarge": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0.15,
-            "fontWeight": "400",
-            "lineHeight": 24,
-            "fontSize": 16
-        },
-        "bodyMedium": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0.25,
-            "fontWeight": "400",
-            "lineHeight": 20,
-            "fontSize": 14
-        },
-        "bodySmall": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0.4,
-            "fontWeight": "400",
-            "lineHeight": 16,
-            "fontSize": 12
-        },
-        "default": {
-            "fontFamily": "sans-serif",
-            "letterSpacing": 0,
-            "fontWeight": "400"
-        }
+    fonts: {
+        ...PaperDarkTheme.fonts,
+        ...NavigationDarkTheme.fonts
     },
-    "animation": {
-        "scale": 1
-    }
+    isV3: true,
+    version: 3,
 };
-
-// Combine Theme
-export const CombinedDefaultTheme: Theme = {
-    ...scLightTheme,
-    colors: {
-        ...scLightTheme.colors,
-    },
-} as Theme;
-
-export const CombinedDarkTheme: Theme = {
-    ...scDarkTheme,
-    colors: {
-        ...scDarkTheme.colors,
-    },
-} as Theme;
