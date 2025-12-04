@@ -1,5 +1,3 @@
-import {Dayjs} from "dayjs";
-
 export interface File {
     id: number;
     hash?: string;
@@ -17,11 +15,11 @@ export interface File {
     size?: number;
     fileUrl?: string;
     dateTimeOriginal?: string;
-    uploadTime?: Dayjs;
+    uploadTime?: string;
     source?: string;
     creatorID?: number;
     creatorName?: string;
     dr?: number;
-    ts?: Dayjs;
+    ts?: string;
 }
 

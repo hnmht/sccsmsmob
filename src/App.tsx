@@ -1,13 +1,13 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { Provider as PaperProvider } from "react-native-paper";
-import { NavigationContainer, useTheme, DarkTheme, DefaultTheme } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import store from "./store";
 import { CombinedDefaultTheme, CombinedDarkTheme } from "./theme/theme";
-import { View, Text } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { ThemeContext } from "./theme/context";
+import { RootStackScreen, navigationRef } from "./navigation/rootStack";
 
 const App = () => {
     const [isThemeDark, setIsThemeDark] = useState(false);
@@ -23,17 +23,15 @@ const App = () => {
         }),
         [toggleTheme, isThemeDark]
     );
-    console.log(theme.colors.onBackground)
     return (
         <ThemeContext.Provider value={preferences}>
             <Provider store={store}>
                 <PaperProvider theme={theme}>
-                    <NavigationContainer theme={theme}>                       
-                        <SafeAreaView style={{ display: "flex", flexDirection: 'column', alignItems: "center" }}>
-                            <Text>React Native Using TypeScript</Text>
-                            <View style={{ height: 200, width: 200, backgroundColor: CombinedDarkTheme.colors.onBackground }} />
-                        </SafeAreaView>
-                    </NavigationContainer>
+                    <SafeAreaProvider>
+                        <NavigationContainer theme={theme} ref={navigationRef}>
+                            <RootStackScreen />
+                        </NavigationContainer>
+                    </SafeAreaProvider>
                 </PaperProvider>
             </Provider>
         </ThemeContext.Provider>

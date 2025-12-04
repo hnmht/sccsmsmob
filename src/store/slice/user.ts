@@ -10,7 +10,7 @@ const initialState: UserInfo = {
     id: 0,
     code: "",
     name: "",
-    avatar: { id: 0 },
+    avatar: getEmptyFile(),
     token: "",
     menuList: [],
     person: getEmptyPerson(),

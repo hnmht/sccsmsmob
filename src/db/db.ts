@@ -4,6 +4,9 @@ import { createTableSQL, dropAllTableSQL } from "./schema";
 import { UserInfo } from "../dataType/types/user";
 import { getLocales, Locale } from "react-native-localize"
 import { normalizeLocale } from "../utils/normalizeLocale";
+import { getEmptyFile } from "../dataType/dataZero/file";
+import { getEmptyPerson } from "../dataType/dataZero/person";
+import { getEmptyDepartment, getEmptySimpDept } from "../dataType/dataZero/department";
 
 // Open or Create Database
 export const DB: QuickSQLiteConnection = open({ name: dbName, location: "default" });
@@ -28,15 +31,16 @@ export function initDb() {
     // Check if there is data in the sysinfo table
     res = DB.execute(`select isfinish from appinfo where appname='${name}'`);
     if (res.rows && res.rows.length === 0) {
-        const emptyUserInfo: UserInfo = {
+        const emptyUserInfo: UserInfo = 
+        {
             id: 0,
             code: "",
             name: "",
-            avatar: { id: 0 },
+            avatar: {id:0},
             token: "",
             menuList: [],
-            person: { id: 0 },
-            department: { id: 0 }
+            person: {id:0},
+            department:{id:0}
         };
         const userStr: string = JSON.stringify(emptyUserInfo)
         DB.execute(`insert into appinfo(appname,appversion,dbid,serveraddr,globalpath,

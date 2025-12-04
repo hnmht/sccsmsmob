@@ -1,5 +1,4 @@
 import { File } from "./file";
-import { Dayjs } from "dayjs";
 
 export interface Person {
     id: number,
@@ -18,7 +17,7 @@ export interface Person {
     gender?: number,
     systemFlag?: number,
     status?: number,
-    createDate?: Dayjs,
-    ts?: Dayjs,
+    createDate?: string,
+    ts?: string,
     dr?: number,
 }
