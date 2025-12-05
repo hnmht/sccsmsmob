@@ -1,80 +1,41 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { saveToken } from "../../db/crud/appInfo";
-import { saveUserInfo } from "../../db/crud/userInfo";
 import { UserInfo } from "../../dataType/types/user";
-import { getEmptyPerson } from "../../dataType/dataZero/person";
-import { getEmptySimpDept } from "../../dataType/dataZero/department";
-import { getEmptyFile } from "../../dataType/dataZero/file";
+import { getEmptyUser } from "../../dataType/dataZero/user";
 
-const initialState: UserInfo = {
-    id: 0,
-    code: "",
-    name: "",
-    avatar: getEmptyFile(),
-    token: "",
-    menuList: [],
-    person: getEmptyPerson(),
-    department: getEmptySimpDept(),
+const updateStateFromUserInfo = (state: UserInfo, userInfo: UserInfo) => {
+    state.id = userInfo.id;
+    state.code = userInfo.code;
+    state.name = userInfo.name;
+    state.avatar = userInfo.avatar;
+    state.menuList = userInfo.menuList;
+    state.person = userInfo.person;
+    state.department = userInfo.department;
 };
+
+const initialState: UserInfo = getEmptyUser();
 
 export const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        setUserToken: (state, action) => {
+        setUserToken: (state, action:PayloadAction<string>) => {
             // Save Token into database
             saveToken(action.payload);
             state.token = action.payload;
         },
-        setUserTokenFromDb: (state, action) => {
+        setUserTokenFromDb: (state, action:PayloadAction<string>) => {
             state.token = action.payload;
         },
-        setUserInfo: (state, action) => {
-            let userInfo = action.payload;
-            saveUserInfo(userInfo);
-            // Change State
-            state.id = userInfo.id;
-            state.code = userInfo.code;
-            state.name = userInfo.name;
-            state.avatar = userInfo.avatar;
-            state.menuList = userInfo.menuList;
-            state.person = userInfo.person;
-            state.department = userInfo.department;
+        setUserInfo: (state, action:PayloadAction<UserInfo>) => {
+            const userInfo = action.payload;
+            updateStateFromUserInfo(state,userInfo);          
         },
-        setUserInfoFromDb: (state, action) => {
-            let userInfo = action.payload;
-            // Change State
-            state.id = userInfo.id;
-            state.code = userInfo.code;
-            state.name = userInfo.name;
-            state.avatar = userInfo.avatar;
-            state.menuList = userInfo.menuList;
-            state.person = userInfo.person;
-            state.department = userInfo.department;
+        setUserInfoFromDb: (state, action:PayloadAction<UserInfo>) => {
+            const userInfo = action.payload;
+            updateStateFromUserInfo(state, userInfo);    
         },
-        resetUser: (state) => {
-            const userInfo: UserInfo = {
-                id: 0,
-                code: "",
-                name: "",
-                avatar: getEmptyFile(),
-                token: "",
-                menuList: [],
-                person: getEmptyPerson(),
-                department: getEmptySimpDept(),
-            };
-            // Save Empty UserInfo into database
-            saveUserInfo(userInfo);
-            // Change state
-            state.id = userInfo.id;
-            state.token = userInfo.token;
-            state.code = userInfo.code;
-            state.name = userInfo.name;
-            state.avatar = userInfo.avatar;
-            state.menuList = userInfo.menuList;
-            state.person = userInfo.person;
-            state.department = userInfo.department;
-        }
+        resetUser: () => getEmptyUser()
     }
 });
 

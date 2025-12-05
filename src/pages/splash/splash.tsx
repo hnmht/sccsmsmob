@@ -37,8 +37,6 @@ function Splash() {
             // If it is not empty, then navigate to the Login page.       
             navigation.replace("AuthStack", { screen: "Login" });
         }
-
-      
     };
 
     // Set a timer

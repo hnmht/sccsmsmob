@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, Store } from "@reduxjs/toolkit";
 import appinfoReducer from "./slice/appInfo";
 import userReducer from "./slice/user";
 import reqStatusReducer from "./slice/reqStatus";
@@ -6,13 +6,16 @@ import reqStatusReducer from "./slice/reqStatus";
 // import loadStatusReducer from "./slice/loadStatus";
 // import swapPosition from "./slice/swapPosition";
 
-export default configureStore({
+export const store = configureStore({
     reducer: {
-        appinfo: appinfoReducer,
+        appInfo: appinfoReducer,
         user: userReducer,
-        reqstatus: reqStatusReducer,
+        reqStatus: reqStatusReducer,
         // dynamicdata: dynamicDataReducer,
         // loadstatus: loadStatusReducer,
         // swapposition: swapPosition
     }
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
