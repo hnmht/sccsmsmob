@@ -629,7 +629,18 @@
     "page203":"You do not have permission to access this page. Please contact the system administrator.",
     "rejectAndExit":"Reject and Exit",
     "agreeAndContinue":"Agree and Continue",
+    "tip":"Tip",
+    "serverAddressNotChanged":"The server address has not changed.",
+    "error":"Error",
+    "serverConnectSuccefully":"Successfully connected to the server, return to the login page.",
+    "serverConnectFailed":"Failed to connect to the server: {{ msg }}",
+    "serverUnableConnect":"Unable to connect the server, Please check you network or re-enter the URL!",
+    "tipInputAddress":"Enter the server address, such as http://43.128.109.151:9033 , if you do not know the server address, please consult your system administrator.",
+    "tipDownloadBackend":"Note: You need to deploy the server yourself before using this app! Server installer download address: https://github.com/hnmht ",
+    "copyURL":"Copy URL",
+    "serverAddressPlaceholder":"Please enter the server address",
 
+    
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",
     "MenuMessage": "Message",

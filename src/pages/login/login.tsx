@@ -1,17 +1,21 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text,Button } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-import { AuthStackParmList } from "../../dataType/types/navigation";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Text, Button } from "react-native-paper";
 
-type LoginProps = NativeStackScreenProps<AuthStackParmList, "Login">;
+import { useAuthStackNavigation } from "../../dataType/types/navigation";
+import { useAppSelector } from "../../store/hooks";
+
+
 
 function Login() {
-    const navigation = useNavigation();
+
+    const navigation = useAuthStackNavigation();
+
+    const appInfo = useAppSelector(state => state.appInfo);
+    console.log("Login appInfo:", appInfo);
     return (
         <SafeAreaView>
             <Text>LoginPage</Text>
-            <Button onPress={()=> navigation.goBack()}>返回</Button>
+            <Button onPress={() => navigation.navigate("Setup")}>返回</Button>
         </SafeAreaView>
     )
 }

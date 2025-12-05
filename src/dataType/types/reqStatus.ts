@@ -1,3 +1,3 @@
 export interface ReqStatus {
-    reqLoading: boolean,
+    reqLoading: boolean;
 }
