@@ -19,7 +19,6 @@ export interface OrganizationInfo {
     registerTime?: string
 }
 
-
 export interface ServerInfo {
     dbID?: number;
     serialNumber?: string;
