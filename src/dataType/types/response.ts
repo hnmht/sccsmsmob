@@ -8,7 +8,7 @@ export interface ServerStatus {
 }
 
 export interface APIResponse<T> {
-    status?: boolean;
+    status?: boolean; 
     resKey: string;
     msg: string;
     data: T;

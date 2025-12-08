@@ -35,10 +35,10 @@ export interface ServerInfo {
 
 
 export interface AppInfo {
-    dbID?: string;
-    token?: string;
-    serverAddr?: string;
-    globalPath?: string;
+    dbID: string;
+    token: string;
+    serverAddr: string;
+    globalPath: string;
     serverInfo: ServerInfo;
     isOffline: number;
 }
