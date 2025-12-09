@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ReqStatus } from "../../dataType/types/reqStatus";
+import { ReqStatus } from "../../dataType/types/request";
 
 const initialState: ReqStatus = {
     reqLoading: false,

@@ -21,7 +21,6 @@ export const userSlice = createSlice({
     reducers: {
         setUserToken: (state, action:PayloadAction<string>) => {
             // Save Token into database
-            saveToken(action.payload);
             state.token = action.payload;
         },
         setUserTokenFromDb: (state, action:PayloadAction<string>) => {

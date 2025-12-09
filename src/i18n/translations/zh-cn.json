@@ -628,7 +628,6 @@
     "agreeAndContinue": "同意并继续",
     "tip": "提示",
     "serverAddressNotChanged": "服务器地址没有改变.",
-
     "error": "错误",
     "serverConnectSuccefully": "设置服务器地址成功,将返回登录界面!",
     "serverConnectFailed": "连接服务器失败: {{ msg }}.",
@@ -637,7 +636,15 @@
     "tipDownloadBackend": " 注意:使用本APP前需要自行部署服务器! 服务器安装程序下载地址: https://github.com/hnmht ",
     "copyURL": "复制网址",
     "serverAddressPlaceholder": "请输入服务器地址",
-
+    "requestingPublicKey": "正在向服务器请求公玥...",
+    "requestingLoginCrendentials": "正在请求登录凭据...",
+    "requestingUserInfo": "正在请求用户信息...",
+    "requestingServerInfo": "正在请求服务器信息...",
+    "appAndServerInconsistent": "App版本和服务器版本不一致,请重新安装APP.",
+    "requestingStaticData": "正在请求静态数据...",
+    "requestingDynamicData": "正在请求动态数据...",
+    "redirectingToPage": "正在跳转页面...",
+    "offlineLogin": "离线登录",
 
     "MenuDashboard": "首页",
     "MenuCalendar": "日程",

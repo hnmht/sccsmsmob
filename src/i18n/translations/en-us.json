@@ -639,6 +639,15 @@
     "tipDownloadBackend":"Note: You need to deploy the server yourself before using this app! Server installer download address: https://github.com/hnmht ",
     "copyURL":"Copy URL",
     "serverAddressPlaceholder":"Please enter the server address",
+    "requestingPublicKey":"Requesting public key from the server...",
+    "requestingLoginCrendentials":"Requesting login credentials...",
+    "requestingUserInfo":"Requesting user information...",
+    "requestingServerInfo":"Requesting server infromation...",
+    "appAndServerInconsistent":"App version and server version are inconsistent. Please reinstall the app.",
+    "requestingStaticData":"Requesting static data...",
+    "requestingDynamicData":"Requesting dynamic data...",
+    "redirectingToPage":"Redirecting to page...",
+    "offlineLogin":"Offline login",
 
     
     "MenuDashboard": "Dashboard",
