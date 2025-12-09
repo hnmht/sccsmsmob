@@ -28,3 +28,12 @@ export interface Department {
     ts?: string;
     dr?: number;
 }
+
+export interface SimpDeptCache {
+    queryTs: string;
+    resultNumber: number;
+    delItems: SimpDept[];
+    updateItems: SimpDept[];
+    newItems: SimpDept[];
+    resultTs: string;
+}

@@ -1,3 +1,4 @@
+// File
 export interface File {
     id: number;
     hash?: string;
@@ -22,4 +23,3 @@ export interface File {
     dr?: number;
     ts?: string;
 }
-

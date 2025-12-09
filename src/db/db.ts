@@ -4,9 +4,6 @@ import { createTableSQL, dropAllTableSQL } from "./schema";
 import { UserInfo } from "../dataType/types/user";
 import { getLocales, Locale } from "react-native-localize"
 import { normalizeLocale } from "../utils/normalizeLocale";
-import { getEmptyFile } from "../dataType/dataZero/file";
-import { getEmptyPerson } from "../dataType/dataZero/person";
-import { getEmptyDepartment, getEmptySimpDept } from "../dataType/dataZero/department";
 
 // Open or Create Database
 export const DB: QuickSQLiteConnection = open({ name: dbName, location: "default" });
