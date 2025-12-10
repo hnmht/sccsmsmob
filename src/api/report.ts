@@ -1,7 +1,8 @@
+import { QueryParams } from "../dataType/types/public";
 import request from "../utils/request";
 
 // Get Work Order Status Report
-export function reqWOReport(data, isLoading = true) {
+export function reqWOReport(data:QueryParams, isLoading :boolean= true) {
     return request({
         url: "/rep/wor",
         method: 'post',
@@ -12,7 +13,7 @@ export function reqWOReport(data, isLoading = true) {
 
 
 // Get Execution Order Status Report
-export function reqEOReport(data, isLoading = true) {
+export function reqEOReport(data:QueryParams, isLoading:boolean = true) {
     return request({
         url: "/rep/eor",
         method: 'post',
@@ -22,7 +23,7 @@ export function reqEOReport(data, isLoading = true) {
 }
 
 // Get Issue Resolution Form Report
-export function reqIRFReport(data, isLoading = true) {
+export function reqIRFReport(data:QueryParams, isLoading :boolean= true) {
     return request({
         url: "/rep/irfr",
         method: 'post',

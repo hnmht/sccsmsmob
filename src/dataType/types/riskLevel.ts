@@ -14,7 +14,7 @@ export interface RiskLevel {
     dr: number;
 }
 // Risk Level front-end cache
-interface RLCache {
+export interface RLCache {
     queryTs: string;
     resultNumber: number;
     delItems: RiskLevel[];

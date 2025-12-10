@@ -21,3 +21,13 @@ export interface Person {
     ts?: string;
     dr?: number;
 }
+
+// Person Front-end Cache
+export interface PersonCache {
+    queryTs: string;
+    resultNumber: number;
+    delItems: Person[];
+    updateItems: Person[];
+    newItems: Person[];
+    resultTs: string;
+}

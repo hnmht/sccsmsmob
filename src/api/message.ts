@@ -1,7 +1,9 @@
+import { CommentMessage } from "../dataType/types/message";
+import { QueryParams } from "../dataType/types/public";
 import request from "../utils/request";
 
 // Get user UnRead comments
-export function reqUnReadComments(isLoading = true) {
+export function reqUnReadComments(isLoading: boolean = true) {
     return request({
         url: "/msg/unread",
         method: 'post',
@@ -10,7 +12,7 @@ export function reqUnReadComments(isLoading = true) {
 }
 
 // Get user read comments
-export function reqReadComments(data,isLoading = true) {
+export function reqReadComments(data: QueryParams, isLoading: boolean = true) {
     return request({
         url: "/msg/read",
         method: 'post',
@@ -20,7 +22,7 @@ export function reqReadComments(data,isLoading = true) {
 }
 
 // Get user work order awaiting execution
-export function reqUserWORefs(isLoading = true) {
+export function reqUserWORefs(isLoading: boolean = true) {
     return request({
         url: "/msg/wos",
         method: 'post',
@@ -29,7 +31,7 @@ export function reqUserWORefs(isLoading = true) {
 }
 
 // Get user execution order issues
-export function reqUserEORefs(isLoading = true) {
+export function reqUserEORefs(isLoading: boolean = true) {
     return request({
         url: "/msg/eos",
         method: 'post',
@@ -38,7 +40,7 @@ export function reqUserEORefs(isLoading = true) {
 }
 
 // Read message
-export function reqToReadMsg(data,isLoading = true) {
+export function reqToReadMsg(data: CommentMessage, isLoading: boolean = true) {
     return request({
         url: "/msg/toread",
         method: 'post',

@@ -1,7 +1,9 @@
+import { IssueResolutionForm } from "../dataType/types/issueResolutionForm";
+import { QueryParams } from "../dataType/types/public";
 import request from "../utils/request";
 
 // Add Issue Resolution Form 
-export function reqAddIRF(data, isLoading = true) {
+export function reqAddIRF(data: IssueResolutionForm, isLoading: boolean = true) {
     return request({
         url: "/irf/add",
         method: 'post',
@@ -10,7 +12,7 @@ export function reqAddIRF(data, isLoading = true) {
     });
 }
 // Edit Issue Resolution Form
-export function reqEditIRF(data, isLoading = true) {
+export function reqEditIRF(data: IssueResolutionForm, isLoading: boolean = true) {
     return request({
         url: "/irf/edit",
         method: 'post',
@@ -19,7 +21,7 @@ export function reqEditIRF(data, isLoading = true) {
     });
 }
 // Delete Issue Resolution Form
-export function reqDeleteIRF(data, isLoading = true) {
+export function reqDeleteIRF(data: IssueResolutionForm, isLoading: boolean = true) {
     return request({
         url: "/irf/del",
         method: 'post',
@@ -28,7 +30,7 @@ export function reqDeleteIRF(data, isLoading = true) {
     });
 }
 // Confirm Issue Resolution Form
-export function reqConfirmIRF(data, isLoading = true) {
+export function reqConfirmIRF(data: IssueResolutionForm, isLoading: boolean = true) {
     return request({
         url: "/irf/confirm",
         method: 'post',
@@ -37,7 +39,7 @@ export function reqConfirmIRF(data, isLoading = true) {
     });
 }
 // UnCOnfirm Issue Resolution Form
-export function reqCancelConfirmIRF(data, isLoading = true) {
+export function reqCancelConfirmIRF(data: IssueResolutionForm, isLoading: boolean = true) {
     return request({
         url: "/irf/unconfirm",
         method: 'post',
@@ -46,7 +48,7 @@ export function reqCancelConfirmIRF(data, isLoading = true) {
     });
 }
 // Get Issue Resolution Form List
-export function reqIRFList(data, isLoading = true) {
+export function reqIRFList(data: QueryParams, isLoading: boolean = true) {
     return request({
         url: "/irf/list",
         method: 'post',

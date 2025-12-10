@@ -8,13 +8,3 @@ export function reqLandingPageInfo(isLoading = true) {
         isLoading
     });
 }
-
-// Modify Landing Page info
-export function reqModifyLandingPageInfo(data, isLoading = true) {
-    return request({
-        url: "/land/edit",
-        method: "post",
-        data,
-        isLoading
-    });
-};

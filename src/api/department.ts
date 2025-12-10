@@ -20,7 +20,7 @@ export function reqGetSimpDepts(isLoading: boolean = true) {
 }
 
 // Get Simple Department latest front-end cache
-export function reqGetSimpDeptsCache(data: SimpDeptCache, isLoading = true) {
+export function reqGetSimpDeptsCache(data: SimpDeptCache, isLoading:boolean = true) {
     return request({
         url: "/dept/simpcache",
         method: 'post',

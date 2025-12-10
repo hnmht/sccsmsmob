@@ -1,7 +1,9 @@
+import { EOCommentsParams, EOReviewsParams, ExecutionOrder, ExecutionOrderComment, ExecutionOrderReview } from "../dataType/types/executionOrder";
+import { PagingQueryParams, QueryParams } from "../dataType/types/public";
 import request from "../utils/request";
 
 // Add Execution Order
-export function reqAddEO(data, isLoading = true) {
+export function reqAddEO(data:ExecutionOrder, isLoading:boolean = true) {
     return request({
         url: "/eo/add",
         method: 'post',
@@ -10,7 +12,7 @@ export function reqAddEO(data, isLoading = true) {
     });
 }
 // Modify Execution Order
-export function reqEditEO(data, isLoading = true) {
+export function reqEditEO(data:ExecutionOrder, isLoading:boolean = true) {
     return request({
         url: "/eo/edit",
         method: 'post',
@@ -19,7 +21,7 @@ export function reqEditEO(data, isLoading = true) {
     });
 }
 // Delete Execution Order
-export function reqDeleteEO(data, isLoading = true) {
+export function reqDeleteEO(data:ExecutionOrder, isLoading:boolean = true) {
     return request({
         url: "/eo/del",
         method: 'post',
@@ -28,7 +30,7 @@ export function reqDeleteEO(data, isLoading = true) {
     });
 }
 // Confirm Execution Order
-export function reqConfirmEO(data, isLoading = true) {
+export function reqConfirmEO(data:ExecutionOrder, isLoading :boolean= true) {
     return request({
         url: "/eo/confirm",
         method: 'post',
@@ -37,7 +39,7 @@ export function reqConfirmEO(data, isLoading = true) {
     });
 }
 // Unconfirm Execution Order 
-export function reqUnConfirmEO(data, isLoading = true) {
+export function reqUnConfirmEO(data:ExecutionOrder, isLoading :boolean= true) {
     return request({
         url: "/eo/unconfirm",
         method: 'post',
@@ -46,7 +48,7 @@ export function reqUnConfirmEO(data, isLoading = true) {
     });
 }
 // Get Execution Order List
-export function reqGetEOList(data, isLoading = true) {
+export function reqGetEOList(data:QueryParams, isLoading:boolean = true) {
     return request({
         url: "/eo/list",
         method: 'post',
@@ -56,7 +58,7 @@ export function reqGetEOList(data, isLoading = true) {
 }
 
 // Get Execution Order list by pagination
-export function reqGetEOPaginationList(data, isLoading = true) {
+export function reqGetEOPaginationList(data:PagingQueryParams, isLoading:boolean = true) {
     return request({
         url: "/eo/listpage",
         method: 'post',
@@ -66,7 +68,7 @@ export function reqGetEOPaginationList(data, isLoading = true) {
 }
 
 // Get Execution Order details
-export function reqGetEODetail(data, isLoading = true) {
+export function reqGetEODetail(data:ExecutionOrder, isLoading:boolean = true) {
     return request({
         url: "/eo/detail",
         method: 'post',
@@ -76,7 +78,7 @@ export function reqGetEODetail(data, isLoading = true) {
 }
 
 // Get the list of Execution Orders to be referenced
-export function reqReferEO(data, isLoading = true) {
+export function reqReferEO(data:QueryParams, isLoading:boolean = true) {
     return request({
         url: "/eo/refer",
         method: 'post',
@@ -86,7 +88,7 @@ export function reqReferEO(data, isLoading = true) {
 }
 
 // Add Execution Order comment
-export function reqAddEOComment(data, isLoading = true) {
+export function reqAddEOComment(data:ExecutionOrderComment, isLoading :boolean= true) {
     return request({
         url: "/eo/addcomment",
         method: 'post',
@@ -96,7 +98,7 @@ export function reqAddEOComment(data, isLoading = true) {
 }
 
 // Add Execution Order Review Record
-export function reqAddEOReview(data, isLoading = true) {
+export function reqAddEOReview(data:ExecutionOrderReview, isLoading:boolean = true) {
     return request({
         url: "/eo/addreview",
         method: 'post',
@@ -106,7 +108,7 @@ export function reqAddEOReview(data, isLoading = true) {
 }
 
 // Get the Execution Order Review Record
-export function reqGetEOReviews(data, isLoading = true) {
+export function reqGetEOReviews(data:EOReviewsParams, isLoading:boolean = true) {
     return request({
         url: "/eo/reviews",
         method: 'post',
@@ -116,7 +118,7 @@ export function reqGetEOReviews(data, isLoading = true) {
 }
 
 // Get the Execution Order Comments list
-export function reqGetEOComments(data, isLoading = true) {
+export function reqGetEOComments(data:EOCommentsParams, isLoading :boolean= true) {
     return request({
         url: "/eo/comments",
         method: 'post',

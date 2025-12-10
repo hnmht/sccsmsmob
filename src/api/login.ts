@@ -1,8 +1,8 @@
 import request from "../utils/request";
-import { ParamLogin,ParamChangePwd } from "../dataType/types/login";
+import { ParamLogin, ParamChangePwd } from "../dataType/types/login";
 
 // Login
-export function reqLogin(data: ParamLogin, isLoading :boolean = true) {
+export function reqLogin(data: ParamLogin, isLoading: boolean = true) {
     return request({
         url: '/auth/login',
         method: 'post',
@@ -11,7 +11,7 @@ export function reqLogin(data: ParamLogin, isLoading :boolean = true) {
     })
 }
 // Logout
-export function reqLogout(isLoading = true) {
+export function reqLogout(isLoading: boolean = true) {
     return request({
         url: '/auth/logout',
         method: 'post',
@@ -19,7 +19,7 @@ export function reqLogout(isLoading = true) {
     })
 }
 // Change Password
-export function reqChangePwd(data:ParamChangePwd, isLoading = true) {
+export function reqChangePwd(data: ParamChangePwd, isLoading: boolean = true) {
     return request({
         url: '/auth/changepwd',
         method: 'post',

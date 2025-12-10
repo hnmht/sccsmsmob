@@ -13,12 +13,3 @@ export interface UserInfo {
     person:Person,
     department:SimpDept
 }
-// Change Password Params
-export interface ParamChangePwd {
-    id: number; // UserID
-    code: string; // UserCode
-    name: string; // UserName
-    password: string; // Current Password
-    newPassword: string;
-    confirmNewPassword: string;
-}

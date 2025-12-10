@@ -26,7 +26,7 @@ export interface Event {
     creator: Person;
 }
 // user Event Params
-interface UserEvents {
+export interface UserEvents {
     userID: number;
     start: string;
     end: string;

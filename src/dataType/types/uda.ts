@@ -17,7 +17,7 @@ export interface UserDefinedArchive {
     dr: number;
 }
 // User Define Category Front-end Cache
-interface UDACache {
+export interface UDACache {
     queryTs: string;
     resultNumber: number;
     delItems: UserDefinedArchive[];

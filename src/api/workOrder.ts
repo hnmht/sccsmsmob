@@ -1,6 +1,8 @@
+import { QueryParams } from "../dataType/types/public";
+import { WorkOrder } from "../dataType/types/workOrder";
 import request from "../utils/request";
 // Get Work Order List
-export function reqGetWOList(data,isLoading = true) {
+export function reqGetWOList(data: QueryParams, isLoading: boolean = true) {
     return request({
         url: "/wo/list",
         method: 'post',
@@ -9,7 +11,7 @@ export function reqGetWOList(data,isLoading = true) {
     });
 }
 // Get Work Order Details
-export function reqGetWODetail(data, isLoading = true) {
+export function reqGetWODetail(data: WorkOrder, isLoading: boolean = true) {
     return request({
         url: "/wo/detail",
         method: 'post',
@@ -19,7 +21,7 @@ export function reqGetWODetail(data, isLoading = true) {
 }
 
 // Add Work Order
-export function reqAddWO(data, isLoading = true) {
+export function reqAddWO(data: WorkOrder, isLoading: boolean = true) {
     return request({
         url: "/wo/add",
         method: 'post',
@@ -29,7 +31,7 @@ export function reqAddWO(data, isLoading = true) {
 }
 
 // Modify Work Order
-export function reqEditWO(data, isLoading = true) {
+export function reqEditWO(data: WorkOrder, isLoading: boolean = true) {
     return request({
         url: "/wo/edit",
         method: 'post',
@@ -38,7 +40,7 @@ export function reqEditWO(data, isLoading = true) {
     });
 }
 // Delete Work Order
-export function reqDeleteWO(data, isLoading = true) {
+export function reqDeleteWO(data: WorkOrder, isLoading: boolean = true) {
     return request({
         url: "/wo/del",
         method: 'post',
@@ -48,7 +50,7 @@ export function reqDeleteWO(data, isLoading = true) {
 }
 
 // Batch Delete Work Order
-export function reqDeleteWOs(data, isLoading = true) {
+export function reqDeleteWOs(data: WorkOrder[], isLoading: boolean = true) {
     return request({
         url: "/wo/dels",
         method: 'post',
@@ -58,7 +60,7 @@ export function reqDeleteWOs(data, isLoading = true) {
 }
 
 // Confirm Work Order
-export function reqConfirmWO(data, isLoading = true) {
+export function reqConfirmWO(data:WorkOrder, isLoading:boolean = true) {
     return request({
         url: "/wo/confirm",
         method: 'post',
@@ -68,7 +70,7 @@ export function reqConfirmWO(data, isLoading = true) {
 }
 
 // Unconfirm Work Order
-export function reqCancelConfirmWO(data, isLoading = true) {
+export function reqCancelConfirmWO(data:WorkOrder, isLoading:boolean = true) {
     return request({
         url: "/wo/unconfirm",
         method: 'post',
@@ -78,7 +80,7 @@ export function reqCancelConfirmWO(data, isLoading = true) {
 }
 
 // Get the list of Work Order awaitng execution
-export function reqReferWO(data, isLoading = true) {
+export function reqReferWO(data:QueryParams, isLoading:boolean = true) {
     return request({
         url: "/wo/refer",
         method: 'post',
