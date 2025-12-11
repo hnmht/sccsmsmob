@@ -1,42 +1,42 @@
 import { reqGetEITList, reqGetEITCache } from "../../api/exectiveTemplate";
-import { queryDocTs, updateDocTs, addDocTs, executeQuery, getDocByID } from "../DB";
+import { queryDataTs, updateDataTs, addDataTs, executeSQL, getDocByID } from "../db";
 import { GetDataTypeDefaultValue } from "../dataTypes";
 
-const docName = "exectivetemplate";
+const dataName = "exectivetemplate";
 
 export async function initEITCache() {
     //获取最新档案ts
-    let ts = queryDocTs(docName);
+    let ts = queryDataTs(dataName);
     if (ts === "") {//没有ts
         const res = await reqGetEITList(false);
-        if (res.data.status === 0) {
-            const latestTs = res.data.data[0].ts;
+        if (res.status) {
+            const latestTs = res.data[0].ts;
             //存储最新ts
-            addDocTs(docName, latestTs);
+            addDataTs(dataName, latestTs);
             //批量增加档案
-            bulkAddEITs(res.data.data);
+            bulkAddEITs(res.data);
         }
         
     } else {//存在ts
         const cacheRes = await reqGetEITCache({ queryTs: ts }, false);
-        if (cacheRes.data.status === 0) {
-            const docCache = cacheRes.data.data;
-            if (docCache.resultnum > 0) {
+        if (cacheRes.status) {
+            const docCache = cacheRes.data;
+            if (docCache.resultNumber > 0) {
                 //存在待删除档案
-                if (docCache.delitems !== null) {
-                    bulkDelEITs(docCache.delitems);
+                if (docCache.delItems !== null) {
+                    bulkDelEITs(docCache.delItems);
                 }
                 //存在新增档案
-                if (docCache.newitems !== null) {
-                    bulkAddEITs(docCache.newitems);
+                if (docCache.newItems !== null) {
+                    bulkAddEITs(docCache.newItems);
                 }
                 //存在待更新档案
-                if (docCache.updateitems !== null) {
-                    bulkUpdateEITs(docCache.updateitems);
+                if (docCache.updateItems !== null) {
+                    bulkUpdateEITs(docCache.updateItems);
                 }
             }
             //更新最新ts
-            updateDocTs(docName, docCache.resultts);
+            updateDataTs(dataName, docCache.resultTs);
         } 
     }
 }
@@ -50,7 +50,7 @@ function bulkAddEITs(eits) {
 
     eits.forEach(eit => {
         let sqlStr = `insert into exectivetemplate(id,code,name,ts,value) values(${eit.id},'${eit.code}','${eit.name}','${eit.ts}','${JSON.stringify(eit)}')`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
     });
 };
 //批量删除
@@ -60,9 +60,9 @@ function bulkDelEITs(eits) {
     }
     eits.forEach(eit => {
         let sqlStr = `delete from exectivetemplate where id=${eit.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `delete from exectivetemplate_recent where id=${eit.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 //批量修改
@@ -74,9 +74,9 @@ function bulkUpdateEITs(eits) {
     transEITsToFrontend(eits);
     eits.forEach(eit => {
         let sqlStr = `update exectivetemplate set code='${eit.code}',name='${eit.name}',ts='${eit.ts}',value='${JSON.stringify(eit)}' where id=${eit.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `update exectivetemplate_recent set code='${eit.code}',name='${eit.name}',ts='${eit.ts}',value='${JSON.stringify(eit)}' where id=${eit.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 //执行模板批量后端转前端
@@ -122,18 +122,18 @@ const transEITsToFrontend = (eits) => {
 //增加最近
 export function addEITRecent(eit) {
     let sqlStr = `insert or ignore into exectivetemplate_recent(id,code,name,ts,value) values(${eit.id},'${eit.code}','${eit.name}','${eit.ts}','${JSON.stringify(eit)}')`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 //删除最近
 export function delEITRecent(eit) {
     let sqlStr = `delete from exectivetemplate_recent where id=${eit.id}`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 
 //获取最近
 export function getEITRecent() {
     let sqlStr = `select value from exectivetemplate_recent order by autoid desc`;
-    let { rows } = executeQuery(sqlStr);
+    let { rows } = executeSQL(sqlStr);
     let docs = [];
     if (rows.length > 0) {
         rows._array.forEach(doc => {

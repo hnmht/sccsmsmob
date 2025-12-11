@@ -20,7 +20,7 @@ export interface OrganizationInfo {
 }
 
 export interface ServerInfo {
-    dbID?: number;
+    dbID?: string;
     serialNumber?: string;
     macArray?: string;
     machineHash?: string;

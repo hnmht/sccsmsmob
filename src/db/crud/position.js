@@ -1,43 +1,43 @@
 import { reqGetOPList,reqGetOPCache } from "../../api/operatingPost";
-import { queryDocTs, updateDocTs, addDocTs, executeQuery } from "../DB";
+import { queryDataTs, updateDataTs, addDataTs, executeSQL } from "../db";
 
-const docName = "operatingpost";
+const dataName = "operatingpost";
 const tableName = "operatingpost";
 const recentTableName = "operatingpost_recent";
 
 export async function initOPCache() {
     //获取最新档案ts
-    let ts = queryDocTs(docName);
+    let ts = queryDataTs(dataName);
     if (ts === "") {//没有ts    
         const res = await reqGetOPList(false);
-        if (res.data.status === 0) {
-            const latestTs = res.data.data[0].ts;
+        if (res.status) {
+            const latestTs = res.data[0].ts;
             //存储最新ts
-            addDocTs(docName, latestTs);
+            addDataTs(dataName, latestTs);
             //批量增加档案
-            bulkAddOPs(res.data.data);
+            bulkAddOPs(res.data);
         }
     } else {//存在ts   
         const cacheRes = await reqGetOPCache({ queryTs: ts }, false);
-        if (cacheRes.data.status === 0) {
-            const docCache = cacheRes.data.data;
+        if (cacheRes.status) {
+            const docCache = cacheRes.data;
             // console.log("docCache:", docCache);
-            if (docCache.resultnum > 0) {
+            if (docCache.resultNumber > 0) {
                 //存在待删除档案
-                if (docCache.delitems !== null) {
-                    bulkDelOPs(docCache.delitems);
+                if (docCache.delItems !== null) {
+                    bulkDelOPs(docCache.delItems);
                 }
                 //存在新增档案
-                if (docCache.newitems !== null) {
-                    bulkAddOPs(docCache.newitems);
+                if (docCache.newItems !== null) {
+                    bulkAddOPs(docCache.newItems);
                 }
                 //存在待更新档案
-                if (docCache.updateitems !== null) {
-                    bulkUpdateOPs(docCache.updateitems);
+                if (docCache.updateItems !== null) {
+                    bulkUpdateOPs(docCache.updateItems);
                 }
             }
             //更新最新ts
-            updateDocTs(docName, docCache.resultts);
+            updateDataTs(dataName, docCache.resultTs);
         }
     }
 }
@@ -48,7 +48,7 @@ function bulkAddOPs(ops) {
     }
     ops.forEach(op => {
         let sqlStr = `insert into ${tableName}(id,name,ts,value) values(${op.id},'${op.name}','${op.ts}','${JSON.stringify(op)}')`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
     });
 };
 //批量删除
@@ -58,9 +58,9 @@ function bulkDelOPs(ops) {
     }
     ops.forEach(op => {
         let sqlStr = `delete from ${tableName} where id=${op.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `delete from ${recentTableName} where id=${op.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 //批量修改执行项目类别
@@ -70,27 +70,27 @@ function bulkUpdateOPs(ops) {
     }
     ops.forEach(op => {
         let sqlStr = `update ${tableName} set name='${op.name}',ts='${op.ts}',value='${JSON.stringify(op)}' where id=${op.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `update ${recentTableName} set name='${op.name}',ts='${op.ts}',value='${JSON.stringify(op)}' where id=${op.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 
 //增加最近
 export function addOPRecent(op) {
     let sqlStr = `insert or ignore into ${recentTableName}(id,name,ts,value) values(${op.id},'${op.name}','${op.ts}','${JSON.stringify(op)}')`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 //删除最近
 export function delOPRecent(op) {
     let sqlStr = `delete from ${recentTableName} where id=${op.id}`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 
 //获取最近
 export function getOPRecent() {
     let sqlStr = `select value from ${recentTableName} order by autoid desc`;
-    let { rows } = executeQuery(sqlStr);
+    let { rows } = executeSQL(sqlStr);
     let docs = [];
     if (rows.length > 0) {
         rows._array.forEach(doc => {

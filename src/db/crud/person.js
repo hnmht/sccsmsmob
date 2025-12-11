@@ -1,41 +1,41 @@
 import { reqGetPersons, reqGetPersonsCache } from "../../api/person";
-import { queryDocTs, updateDocTs, addDocTs, executeQuery } from "../DB";
+import { queryDataTs, updateDataTs, addDataTs, executeSQL } from "../db";
 
-const docName = "person";
+const dataName = "person";
 
 export async function initPersonCache() {
     //获取最新档案ts
-    let ts = queryDocTs(docName);
+    let ts = queryDataTs(dataName);
     if (ts === "") {//没有ts
         const res = await reqGetPersons(false);
-        if (res.data.status === 0) {
-            const latestTs = res.data.data[0].ts;
+        if (res.status) {
+            const latestTs = res.data[0].ts;
             //存储最新ts
-            addDocTs(docName, latestTs);
+            addDataTs(dataName, latestTs);
             //批量增加档案
-            bulkAddPersons(res.data.data);
+            bulkAddPersons(res.data);
         }
 
     } else {//存在ts
         const cacheRes = await reqGetPersonsCache({ queryTs: ts }, false);
-        if (cacheRes.data.status === 0) {
-            const docCache = cacheRes.data.data;
-            if (docCache.resultnum > 0) {
+        if (cacheRes.status) {
+            const docCache = cacheRes.data;
+            if (docCache.resultNumber > 0) {
                 //存在待删除档案
-                if (docCache.delitems !== null) {
-                    bulkDelPersons(docCache.delitems);
+                if (docCache.delItems !== null) {
+                    bulkDelPersons(docCache.delItems);
                 }
                 //存在新增档案
-                if (docCache.newitems !== null) {
-                    bulkAddPersons(docCache.newitems);
+                if (docCache.newItems !== null) {
+                    bulkAddPersons(docCache.newItems);
                 }
                 //存在待更新档案
-                if (docCache.updateitems !== null) {
-                    bulkUpdatePersons(docCache.updateitems);
+                if (docCache.updateItems !== null) {
+                    bulkUpdatePersons(docCache.updateItems);
                 }
             }
             //更新最新ts
-            updateDocTs(docName, docCache.resultts);
+            updateDataTs(dataName, docCache.resultTs);
         }
 
     }
@@ -49,7 +49,7 @@ function bulkAddPersons(persons) {
         let sqlStr = `insert into person(id,code,name,dept_id,op_id,ts,value) 
         values(${person.id},'${person.code}','${person.name}',${person.deptid},${person.op_id},
         '${person.ts}','${JSON.stringify(person)}')`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
     });
 };
 //批量删除
@@ -59,9 +59,9 @@ function bulkDelPersons(persons) {
     }
     persons.forEach(person => {
         let sqlStr = `delete from person where id=${person.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `delete from person_recent where id=${person.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 //批量修改
@@ -73,9 +73,9 @@ function bulkUpdatePersons(persons) {
         let sqlStr = `update person set code='${person.code}',name='${person.name}',dept_id=${person.deptid},op_id=${person.op_id},ts='${person.ts}',
         value='${JSON.stringify(person)}' 
         where id=${person.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `update person_recent set code='${person.code}',name='${person.name}',dept_id=${person.deptid},op_id=${person.op_id},ts='${person.ts}',value='${JSON.stringify(person)}' where id=${person.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 
@@ -83,7 +83,7 @@ function bulkUpdatePersons(persons) {
 export function getPersonByDeptIDs(deptIDs) {
     let sqlString = `select value from person where dept_id in (${deptIDs.toString()})`;
 
-    let { rows } = executeQuery(sqlString);
+    let { rows } = executeSQL(sqlString);
     let docs = [];
     if (rows.length > 0) {
         rows._array.forEach(doc => {
@@ -98,18 +98,18 @@ export function addPersonRecent(person) {
     let sqlStr = `insert or ignore into person_recent(id,code,name,dept_id,op_id,ts,value) 
      values(${person.id},'${person.code}','${person.name}',${person.deptid},${person.op_id},'${person.ts}','${JSON.stringify(person)}')
      `;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 //删除最近使用人员
 export function delPersonRecent(person) {
     let sqlStr = `delete from person_recent where id=${person.id}`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 
 //获取最近使用人员
 export function getPersonRecent() {
     let sqlStr = `select value from person_recent order by autoid desc`;
-    let { rows } = executeQuery(sqlStr);
+    let { rows } = executeSQL(sqlStr);
     let docs = [];
     if (rows.length > 0) {
         rows._array.forEach(doc => {

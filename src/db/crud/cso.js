@@ -1,40 +1,40 @@
 import { reqSIOs,reqGetSIOCache } from "../../api/sceneItem";
-import { queryDocTs, updateDocTs, addDocTs, executeQuery } from "../DB";
+import { queryDataTs, updateDataTs, addDataTs, executeSQL } from "../db";
 
-const docName = "sceneitemoption";
+const dataName = "sceneitemoption";
 
 export async function initSIOCache() {
     //获取最新档案ts
-    let ts = queryDocTs(docName);  
+    let ts = queryDataTs(dataName);  
     if (ts === "") {//没有ts
         const res = await reqSIOs(false);
-        if (res.data.status === 0) {
-            const latestTs = res.data.data[0].ts;
+        if (res.status) {
+            const latestTs = res.data[0].ts;
             //存储最新ts
-            addDocTs(docName, latestTs);
+            addDataTs(dataName, latestTs);
             //批量增加档案
-            bulkAddSIOs(res.data.data);
+            bulkAddSIOs(res.data);
         } 
     } else {//存在ts
         const cacheRes = await reqGetSIOCache({ queryTs: ts }, false);
-        if (cacheRes.data.status === 0) {
-            const docCache = cacheRes.data.data;
-            if (docCache.resultnum > 0) {
+        if (cacheRes.status) {
+            const docCache = cacheRes.data;
+            if (docCache.resultNumber > 0) {
                 //存在待删除档案
-                if (docCache.delitems !== null) {
-                    bulkDelSIOs(docCache.delitems);
+                if (docCache.delItems !== null) {
+                    bulkDelSIOs(docCache.delItems);
                 }
                 //存在新增档案
-                if (docCache.newitems !== null) {
-                    bulkAddSIOs(docCache.newitems);
+                if (docCache.newItems !== null) {
+                    bulkAddSIOs(docCache.newItems);
                 }
                 //存在待更新档案
-                if (docCache.updateitems !== null) {
-                    bulkUpdateSIOs(docCache.updateitems);
+                if (docCache.updateItems !== null) {
+                    bulkUpdateSIOs(docCache.updateItems);
                 }
             }
             //更新最新ts
-            updateDocTs(docName, docCache.resultts);
+            updateDataTs(dataName, docCache.resultTs);
         } 
     }
 }
@@ -45,7 +45,7 @@ function bulkAddSIOs(sios) {
     }
     sios.forEach(sio => {
         let sqlStr = `insert into sceneitemoption(id,code,name,ts,value) values(${sio.id},'${sio.code}','${sio.name}','${sio.ts}','${JSON.stringify(sio)}')`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
     });
 };
 //批量删除
@@ -55,7 +55,7 @@ function bulkDelSIOs(sios) {
     }
     sios.forEach(sio => {
         let sqlStr = `delete from sceneitemoption where id=${sio.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
     });
 }
 //批量修改
@@ -65,6 +65,6 @@ function bulkUpdateSIOs(sios) {
     }
     sios.forEach(sio => {
         let sqlStr = `update sceneitemoption set code='${sio.code}',name='${sio.name}',ts='${sio.ts}',value='${JSON.stringify(sio)}' where id=${sio.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
     });
 }

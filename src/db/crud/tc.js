@@ -1,43 +1,43 @@
 import { reqGetTCList, reqGetTCCache } from "../../api/trainCourse";
-import { queryDocTs, updateDocTs, addDocTs, executeQuery } from "../DB";
+import { queryDataTs, updateDataTs, addDataTs, executeSQL } from "../db";
 
-const docName = "traincourse";
+const dataName = "traincourse";
 const tableName = "traincourse";
 const recentTableName = "traincourse_recent";
 
 export async function initTCCache() {
     //获取最新档案ts
-    let ts = queryDocTs(docName);
+    let ts = queryDataTs(dataName);
     if (ts === "") {//没有ts    
         const res = await reqGetTCList(false);
-        if (res.data.status === 0) {
-            const latestTs = res.data.data[0].ts;
+        if (res.status) {
+            const latestTs = res.data[0].ts;
             //存储最新ts
-            addDocTs(docName, latestTs);
+            addDataTs(dataName, latestTs);
             //批量增加档案
-            bulkAddTCs(res.data.data);
+            bulkAddTCs(res.data);
         }
     } else {//存在ts   
         const cacheRes = await reqGetTCCache({ queryTs: ts }, false);
-        if (cacheRes.data.status === 0) {
-            const docCache = cacheRes.data.data;
+        if (cacheRes.status) {
+            const docCache = cacheRes.data;
             // console.log("docCache:", docCache);
-            if (docCache.resultnum > 0) {
+            if (docCache.resultNumber > 0) {
                 //存在待删除档案
-                if (docCache.delitems !== null) {
-                    bulkDelTCs(docCache.delitems);
+                if (docCache.delItems !== null) {
+                    bulkDelTCs(docCache.delItems);
                 }
                 //存在新增档案
-                if (docCache.newitems !== null) {
-                    bulkAddTCs(docCache.newitems);
+                if (docCache.newItems !== null) {
+                    bulkAddTCs(docCache.newItems);
                 }
                 //存在待更新档案
-                if (docCache.updateitems !== null) {
-                    bulkUpdateTCs(docCache.updateitems);
+                if (docCache.updateItems !== null) {
+                    bulkUpdateTCs(docCache.updateItems);
                 }
             }
             //更新最新ts
-            updateDocTs(docName, docCache.resultts);
+            updateDataTs(dataName, docCache.resultTs);
         }
     }
 }
@@ -48,7 +48,7 @@ function bulkAddTCs(tcs) {
     }
     tcs.forEach(tc => {
         let sqlStr = `insert into ${tableName}(id,name,ts,value) values(${tc.id},'${tc.name}','${tc.ts}','${JSON.stringify(tc)}')`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
     });
 };
 //批量删除
@@ -58,9 +58,9 @@ function bulkDelTCs(tcs) {
     }
     tcs.forEach(tc => {
         let sqlStr = `delete from ${tableName} where id=${tc.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `delete from ${recentTableName} where id=${tc.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 //批量修改执行项目类别
@@ -70,27 +70,27 @@ function bulkUpdateTCs(tcs) {
     }
     tcs.forEach(tc => {
         let sqlStr = `update ${tableName} set name='${tc.name}',ts='${tc.ts}',value='${JSON.stringify(tc)}' where id=${tc.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `update ${recentTableName} set name='${tc.name}',ts='${tc.ts}',value='${JSON.stringify(tc)}' where id=${tc.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 
 //增加最近
 export function addTCRecent(tc) {
     let sqlStr = `insert or ignore into ${recentTableName}(id,name,ts,value) values(${tc.id},'${tc.name}','${tc.ts}','${JSON.stringify(tc)}')`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 //删除最近
 export function delTCRecent(tc) {
     let sqlStr = `delete from ${recentTableName} where id=${tc.id}`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 
 //获取最近
 export function getTCRecent() {
     let sqlStr = `select value from ${recentTableName} order by autoid desc`;
-    let { rows } = executeQuery(sqlStr);
+    let { rows } = executeSQL(sqlStr);
     let docs = [];
     if (rows.length > 0) {
         rows._array.forEach(doc => {

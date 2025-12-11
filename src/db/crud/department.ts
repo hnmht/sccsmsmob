@@ -1,99 +1,110 @@
 import { reqGetSimpDepts, reqGetSimpDeptsCache } from "../../api/department";
-import { queryDataTs, updateDataTs, addDataTs, executeSQL } from "../db";
+import { SimpDept, SimpDeptCache } from "../../dataType/types/department";
+import { queryDataTs, updateDataTs, addDataTs, executeSQL, executeSQLWithParams } from "../db";
+import { getEmptyQueryParams } from "../../dataType/dataZero/pubic";
 
-const docName = "department";
+const dataName = "department";
 
 export async function initDepartmentCache() {
-    //获取最新档案ts
-    let ts = queryDataTs(docName);
-    if (ts === "") {//没有ts
+    // Get latest ts from db 
+    const ts = queryDataTs(dataName);
+    if (ts === "") { // No ts found, first time sync
         const res = await reqGetSimpDepts(false);
-        if (res.data.status === 0) {
-            const latestTs = res.data.data[0].ts;
-            //存储最新ts
-            addDataTs(docName, latestTs);
-            //批量增加部门档案
-            bulkAddDepts(res.data.data);
+        if (res.status) {
+            const latestTs = res.data[0].ts;
+            // bulk add departments into db
+            bulkAddDepts(res.data);
+            // Save latest ts into db
+            addDataTs(dataName, latestTs);
         }
-    } else {//存在ts
-        const cacheRes = await reqGetSimpDeptsCache({ queryTs: ts }, false);
-        if (cacheRes.data.status === 0) {
-            const docCache = cacheRes.data.data;
-            if (docCache.resultnum > 0) {
-                //存在待删除档案
-                if (docCache.delitems !== null) {
-                    bulkDelDepts(docCache.delitems);
+    } else {
+        // Get cache updates from server
+        const emptyCache: SimpDeptCache = getEmptyQueryParams<SimpDeptCache>(ts);
+        const cacheRes = await reqGetSimpDeptsCache(emptyCache, false);
+        if (cacheRes.status) {
+            const docCache: SimpDeptCache = cacheRes.data;
+            if (docCache.resultNumber > 0) {
+                // exists deleted records
+                if (docCache.delItems !== null) {
+                    bulkDelDepts(docCache.delItems);
                 }
-                //存在新增档案
-                if (docCache.newitems !== null) {
-                    bulkAddDepts(docCache.newitems);
+                // exists new records
+                if (docCache.newItems !== null) {
+                    bulkAddDepts(docCache.newItems);
                 }
-                //存在待更新档案
-                if (docCache.updateitems !== null) {
-                    bulkUpdateDepts(docCache.updateitems);
+                // exists updated records
+                if (docCache.updateItems !== null) {
+                    bulkUpdateDepts(docCache.updateItems);
                 }
             }
-            //更新最新ts
-            updateDataTs(docName, docCache.resultts);
+            // update latest ts
+            updateDataTs(dataName, docCache.resultTs);
         }
     }
 }
-//批量增加部门
-function bulkAddDepts(depts) {
-    if (Array.isArray(depts) && depts.length === 0) { //如果不是数组或者数组长度为0则直接退出
+// Bulk add departments
+function bulkAddDepts(depts: SimpDept[]) {
+    if (Array.isArray(depts) && depts.length === 0) {
         return
     }
     depts.forEach(dept => {
-        let sqlStr = `insert into department(id,code,name,ts,value) values(${dept.id},'${dept.code}','${dept.name}','${dept.ts}','${JSON.stringify(dept)}')`;
-        executeSQL(sqlStr);
+        let sqlStr: string = `insert into department(id,code,name,ts,value) values(?,?,?,?,?)`;
+        let params = [dept.id, dept.code, dept.name, dept.ts, JSON.stringify(dept)];
+        executeSQLWithParams(sqlStr, params);
     });
 };
-//批量删除部门
-function bulkDelDepts(depts) {
-    if (Array.isArray(depts) && depts.length === 0) { //如果不是数组或者数组长度为0则直接退出
+// Bulk delete departments
+function bulkDelDepts(depts: SimpDept[]) {
+    if (Array.isArray(depts) && depts.length === 0) {
         return
     }
     depts.forEach(dept => {
-        let sqlStr = `delete from department where id=${dept.id}`;
-        executeSQL(sqlStr);
-        let sqlStrRec = `delete from department_recent where id=${dept.id}`;
-        executeSQL(sqlStrRec);
+        const sqlStr = `delete from department where id=?`;
+        const params = [dept.id];
+        executeSQLWithParams(sqlStr, params);
+        // also delete from recent table
+        const sqlStrRec = `delete from department_recent where id=?`;
+        const paramsRec = [dept.id];
+        executeSQLWithParams(sqlStrRec, paramsRec);
     });
 }
 
-//批量修改部门
-function bulkUpdateDepts(depts) {
-    if (Array.isArray(depts) && depts.length === 0) { //如果不是数组或者数组长度为0则直接退出
+// Bulk update departments
+function bulkUpdateDepts(depts: SimpDept[]) {
+    if (Array.isArray(depts) && depts.length === 0) {
         return
     }
     depts.forEach(dept => {
-        let sqlStr = `update department set code='${dept.code}',name='${dept.name}',ts='${dept.ts}',value='${JSON.stringify(dept)}' where id=${dept.id}`;
-        executeSQL(sqlStr);
-        let sqlStrRec = `update department_recent set code='${dept.code}',name='${dept.name}',ts='${dept.ts}',value='${JSON.stringify(dept)}' where id=${dept.id}`;
-        executeSQL(sqlStrRec);
+        // update main table
+        const sqlStr = `update department set code=?,name=?,ts=?,value=? where id=?`;
+        const params = [dept.code, dept.name, dept.ts, JSON.stringify(dept), dept.id];
+        executeSQLWithParams(sqlStr, params);
+        // also update recent table
+        const sqlStrRec = `update department_recent set code=?,name=?,ts=?,value=? where id=?`;
+        const paramsRec = [dept.code, dept.name, dept.ts, JSON.stringify(dept), dept.id];
+        executeSQLWithParams(sqlStrRec, paramsRec);
     });
 }
 
-//增加最近使用部门
-export function addDeptRecent(dept) {
-    let sqlStr = `insert or ignore into 
-    department_recent(id,code,name,ts,value) 
-    values(${dept.id},'${dept.code}','${dept.name}','${dept.ts}','${JSON.stringify(dept)}')`;
-
-    executeSQL(sqlStr);
+// Add recent used department
+export function addDeptRecent(dept: SimpDept) {
+    const sqlStr = `insert or ignore into department_recent(id,code,name,ts,value) values(?,?,?,?,?)`;
+    const params = [dept.id, dept.code, dept.name, dept.ts, JSON.stringify(dept)];
+    executeSQLWithParams(sqlStr, params);
 }
-//删除最近使用部门
-export function delDeptRecent(dept) {
-    let sqlStr = `delete from department_recent where id=${dept.id}`;
-    executeSQL(sqlStr);
+// Delete recent used department
+export function delDeptRecent(dept: SimpDept) {
+    const sqlStr = `delete from department_recent where id=?`;
+    const params = [dept.id];
+    executeSQLWithParams(sqlStr, params);
 }
 
-//获取最近使用部门
+// Get recent used departments
 export function getDeptRecent() {
     let sqlStr = `select value from department_recent order by autoid desc`;
     let { rows } = executeSQL(sqlStr);
-    let docs = [];
-    if (rows.length > 0) {
+    let docs: SimpDept[] = [];
+    if (rows && rows.length > 0) {
         rows._array.forEach(doc => {
             docs.push(JSON.parse(doc.value));
         })

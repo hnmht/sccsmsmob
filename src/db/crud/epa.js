@@ -1,42 +1,42 @@
 import { reqGetEIDList, reqGetEIDCache } from "../../api/exectiveItem";
-import { queryDocTs, updateDocTs, addDocTs, executeQuery, getDocByID } from "../DB";
+import { queryDataTs, updateDataTs, addDataTs, executeSQL, getDocByID } from "../db";
 import { GetDataTypeDefaultValue } from "../dataTypes";
 
-const docName = "exectiveitem";
+const dataName = "exectiveitem";
 
 export async function initEIDCache() {
     //获取最新档案ts
-    let ts = queryDocTs(docName);
+    let ts = queryDataTs(dataName);
     if (ts === "") {//没有ts
         const res = await reqGetEIDList(false);
-        if (res.data.status === 0) {
-            const latestTs = res.data.data[0].ts;
+        if (res.status) {
+            const latestTs = res.data[0].ts;
             //批量增加档案
-            bulkAddEIDs(res.data.data);
+            bulkAddEIDs(res.data);
             //存储最新ts
-            addDocTs(docName, latestTs);
+            addDataTs(dataName, latestTs);
         } 
     } else {//存在ts
         const cacheRes = await reqGetEIDCache({ queryTs: ts }, false);
-        if (cacheRes.data.status === 0) {
-            const docCache = cacheRes.data.data;
-            if (docCache.resultnum > 0) {
+        if (cacheRes.status) {
+            const docCache = cacheRes.data;
+            if (docCache.resultNumber > 0) {
                 //存在待删除档案
-                if (docCache.delitems !== null) {
-                    bulkDelEIDs(docCache.delitems);
+                if (docCache.delItems !== null) {
+                    bulkDelEIDs(docCache.delItems);
                 }
                 //存在新增档案
-                if (docCache.newitems !== null) {
-                    bulkAddEIDs(docCache.newitems);
+                if (docCache.newItems !== null) {
+                    bulkAddEIDs(docCache.newItems);
                 }
                 //存在待更新档案
-                if (docCache.updateitems !== null) {
-                    // console.log("存在待更新档案", docCache.updateitems);
-                    bulkUpdateEIDs(docCache.updateitems);
+                if (docCache.updateItems !== null) {
+                    // console.log("存在待更新档案", docCache.updateItems);
+                    bulkUpdateEIDs(docCache.updateItems);
                 }
             }
             //更新最新ts
-            updateDocTs(docName, docCache.resultts);
+            updateDataTs(dataName, docCache.resultTs);
         } 
     }
 }
@@ -50,7 +50,7 @@ function bulkAddEIDs(eids) {
 
     eids.forEach(eid => {
         let sqlStr = `insert into exectiveitem(id,code,name,itemclass_id,resulttype_id,value) values(${eid.id},'${eid.code}','${eid.name}',${eid.itemclass.id},${eid.resulttype.id},'${JSON.stringify(eid)}')`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
     });
 };
 //批量删除
@@ -60,9 +60,9 @@ function bulkDelEIDs(eids) {
     }
     eids.forEach(eid => {
         let sqlStr = `delete from exectiveitem where id=${eid.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `delete from exectiveitem_recent where id=${eid.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 //批量修改
@@ -74,9 +74,9 @@ function bulkUpdateEIDs(eids) {
     transEIDsToFrontend(eids);
     eids.forEach(eid => {   
         let sqlStr = `update exectiveitem set code='${eid.code}',name='${eid.name}',itemclass_id=${eid.itemclass.id},resulttype_id=${eid.resulttype.id},value='${JSON.stringify(eid)}' where id=${eid.id}`;       
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `update exectiveitem_recent set code='${eid.code}',name='${eid.name}',itemclass_id=${eid.itemclass.id},resulttype_id=${eid.resulttype.id},value='${JSON.stringify(eid)}' where id=${eid.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 
@@ -118,18 +118,18 @@ export function addEIDRecent(eid) {
     let sqlStr = `insert or ignore into 
     exectiveitem_recent(id,code,name,itemclass_id,resulttype_id,value) 
     values(${eid.id},'${eid.code}','${eid.name}',${eid.itemclass.id},${eid.resulttype.id},'${JSON.stringify(eid)}')`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 //删除最近
 export function delEIDRecent(eid) {
     let sqlStr = `delete from exectiveitem_recent where id=${eid.id}`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 
 //获取最近
 export function getEIDRecent() {
     let sqlStr = `select value from exectiveitem_recent order by autoid desc`;
-    let { rows } = executeQuery(sqlStr);
+    let { rows } = executeSQL(sqlStr);
     let docs = [];
     if (rows.length > 0) {
         rows._array.forEach(doc => {

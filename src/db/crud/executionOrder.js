@@ -1,15 +1,15 @@
-import { executeQuery } from "../DB";
+import { executeSQL } from "../db";
 //暂存
 export function saveLocalED(ed) {
     let sqlStr = `insert into executedoc(createuserid,value) 
         values(${ed.createuser.id},'${JSON.stringify(ed)}')`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 
 //获取当前用户本地暂存
 export function getLocalEDs(createuseid) {
     let sqlStr = `select id,value from executedoc where createuserid=${createuseid}`;
-    let { rows } = executeQuery(sqlStr);
+    let { rows } = executeSQL(sqlStr);
     let docs = [];
     if (rows.length > 0) {
         rows._array.forEach(doc => {
@@ -24,7 +24,7 @@ export function getLocalEDs(createuseid) {
 //获取本地所有暂存单据
 export function getAllLocalEDs() {
     let sqlStr = `select id,value from executedoc`;
-    let { rows } = executeQuery(sqlStr);
+    let { rows } = executeSQL(sqlStr);
     let docs = [];
     if (rows.length > 0) {
         rows._array.forEach(doc => {
@@ -39,16 +39,16 @@ export function getAllLocalEDs() {
 //删除本地暂存
 export function delLocalED(ed) {
     let sqlStr = `delete from executedoc where id=${ed.id}`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 //删除所有本地暂存
 export function delLocalAllED(ed) {
     let sqlStr = `delete from executedoc`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 
 //编辑本地暂存
 export function editLocalED(ed) {
     let sqlStr = `update executedoc set value='${JSON.stringify(ed)}' where id=${ed.id}`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }

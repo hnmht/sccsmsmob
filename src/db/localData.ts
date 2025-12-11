@@ -1,5 +1,10 @@
+import { dbName, appVersion, name } from "../../app.json";
+import { clearTableData, executeSQL } from "./db";
+import { saveDBID } from "./crud/appInfo";
+import { initDepartmentCache } from "./crud/department";
+import { initCSCache } from "./crud/csa";
 // Local database table array
-const localTables:string[] = [
+const localTables: string[] = [
     "appinfo",
     "lang",
     'tsinfo',
@@ -39,3 +44,48 @@ const localTables:string[] = [
     'issueresolutionform'
 ];
 
+//初始化本地数据
+export const initLoaclData = async (newDbid: string) => {
+    console.log("NewDbID:", newDbid);
+    //查询dbinfo表中是否存在dbid内容
+    let dbid = getLocalDBID();
+    if (dbid === "") {//为空表示第一次初始化
+        dbid = newDbid;
+        //向数据库中写入dbid
+        saveDBID(dbid);
+    }
+    //判断新旧dbId是否相等
+    if (newDbid !== dbid) {//更换了登录服务器或服务器进行了重置
+        //清除所有表数据
+        localTables.forEach(tableName => {
+            clearTableData(tableName);
+        });
+    }
+    //请求所有本地缓存数据
+    await initDepartmentCache();
+    // await initEICCache();
+    // await initPersonCache();
+    await initCSCache();
+    // await initSICCache();
+    // await initSIOCache();
+    // await initUDCCache();
+    // await initRLCache();
+    // await initUDDCache();
+    // await initEIDCache();
+    // await initEITCache();
+    // await initDCCache();
+    // await initOPCache();
+    // await initTCCache();
+    // await initLPCache();
+};
+
+//获取dbid字段
+const getLocalDBID = () => {
+    let sqlStr = `select dbid from appinfo where appname='${name}' limit 1`;
+    let { rows } = executeSQL(sqlStr);
+    let dbid = "";
+    if (rows && rows.length > 0) {
+        dbid = rows._array[0].dbid;
+    }
+    return dbid;
+};

@@ -17,7 +17,7 @@ export function initDb() {
     }
 
     //Drop all Table
-    // DB.executeBatch(dropAllTableSQL);
+    DB.executeBatch(dropAllTableSQL);
     // Check if the sysinfo exist
     let res: QueryResult = DB.execute("select name from sqlite_master where type='table' and name='appinfo'");
     if (res.rows && res.rows.length === 0) {
@@ -28,16 +28,16 @@ export function initDb() {
     // Check if there is data in the sysinfo table
     res = DB.execute(`select isfinish from appinfo where appname='${name}'`);
     if (res.rows && res.rows.length === 0) {
-        const emptyUserInfo: UserInfo = 
+        const emptyUserInfo: UserInfo =
         {
             id: 0,
             code: "",
             name: "",
-            avatar: {id:0},
+            avatar: { id: 0 },
             token: "",
             menuList: [],
-            person: {id:0},
-            department:{id:0}
+            person: { id: 0 },
+            department: { id: 0 }
         };
         const userStr: string = JSON.stringify(emptyUserInfo)
         DB.execute(`insert into appinfo(appname,appversion,dbid,serveraddr,globalpath,
@@ -72,7 +72,21 @@ export function executeSQL(sqlString: string): QueryResult {
         const dbRes = DB.execute(sqlString);
         return dbRes;
     } catch (err) {
-        console.log("DB.execute failed, sql:", sqlString);
+        console.log("DB.execute failed, sql:", sqlString, " error:", err);
+        const dbRes: QueryResult = {
+            rowsAffected: 0,
+        }
+        return dbRes;
+    }
+}
+// Execute SQL With Parameters
+export function executeSQLWithParams(sqlString: string, params: any[]): QueryResult {
+    try {
+        const dbRes = DB.execute(sqlString, params);
+        console.log("Execute SQL Result:", dbRes);
+        return dbRes;
+    } catch (err) {
+        console.log("DB.execute with params failed, sql:", sqlString, " params:", params, " Error:", err);
         const dbRes: QueryResult = {
             rowsAffected: 0,
         }
@@ -82,7 +96,7 @@ export function executeSQL(sqlString: string): QueryResult {
 
 // Get latest data TS
 export function queryDataTs(dataName: string): string {
-    const sqlStr = `select ts from tsinfo where docname='${dataName}' limit 1`;
+    const sqlStr = `select ts from tsinfo where dataname='${dataName}' limit 1`;
     let { rows } = DB.execute(sqlStr);
     let ts = "";
     if (rows && rows.length > 0) {
@@ -93,12 +107,18 @@ export function queryDataTs(dataName: string): string {
 
 // Add Data ts
 export function addDataTs(dataName: string, ts: string): QueryResult {
-    const sqlStr = `insert into tsinfo(docname,ts) values('${dataName}','${ts}')`;
+    const sqlStr = `insert into tsinfo(dataname,ts) values('${dataName}','${ts}')`;
     return DB.execute(sqlStr);
 }
 
 // Update Data ts 
 export function updateDataTs(dataName: string, ts: string): QueryResult {
-    const sqlStr = `update tsinfo set ts='${ts}' where docname='${dataName}'`;
+    const sqlStr = `update tsinfo set ts='${ts}' where dataname='${dataName}'`;
+    return DB.execute(sqlStr);
+}
+
+// Delete Table Data
+export function clearTableData(tableName: string): QueryResult {
+    const sqlStr = `delete from ${tableName}`;
     return DB.execute(sqlStr);
 }

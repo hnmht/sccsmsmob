@@ -1,40 +1,40 @@
 import { reqGetUDCList, reqGetUDCsCache } from "../../api/userDefineClass";
-import { queryDocTs, updateDocTs, addDocTs, executeQuery } from "../DB";
+import { queryDataTs, updateDataTs, addDataTs, executeSQL } from "../db";
 
-const docName = "userdefineclass";
+const dataName = "userdefineclass";
 
 export async function initUDCCache() {
     //获取最新档案ts
-    let ts = queryDocTs(docName);
+    let ts = queryDataTs(dataName);
     if (ts === "") {//没有ts
         const res = await reqGetUDCList(false);
-        if (res.data.status === 0) {
-            const latestTs = res.data.data[0].ts;
+        if (res.status) {
+            const latestTs = res.data[0].ts;
             //存储最新ts
-            addDocTs(docName, latestTs);
+            addDataTs(dataName, latestTs);
             //批量增加档案
-            bulkAddUDCs(res.data.data);
+            bulkAddUDCs(res.data);
         }
     } else {//存在ts
         const cacheRes = await reqGetUDCsCache({ queryTs: ts }, false);
-        if (cacheRes.data.status === 0) {
-            const docCache = cacheRes.data.data;
-            if (docCache.resultnum > 0) {
+        if (cacheRes.status) {
+            const docCache = cacheRes.data;
+            if (docCache.resultNumber > 0) {
                 //存在待删除档案
-                if (docCache.delitems !== null) {
-                    bulkDelUDCs(docCache.delitems);
+                if (docCache.delItems !== null) {
+                    bulkDelUDCs(docCache.delItems);
                 }
                 //存在新增档案
-                if (docCache.newitems !== null) {
-                    bulkAddUDCs(docCache.newitems);
+                if (docCache.newItems !== null) {
+                    bulkAddUDCs(docCache.newItems);
                 }
                 //存在待更新档案
-                if (docCache.updateitems !== null) {
-                    bulkUpdateUDCs(docCache.updateitems);
+                if (docCache.updateItems !== null) {
+                    bulkUpdateUDCs(docCache.updateItems);
                 }
             }
             //更新最新ts
-            updateDocTs(docName, docCache.resultts);
+            updateDataTs(dataName, docCache.resultTs);
         }
     }
 }
@@ -45,7 +45,7 @@ function bulkAddUDCs(udcs) {
     }
     udcs.forEach(udc => {
         let sqlStr = `insert into userdefineclass(id,name,ts,value) values(${udc.id},'${udc.name}','${udc.ts}','${JSON.stringify(udc)}')`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
     });
 };
 //批量删除
@@ -55,9 +55,9 @@ function bulkDelUDCs(udcs) {
     }
     udcs.forEach(udc => {
         let sqlStr = `delete from userdefineclass where id=${udc.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `delete from userdefineclass_recent where id=${udc.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 //批量修改执行项目类别
@@ -67,27 +67,27 @@ function bulkUpdateUDCs(udcs) {
     }
     udcs.forEach(udc => {
         let sqlStr = `update userdefineclass set name='${udc.name}',ts='${udc.ts}',value='${JSON.stringify(udc)}' where id=${udc.id}`;
-        executeQuery(sqlStr);
+        executeSQL(sqlStr);
         let sqlStrRec = `update userdefineclass_recent set name='${udc.name}',ts='${udc.ts}',value='${JSON.stringify(udc)}' where id=${udc.id}`;
-        executeQuery(sqlStrRec);
+        executeSQL(sqlStrRec);
     });
 }
 
 //增加最近
 export function addUDCRecent(udc) {
     let sqlStr = `insert or ignore into userdefineclass_recent(id,name,ts,value) values(${udc.id},'${udc.name}','${udc.ts}','${JSON.stringify(udc)}')`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 //删除最近
 export function delUDCRecent(udc) {
     let sqlStr = `delete from userdefineclass_recent where id=${udc.id}`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 
 //获取最近
 export function getUDCRecent() {
     let sqlStr = `select value from userdefineclass_recent order by autoid desc`;
-    let { rows } = executeQuery(sqlStr);
+    let { rows } = executeSQL(sqlStr);
     let docs = [];
     if (rows.length > 0) {
         rows._array.forEach(doc => {

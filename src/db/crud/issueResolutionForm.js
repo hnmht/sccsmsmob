@@ -1,16 +1,16 @@
-import { executeQuery } from "../DB";
+import { executeSQL } from "../db";
 const tableName = "disposedoc";
 //暂存
 export function saveLocalDD(dd) {
     let sqlStr = `insert into ${tableName}(createuserid,value) 
         values(${dd.createuser.id},'${JSON.stringify(dd)}')`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 
 //获取当前用户本地暂存
 export function getLocalDDs(createuseid) {
     let sqlStr = `select id,value from ${tableName} where createuserid=${createuseid}`;
-    let { rows } = executeQuery(sqlStr);
+    let { rows } = executeSQL(sqlStr);
     let docs = [];
     if (rows.length > 0) {
         rows._array.forEach(doc => {
@@ -24,7 +24,7 @@ export function getLocalDDs(createuseid) {
 //获取所有本地暂存
 export function getAllLocalDDs() {
     let sqlStr = `select id,value from ${tableName}`;
-    let { rows } = executeQuery(sqlStr);
+    let { rows } = executeSQL(sqlStr);
     let docs = [];
     if (rows.length > 0) {
         rows._array.forEach(doc => {
@@ -39,16 +39,16 @@ export function getAllLocalDDs() {
 //删除本地暂存
 export function delLocalDD(dd) {
     let sqlStr = `delete from ${tableName} where id=${dd.id}`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 //删除所有本地暂存
 export function delLocalAllDD(dd) {
     let sqlStr = `delete from ${tableName}`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }
 
 //编辑本地暂存
 export function editLocalDD(dd) {
     let sqlStr = `update ${tableName} set value='${JSON.stringify(dd)}' where id=${dd.id}`;
-    executeQuery(sqlStr);
+    executeSQL(sqlStr);
 }

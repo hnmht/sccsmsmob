@@ -29,6 +29,7 @@ import { setIsOffline } from "../../store/slice/appInfo";
 
 import { setServerInfo } from "../../store/slice/appInfo";
 import { saveServerInfo, saveToken } from "../../db/crud/appInfo";
+import { initLoaclData } from "../../db/localData";
 import { saveUserInfo } from "../../db/crud/userInfo";
 import { saveIsOffLine } from "../../db/crud/appInfo";
 
@@ -112,7 +113,12 @@ function Login() {
 
             setOverlayStatus({ visible: true, description: t("requestingStaticData") });
             // Request Static data
-            // await initLoaclData(serverInfo.dbid);
+            if (!serverInfo.dbID || serverInfo.dbID === "") {
+                Alert.alert(t("tip"), t("invalidDBID"));
+                handleLoginFailed();
+                return
+            }
+            await initLoaclData(serverInfo.dbID);
 
             setOverlayStatus({ visible: true, description: t("requestingDynamicData") });
             // dispatch(setDbid(serverInfo.dbid));

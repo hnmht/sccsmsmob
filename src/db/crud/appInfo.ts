@@ -36,7 +36,6 @@ export function saveToken(token: string) {
 
 // Write dbID into database
 export function saveDBID(dbid: string) {
-    console.log("执行了saveDBID函数");
     let sqlStr = `update appinfo set dbid='${dbid}' where appname='${name}'`;
     executeSQL(sqlStr);
 }
