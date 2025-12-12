@@ -1,7 +1,7 @@
 import { reqGetCSList, reqGetCSCache } from "../../api/csa";
 import { getEmptyQueryParams } from "../../dataType/dataZero/pubic";
 import { ConstructionSite, ConstructionSiteCache } from "../../dataType/types/csa";
-import { queryDataTs, updateDataTs, addDataTs, executeSQL } from "../db";
+import { queryDataTs, updateDataTs, addDataTs, executeSQL, executeSQLWithParams } from "../db";
 
 const dataName = "csa";
 
@@ -26,15 +26,15 @@ export async function initCSCache() {
             const docCache = cacheRes.data;
             if (docCache.resultNumber > 0) {
                 // exists deleted records
-                if (docCache.delItems !== null) {
+                if (docCache.delItems) {
                     bulkDelCSs(docCache.delItems);
                 }
                 // exists new records
-                if (docCache.newItems !== null) {
+                if (docCache.newItems) {
                     bulkAddCSs(docCache.newItems);
                 }
                 // Exists updated records
-                if (docCache.updateItems !== null) {
+                if (docCache.updateItems) {
                     bulkUpdateCSs(docCache.updateItems);
                 }
             }
@@ -49,8 +49,9 @@ function bulkAddCSs(css: ConstructionSite[]) {
         return
     }
     css.forEach(cs => {
-        let sqlStr = `insert into csa(id,code,name,cscid,ts,value) values(${cs.id},'${cs.code}','${cs.name}',${cs.csc.id},'${cs.ts}','${JSON.stringify(cs)}')`;
-        executeSQL(sqlStr);
+        const sqlStr = `insert into csa(id,code,name,cscid,ts,value) values(?,?,?,?,?,?)`;
+        const params = [cs.id, cs.code, cs.name, cs.csc.id, cs.ts, JSON.stringify(cs)];
+        executeSQLWithParams(sqlStr, params);
     });
 };
 // Bulk delete
@@ -59,10 +60,13 @@ function bulkDelCSs(css: ConstructionSite[]) {
         return
     }
     css.forEach(cs => {
-        let sqlStr = `delete from csa where id=${cs.id}`;
-        executeSQL(sqlStr);
-        let sqlStrRec = `delete from csa_recent where id=${cs.id}`;
-        executeSQL(sqlStrRec);
+        const sqlStr = `delete from csa where id=?`;
+        const params = [cs.id];
+        executeSQLWithParams(sqlStr, params);
+        // also delete from recent table
+        const sqlStrRec = `delete from csa_recent where id=?`;
+        const paramsRec = [cs.id];
+        executeSQLWithParams(sqlStrRec, paramsRec);
     });
 }
 // Bulk update
@@ -71,28 +75,31 @@ function bulkUpdateCSs(css: ConstructionSite[]) {
         return
     }
     css.forEach(cs => {
-        let sqlStr = `update csa set code='${cs.code}',name='${cs.name}',cscid=${cs.csc.id},ts='${cs.ts}',value='${JSON.stringify(cs)}' where id=${cs.id}`;
-        executeSQL(sqlStr);
-        let sqlStrRec = `update csa_recent set code='${cs.code}',name='${cs.name}',cscid=${cs.csc.id},ts='${cs.ts}',value='${JSON.stringify(cs)}' where id=${cs.id}`;
-        executeSQL(sqlStrRec);
+        const sqlStr = `update csa set code=?,name=?,cscid=?,ts=?,value=? where id=?`;
+        const params = [cs.code, cs.name, cs.csc.id, cs.ts, JSON.stringify(cs), cs.id];
+        executeSQLWithParams(sqlStr, params);
+        // also update recent table
+        const sqlStrRec = `update csa_recent set code=?,name=?,cscid=?,ts=?,value=? where id=?`;
+        executeSQLWithParams(sqlStrRec, params);
     });
 }
 
 // Add recent using cs
 export function addCSRecent(cs: ConstructionSite) {
-    let sqlStr = `insert or ignore into 
-     csa_recent(id,code,name,cscid,ts,value) 
-     values(${cs.id},'${cs.code}','${cs.name}',${cs.csc.id},'${cs.ts}','${JSON.stringify(cs)}')`;
-    executeSQL(sqlStr);
+    const sqlStr = `insert or ingore into csa_recent(id,code,name,cscid,ts,value) values(?,?,?,?,?,?)`;
+    const params = [cs.id, cs.code, cs.name, cs.csc.id, cs.ts, JSON.stringify(cs)];
+    executeSQLWithParams(sqlStr, params);
+
 }
 // Delete recent using cs
 export function delCSRecent(cs: ConstructionSite) {
-    let sqlStr = `delete from csa_recent where id=${cs.id}`;
-    executeSQL(sqlStr);
+    const sqlStr = `delete from csa_recent where id=?`;
+    const params = [cs.id];
+    executeSQLWithParams(sqlStr, params);
 }
 
 // Get recent using cs
-export function getCSRecent() {
+export function getCSRecent() : ConstructionSite[] {
     let sqlStr = `select value from csa_recent order by autoid desc`;
     let { rows } = executeSQL(sqlStr);
     let docs: ConstructionSite[] = [];

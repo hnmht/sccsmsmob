@@ -25,15 +25,15 @@ export async function initDepartmentCache() {
             const docCache: SimpDeptCache = cacheRes.data;
             if (docCache.resultNumber > 0) {
                 // exists deleted records
-                if (docCache.delItems !== null) {
+                if (docCache.delItems) {
                     bulkDelDepts(docCache.delItems);
                 }
                 // exists new records
-                if (docCache.newItems !== null) {
+                if (docCache.newItems) {
                     bulkAddDepts(docCache.newItems);
                 }
                 // exists updated records
-                if (docCache.updateItems !== null) {
+                if (docCache.updateItems) {
                     bulkUpdateDepts(docCache.updateItems);
                 }
             }
@@ -64,8 +64,7 @@ function bulkDelDepts(depts: SimpDept[]) {
         executeSQLWithParams(sqlStr, params);
         // also delete from recent table
         const sqlStrRec = `delete from department_recent where id=?`;
-        const paramsRec = [dept.id];
-        executeSQLWithParams(sqlStrRec, paramsRec);
+        executeSQLWithParams(sqlStrRec, params);
     });
 }
 
@@ -81,8 +80,7 @@ function bulkUpdateDepts(depts: SimpDept[]) {
         executeSQLWithParams(sqlStr, params);
         // also update recent table
         const sqlStrRec = `update department_recent set code=?,name=?,ts=?,value=? where id=?`;
-        const paramsRec = [dept.code, dept.name, dept.ts, JSON.stringify(dept), dept.id];
-        executeSQLWithParams(sqlStrRec, paramsRec);
+        executeSQLWithParams(sqlStrRec, params);
     });
 }
 
@@ -100,7 +98,7 @@ export function delDeptRecent(dept: SimpDept) {
 }
 
 // Get recent used departments
-export function getDeptRecent() {
+export function getDeptRecent() : SimpDept[] {
     let sqlStr = `select value from department_recent order by autoid desc`;
     let { rows } = executeSQL(sqlStr);
     let docs: SimpDept[] = [];
