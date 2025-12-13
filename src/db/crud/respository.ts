@@ -1,0 +1,178 @@
+import { executeSQL, executeSQLWithParams, withTransaction } from "../db";
+import { getEmptyQueryParams } from "../../dataType/dataZero/pubic";
+import { APIResponse } from "../../dataType/types/response";
+
+export interface RepoConfig<T, TCache> {
+    table: string;
+    recentTable: string;
+    primaryKey: string,
+    primaryPath: string,
+    valueField: string,
+    fieldsMap: Record<string, string>,
+    getFullData: (loading: boolean) => Promise<APIResponse<T[]>>;
+    getCacheData: (params: TCache, loading: boolean) => Promise<APIResponse<TCache>>;
+    extractTs: (item: T) => string;
+    extractId: (item: T) => number;
+}
+
+export function getByPath(obj: any, path: string) {
+    return path.split(".").reduce((o, k) => (o ? o[k] : undefined), obj);
+}
+
+export class LocalRepository<T, TCache extends {
+    queryTs: string;
+    resultNumber: number;
+    delItems: T[];
+    updateItems: T[];
+    newItems: T[];
+    resultTs: string;
+}> {
+
+    constructor(private cfg: RepoConfig<T, TCache>) { }
+    // Initialize Cache
+    async initCache() {
+        const { getFullData, getCacheData } = this.cfg;
+        const ts = this.getLatestTs();
+        if (!ts) {
+            const res = await getFullData(false);
+            if (res.status && res.data.length > 0) {
+                const latestTs = this.cfg.extractTs(res.data[0]);
+                await withTransaction(async () => {
+                    await this.bulkAdd(res.data);
+                    this.addTs(latestTs);
+                })
+
+
+            }
+        } else {
+            const empty = getEmptyQueryParams<TCache>(ts);
+            const cacheRes = await getCacheData(empty, false);
+            if (cacheRes.status) {
+                const cache = cacheRes.data;
+                if (cache.resultNumber > 0) {
+                    await withTransaction(async () => {
+                        await this.bulkDel(cache.delItems);
+                        await this.bulkAdd(cache.newItems);
+                        await this.bulkUpdate(cache.updateItems);
+                        this.updateTs(cache.resultTs);
+                    });
+                }
+            }
+        }
+    }
+
+    // Batch add 
+    async bulkAdd(items: T[]) {
+        if (!items || items.length === 0) return;
+        const { table, valueField, fieldsMap, primaryKey, primaryPath } = this.cfg;
+        // Generate Insert SQL
+        const fields = Object.keys(fieldsMap);
+        const columns = primaryKey + ", " + fields.join(", ") + ", " + valueField;
+        const placeholders = "?, " + fields.map(() => "?").join(", ") + ", ?";
+        const sql = `INSERT OR IGNORE INTO ${table}(${columns}) VALUES(${placeholders})`;
+
+        items.forEach(item => {
+            const params: any[] = [];
+            params.push(getByPath(item, primaryPath));
+            for (const key of fields) {
+                params.push(getByPath(item, fieldsMap[key]));
+            }
+            params.push(JSON.stringify(item));
+            executeSQLWithParams(sql, params);
+        });
+    }
+    // Batch Update
+    async bulkUpdate(items: T[]) {
+        if (!items || items.length === 0) return;
+        const { table, valueField, fieldsMap, primaryKey, primaryPath, recentTable } = this.cfg;
+        // Generate Update SQL
+        const fields = Object.keys(fieldsMap);
+        const setFields = fields.map(f => `${f}=?`).join(", ") + `, ${valueField}=?`;
+        const sql = `UPDATE ${table} SET ${setFields} WHERE ${primaryKey}=?`;
+
+        const sqlRec = `UPDATE ${recentTable} SET ${setFields} WHERE ${primaryKey}=?`;
+
+        items.forEach(item => {
+            const params: any[] = [];
+            for (const key of fields) {
+                params.push(getByPath(item, fieldsMap[key]));
+            }
+            params.push(JSON.stringify(item));
+            params.push(getByPath(item, primaryPath));
+            executeSQLWithParams(sql, params);
+            executeSQLWithParams(sqlRec, params);
+        });
+    }
+    // Batch Delete
+    async bulkDel(items: T[]) {
+        if (!items || items.length === 0) return;
+        const { table, recentTable, primaryKey } = this.cfg;
+        const sql = `DELETE FROM ${table} WHERE ${primaryKey}=?`;
+        const sqlRec = `DELETE FROM ${recentTable} WHERE ${primaryKey}=?`;
+        items.forEach(item => {
+            const id = this.cfg.extractId(item);
+            executeSQLWithParams(sql, [id]);
+            executeSQLWithParams(sqlRec, [id]);
+        });
+
+    }
+
+    // Add recent used
+    addRecent(item: T) {
+        const { primaryKey, primaryPath, recentTable, fieldsMap, valueField } = this.cfg;
+        // Generate Insert SQL
+        const fields = Object.keys(fieldsMap);
+        const columns = primaryKey + ", " + fields.join(", ") + ", " + valueField;
+        const placeholders = "?, " + fields.map(() => "?").join(", ") + ", ?";
+        const sql = `INSERT OR IGNORE INTO ${recentTable}(${columns}) VALUES(${placeholders})`;
+        const params: any[] = [];
+        params.push(getByPath(item, primaryPath));
+        for (const key of fields) {
+            const path = fieldsMap[key];
+            params.push(getByPath(item, path));
+        }
+        params.push(JSON.stringify(item));
+   
+        executeSQLWithParams(sql, params);
+    }
+
+    // Get recent used
+    getRecent(): T[] {
+        const { recentTable, valueField } = this.cfg;
+        const sql = `SELECT ${valueField} FROM ${recentTable} ORDER BY autoid DESC`;
+        const { rows } = executeSQL(sql);
+        if (!rows || rows.length === 0) return [];
+        return rows._array.map((i: any) => JSON.parse(i[valueField]));
+    }
+
+    addTs(ts: string) {
+        const { table } = this.cfg;
+        const sql = `INSERT OR IGNORE INTO tsinfo(dataname,ts) VALUES(?,?)`;
+        const params: any[] = [table, ts];
+        executeSQLWithParams(sql, params);
+    }
+
+    // Update Ts
+    updateTs(ts: string) {
+        const { table } = this.cfg;
+        const sql = `update tsinfo set ts=? where dataname=?`;
+        const params: any[] = [ts, table]
+        executeSQLWithParams(sql, params);
+    }
+
+    // Get Latest Ts
+    getLatestTs(): string {
+        const { table } = this.cfg;
+        const sql = "select ts from tsinfo where dataname=? limit 1";
+        const params: any[] = [table];
+        let ts = "";
+        const { rows } = executeSQLWithParams(sql, params)
+        if (rows && rows.length > 0) {
+            ts = rows._array[0].ts;
+        }
+        return ts;
+    }
+}
+
+
+

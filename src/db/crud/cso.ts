@@ -71,6 +71,6 @@ function bulkUpdateCSOs(csos: ConstructionSiteOption[]) {
     csos.forEach(cso => {
         const params = [cso.code, cso.name, cso.ts, JSON.stringify(cso), cso.id];
         const sqlStr = `update cso set code=?,name=?,ts=?,value=? where id=?`;
-        executeSQLWithParams(sqlStr, params);
+        const { rows } = executeSQLWithParams(sqlStr, params);
     });
 }

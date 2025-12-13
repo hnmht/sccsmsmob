@@ -11,7 +11,7 @@ export async function initDepartmentCache() {
     if (ts === "") { // No ts found, first time sync
         const res = await reqGetSimpDepts(false);
         if (res.status) {
-            const latestTs = res.data[0].ts;
+            const latestTs:string = res.data[0].ts;
             // bulk add departments into db
             bulkAddDepts(res.data);
             // Save latest ts into db

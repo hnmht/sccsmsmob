@@ -1,5 +1,6 @@
-import { SimpDeptCache } from "../dataType/types/department";
+import { SimpDept, SimpDeptCache } from "../dataType/types/department";
 import request from "../utils/request";
+import { APIResponse } from "../dataType/types/response";
 
 // Get Department list
 export function reqGetDepts(isLoading: boolean = true) {
@@ -11,7 +12,7 @@ export function reqGetDepts(isLoading: boolean = true) {
 }
 
 // Get Simple Department list
-export function reqGetSimpDepts(isLoading: boolean = true) {
+export function reqGetSimpDepts(isLoading: boolean = true): Promise<APIResponse<SimpDept[]>> {
     return request({
         url: "/dept/simplist",
         method: 'post',
@@ -20,7 +21,7 @@ export function reqGetSimpDepts(isLoading: boolean = true) {
 }
 
 // Get Simple Department latest front-end cache
-export function reqGetSimpDeptsCache(data: SimpDeptCache, isLoading:boolean = true) {
+export function reqGetSimpDeptsCache(data: SimpDeptCache, isLoading: boolean = true): Promise<APIResponse<SimpDeptCache>> {
     return request({
         url: "/dept/simpcache",
         method: 'post',

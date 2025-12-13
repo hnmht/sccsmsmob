@@ -1,8 +1,10 @@
-import { dbName, appVersion, name } from "../../app.json";
+import { name } from "../../app.json";
 import { clearTableData, executeSQL } from "./db";
 import { saveDBID } from "./crud/appInfo";
 import { initDepartmentCache } from "./crud/department";
 import { initCSCache } from "./crud/csa";
+
+import { deptRepo, testSimpDept } from "./crud/deptDemo";
 // Local database table array
 const localTables: string[] = [
     "appinfo",
@@ -61,11 +63,13 @@ export const initLoaclData = async (newDbid: string) => {
             clearTableData(tableName);
         });
     }
+    // testSimpDept();
+    await deptRepo.initCache()
     //请求所有本地缓存数据
-    await initDepartmentCache();
+    // await initDepartmentCache();
     // await initEICCache();
     // await initPersonCache();
-    await initCSCache();
+    // await initCSCache();
     // await initSICCache();
     // await initSIOCache();
     // await initUDCCache();
@@ -77,6 +81,7 @@ export const initLoaclData = async (newDbid: string) => {
     // await initOPCache();
     // await initTCCache();
     // await initLPCache();
+
 };
 
 //获取dbid字段
