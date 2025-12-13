@@ -1,10 +1,12 @@
 import { name } from "../../app.json";
 import { clearTableData, executeSQL } from "./db";
 import { saveDBID } from "./crud/appInfo";
-import { initDepartmentCache } from "./crud/department";
-import { initCSCache } from "./crud/csa";
 
-import { deptRepo, testSimpDept } from "./crud/deptDemo";
+import { simpDeptRepo } from "./crud/department";
+import { simpCSCRepo } from "./crud/csc";
+import { CSRepo } from "./crud/csa";
+import { CSORepo } from "./crud/cso";
+import { simpDCRepo } from "./crud/dc";
 // Local database table array
 const localTables: string[] = [
     "appinfo",
@@ -63,20 +65,21 @@ export const initLoaclData = async (newDbid: string) => {
             clearTableData(tableName);
         });
     }
-    // testSimpDept();
-    await deptRepo.initCache()
+
     //请求所有本地缓存数据
-    // await initDepartmentCache();
+    await simpDeptRepo.initCache()
     // await initEICCache();
     // await initPersonCache();
-    // await initCSCache();
-    // await initSICCache();
+    await simpCSCRepo.initCache();
+    await CSRepo.initCache();
+    await CSORepo.initCache();
     // await initSIOCache();
     // await initUDCCache();
     // await initRLCache();
     // await initUDDCache();
     // await initEIDCache();
     // await initEITCache();
+    await simpDCRepo.initCache();
     // await initDCCache();
     // await initOPCache();
     // await initTCCache();

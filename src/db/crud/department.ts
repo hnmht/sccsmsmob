@@ -1,9 +1,26 @@
 import { reqGetSimpDepts, reqGetSimpDeptsCache } from "../../api/department";
 import { SimpDept, SimpDeptCache } from "../../dataType/types/department";
-import { queryDataTs, updateDataTs, addDataTs, executeSQL, executeSQLWithParams } from "../db";
-import { getEmptyQueryParams } from "../../dataType/dataZero/pubic";
+import { LocalRepository } from "./respository";
 
-const dataName = "department";
+// Simple Department 
+export const simpDeptRepo = new LocalRepository<SimpDept, SimpDeptCache>({
+    table: "department",
+    recentTable: "department_recent",
+    primaryKey: "id",
+    primaryPath: "id",
+    valueField: "value",
+    fieldsMap: {
+        "code": "code",
+        "name": "name",
+        "ts": "ts",
+    },
+    getFullData: reqGetSimpDepts,
+    getCacheData: reqGetSimpDeptsCache,
+    extractTs: d => d.ts!,
+    extractId: d => d.id,
+});
+
+/* const dataName = "department";
 
 export async function initDepartmentCache() {
     // Get latest ts from db 
@@ -108,5 +125,5 @@ export function getDeptRecent() : SimpDept[] {
         })
     }
     return docs;
-}
+} */
 

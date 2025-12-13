@@ -27,13 +27,13 @@ export class LocalRepository<T, TCache extends {
     newItems: T[];
     resultTs: string;
 }> {
-
     constructor(private cfg: RepoConfig<T, TCache>) { }
     // Initialize Cache
     async initCache() {
-        const { getFullData, getCacheData } = this.cfg;
+        const { getFullData, getCacheData, table } = this.cfg;
+        console.log(`${table} Initialize Cache`);
         const ts = this.getLatestTs();
-        if (!ts) {
+        if (ts === "") {
             const res = await getFullData(false);
             if (res.status && res.data.length > 0) {
                 const latestTs = this.cfg.extractTs(res.data[0]);
@@ -41,8 +41,6 @@ export class LocalRepository<T, TCache extends {
                     await this.bulkAdd(res.data);
                     this.addTs(latestTs);
                 })
-
-
             }
         } else {
             const empty = getEmptyQueryParams<TCache>(ts);
@@ -85,13 +83,15 @@ export class LocalRepository<T, TCache extends {
     async bulkUpdate(items: T[]) {
         if (!items || items.length === 0) return;
         const { table, valueField, fieldsMap, primaryKey, primaryPath, recentTable } = this.cfg;
+        const hasRecentTable = recentTable !== "";
         // Generate Update SQL
         const fields = Object.keys(fieldsMap);
         const setFields = fields.map(f => `${f}=?`).join(", ") + `, ${valueField}=?`;
         const sql = `UPDATE ${table} SET ${setFields} WHERE ${primaryKey}=?`;
-
-        const sqlRec = `UPDATE ${recentTable} SET ${setFields} WHERE ${primaryKey}=?`;
-
+        let sqlRec = "";
+        if (hasRecentTable) {
+            sqlRec = `UPDATE ${recentTable} SET ${setFields} WHERE ${primaryKey}=?`;
+        }
         items.forEach(item => {
             const params: any[] = [];
             for (const key of fields) {
@@ -100,19 +100,28 @@ export class LocalRepository<T, TCache extends {
             params.push(JSON.stringify(item));
             params.push(getByPath(item, primaryPath));
             executeSQLWithParams(sql, params);
-            executeSQLWithParams(sqlRec, params);
+            if (hasRecentTable) {
+                executeSQLWithParams(sqlRec, params);
+            }
         });
     }
     // Batch Delete
     async bulkDel(items: T[]) {
         if (!items || items.length === 0) return;
         const { table, recentTable, primaryKey } = this.cfg;
+        const hasRecentTable = recentTable !== "";
         const sql = `DELETE FROM ${table} WHERE ${primaryKey}=?`;
-        const sqlRec = `DELETE FROM ${recentTable} WHERE ${primaryKey}=?`;
+        let sqlRec = "";
+        if (hasRecentTable) {
+            sqlRec = `DELETE FROM ${recentTable} WHERE ${primaryKey}=?`;
+        }
+
         items.forEach(item => {
             const id = this.cfg.extractId(item);
             executeSQLWithParams(sql, [id]);
-            executeSQLWithParams(sqlRec, [id]);
+            if (hasRecentTable) {
+                executeSQLWithParams(sqlRec, [id]);
+            }
         });
 
     }
@@ -120,6 +129,9 @@ export class LocalRepository<T, TCache extends {
     // Add recent used
     addRecent(item: T) {
         const { primaryKey, primaryPath, recentTable, fieldsMap, valueField } = this.cfg;
+        if (recentTable === "") {
+            return
+        }
         // Generate Insert SQL
         const fields = Object.keys(fieldsMap);
         const columns = primaryKey + ", " + fields.join(", ") + ", " + valueField;
@@ -132,13 +144,28 @@ export class LocalRepository<T, TCache extends {
             params.push(getByPath(item, path));
         }
         params.push(JSON.stringify(item));
-   
         executeSQLWithParams(sql, params);
+    }
+
+    // Delete recent used
+    deleteRecent(item: T) {
+        if (!item) return;
+        const { recentTable, primaryKey } = this.cfg;
+        if (recentTable === "") {
+            return
+        }
+        const sqlRec = `DELETE FROM ${recentTable} WHERE ${primaryKey}=?`;
+        const id = this.cfg.extractId(item);
+        executeSQLWithParams(sqlRec, [id]);
+
     }
 
     // Get recent used
     getRecent(): T[] {
         const { recentTable, valueField } = this.cfg;
+        if (recentTable === "") {
+            return [];
+        }
         const sql = `SELECT ${valueField} FROM ${recentTable} ORDER BY autoid DESC`;
         const { rows } = executeSQL(sql);
         if (!rows || rows.length === 0) return [];

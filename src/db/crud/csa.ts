@@ -1,9 +1,28 @@
 import { reqGetCSList, reqGetCSCache } from "../../api/csa";
-import { getEmptyQueryParams } from "../../dataType/dataZero/pubic";
 import { ConstructionSite, ConstructionSiteCache } from "../../dataType/types/csa";
-import { queryDataTs, updateDataTs, addDataTs, executeSQL, executeSQLWithParams } from "../db";
+import { LocalRepository } from "./respository";
 
-const dataName = "csa";
+// Construction Site
+export const CSRepo = new LocalRepository<ConstructionSite, ConstructionSiteCache>({
+    table: "csa",
+    recentTable: "csa_recent",
+    primaryKey: "id",
+    primaryPath: "id",
+    valueField: "value",
+    fieldsMap: {
+        "code": "code",
+        "name": "name",
+        "cscid": "csc.id",
+        "status": "status",
+        "ts": "ts",
+    },
+    getFullData: reqGetCSList,
+    getCacheData: reqGetCSCache,
+    extractTs: d => d.ts!,
+    extractId: d => d.id,
+});
+
+/* const dataName = "csa";
 
 export async function initCSCache() {
     // Get latest ts from db
@@ -109,4 +128,4 @@ export function getCSRecent() : ConstructionSite[] {
         })
     }
     return docs;
-}
+} */

@@ -1,11 +1,30 @@
 import { reqGetCSOs, reqGetCSOCache } from "../../api/cso";
-import { getEmptyQueryParams } from "../../dataType/dataZero/pubic";
 import { ConstructionSiteOption, ConstructionSiteOptionCache } from "../../dataType/types/cso";
-import { queryDataTs, updateDataTs, addDataTs, executeSQLWithParams } from "../db";
+import { LocalRepository } from "./respository";
 
-const dataName = "cso";
 
-export async function initCSOCache() {
+// Construction Site Options
+export const CSORepo = new LocalRepository<ConstructionSiteOption, ConstructionSiteOptionCache>({
+    table: "cso",
+    recentTable: "",
+    primaryKey: "id",
+    primaryPath: "id",
+    valueField: "value",
+    fieldsMap: {
+        "code":"code",
+        "name": "name",
+        "ts": "ts",
+        "status": "status",
+    },
+    getFullData: reqGetCSOs,
+    getCacheData: reqGetCSOCache,
+    extractTs: d => d.ts!,
+    extractId: d => d.id,
+});
+
+/*const dataName = "cso";
+
+ export async function initCSOCache() {
     // Get existing timestamp
     let ts = queryDataTs(dataName);
     if (ts === "") {
@@ -74,3 +93,4 @@ function bulkUpdateCSOs(csos: ConstructionSiteOption[]) {
         const { rows } = executeSQLWithParams(sqlStr, params);
     });
 }
+ */

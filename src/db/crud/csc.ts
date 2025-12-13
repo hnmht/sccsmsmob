@@ -1,10 +1,26 @@
 import { reqGetSimpCSCList, reqGetSimpCSCCache } from "../../api/csc";
-import { getEmptyQueryParams } from "../../dataType/dataZero/pubic";
 import { SimpCSC, SimpCSCCache } from "../../dataType/types/csc";
-import { queryDataTs, updateDataTs, addDataTs, executeSQL, executeSQLWithParams } from "../db";
+import { LocalRepository } from "./respository";
 
-const dataName = "csc";
+// Simple Construction Site Category
+export const simpCSCRepo = new LocalRepository<SimpCSC, SimpCSCCache>({
+    table: "csc",
+    recentTable: "csc_recent",
+    primaryKey: "id",
+    primaryPath: "id",
+    valueField: "value",
+    fieldsMap: {
+        "name": "name",
+        "ts": "ts",
+        "status": "status",
+    },
+    getFullData: reqGetSimpCSCList,
+    getCacheData: reqGetSimpCSCCache,
+    extractTs: d => d.ts!,
+    extractId: d => d.id,
+});
 
+/* const dataName = "csc";
 export async function initCSCCache() {
     // Get last ts
     let ts = queryDataTs(dataName);
@@ -104,3 +120,4 @@ export function getCSCRecent(): SimpCSC[] {
     }
     return docs;
 }
+ */
