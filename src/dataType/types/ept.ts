@@ -10,10 +10,10 @@ export interface EPTRow {
     epa: ExecutionProject; // EP
     allowDelRow: number;
     description: string;
-    defaultValue: string;
+    defaultValue: any;
     defaultValueDisp: string;
     isCheckError: number;
-    errorValue: string;
+    errorValue: any;
     errorValueDisp: string;
     isRequireFile: number;
     isOnSitePhoto: number;

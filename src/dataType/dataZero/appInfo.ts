@@ -2,7 +2,7 @@ import { AppInfo, ServerInfo } from "../types/appInfo";
 
 export function getEmptyServerInfo(): ServerInfo {
     const serverInfo: ServerInfo = {
-        dbID: 0,
+        dbID: "",
         serialNumber: "",
         macArray: "",
         machineHash: "",
@@ -17,14 +17,14 @@ export function getEmptyServerInfo(): ServerInfo {
     return serverInfo;
 }
 
-export function getEmptyAppInfo():AppInfo {
-    const appInfo:AppInfo = {
-        dbID:"",
-        token:"",
-        serverAddr:"",
-        globalPath:"",
-        serverInfo:getEmptyServerInfo(),
-        isOffline:0,
+export function getEmptyAppInfo(): AppInfo {
+    const appInfo: AppInfo = {
+        dbID: "",
+        token: "",
+        serverAddr: "",
+        globalPath: "",
+        serverInfo: getEmptyServerInfo(),
+        isOffline: 0,
     }
     return appInfo;
 }

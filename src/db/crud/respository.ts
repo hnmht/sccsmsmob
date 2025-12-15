@@ -2,13 +2,14 @@ import { executeSQL, executeSQLWithParams, withTransaction } from "../db";
 import { getEmptyQueryParams } from "../../dataType/dataZero/pubic";
 import { APIResponse } from "../../dataType/types/response";
 
-export interface RepoConfig<T, TCache> {
+export interface MasterDataRepoConfig<T, TCache> {
     table: string;
     recentTable: string;
-    primaryKey: string,
-    primaryPath: string,
-    valueField: string,
-    fieldsMap: Record<string, string>,
+    primaryKey: string;
+    primaryPath: string;
+    valueField: string;
+    fieldsMap: Record<string, string>;
+    convertToFront: (data: T[]) => T[];
     getFullData: (loading: boolean) => Promise<APIResponse<T[]>>;
     getCacheData: (params: TCache, loading: boolean) => Promise<APIResponse<TCache>>;
     extractTs: (item: T) => string;
@@ -19,7 +20,7 @@ export function getByPath(obj: any, path: string) {
     return path.split(".").reduce((o, k) => (o ? o[k] : undefined), obj);
 }
 
-export class LocalRepository<T, TCache extends {
+export class MasterDataRepository<T, TCache extends {
     queryTs: string;
     resultNumber: number;
     delItems: T[];
@@ -27,7 +28,7 @@ export class LocalRepository<T, TCache extends {
     newItems: T[];
     resultTs: string;
 }> {
-    constructor(private cfg: RepoConfig<T, TCache>) { }
+    constructor(private cfg: MasterDataRepoConfig<T, TCache>) { console.log(`${cfg.table} constructor.`) }
     // Initialize Cache
     async initCache() {
         const { getFullData, getCacheData, table } = this.cfg;
@@ -60,9 +61,11 @@ export class LocalRepository<T, TCache extends {
     }
 
     // Batch add 
-    async bulkAdd(items: T[]) {
-        if (!items || items.length === 0) return;
-        const { table, valueField, fieldsMap, primaryKey, primaryPath } = this.cfg;
+    async bulkAdd(originItems: T[]) {
+        if (!originItems || originItems.length === 0) return; 
+        const { table, valueField, fieldsMap, primaryKey, primaryPath,convertToFront } = this.cfg;
+        // Convert Data
+        const items = convertToFront(originItems);
         // Generate Insert SQL
         const fields = Object.keys(fieldsMap);
         const columns = primaryKey + ", " + fields.join(", ") + ", " + valueField;
@@ -80,9 +83,10 @@ export class LocalRepository<T, TCache extends {
         });
     }
     // Batch Update
-    async bulkUpdate(items: T[]) {
-        if (!items || items.length === 0) return;
-        const { table, valueField, fieldsMap, primaryKey, primaryPath, recentTable } = this.cfg;
+    async bulkUpdate(originItems: T[]) {
+        if (!originItems || originItems.length === 0) return;
+        const { table, valueField, fieldsMap, primaryKey, primaryPath, recentTable,convertToFront } = this.cfg;
+        const items = convertToFront(originItems);
         const hasRecentTable = recentTable !== "";
         // Generate Update SQL
         const fields = Object.keys(fieldsMap);
@@ -159,7 +163,7 @@ export class LocalRepository<T, TCache extends {
         executeSQLWithParams(sqlRec, [id]);
 
     }
-
+    
     // Get recent used
     getRecent(): T[] {
         const { recentTable, valueField } = this.cfg;
@@ -172,6 +176,7 @@ export class LocalRepository<T, TCache extends {
         return rows._array.map((i: any) => JSON.parse(i[valueField]));
     }
 
+    // Add Ts
     addTs(ts: string) {
         const { table } = this.cfg;
         const sql = `INSERT OR IGNORE INTO tsinfo(dataname,ts) VALUES(?,?)`;

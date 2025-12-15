@@ -14,10 +14,10 @@ export interface ExecutionProject {
     status: number;
     resultType: ScDataType;
     udc: UserDefineCategory;
-    defaultValue: string;
+    defaultValue: any;
     defaultValueDisp: string;
     isCheckError: number;
-    errorValue: string;
+    errorValue: any;
     errorValueDisp: string;
     isRequireFile: number;
     isOnSitePhoto: number;

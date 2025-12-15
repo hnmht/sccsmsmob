@@ -1,9 +1,9 @@
 import { reqGetCSList, reqGetCSCache } from "../../api/csa";
 import { ConstructionSite, ConstructionSiteCache } from "../../dataType/types/csa";
-import { LocalRepository } from "./respository";
+import { MasterDataRepository } from "./respository";
 
 // Construction Site
-export const CSRepo = new LocalRepository<ConstructionSite, ConstructionSiteCache>({
+export const CSRepo = new MasterDataRepository<ConstructionSite, ConstructionSiteCache>({
     table: "csa",
     recentTable: "csa_recent",
     primaryKey: "id",
@@ -16,6 +16,7 @@ export const CSRepo = new LocalRepository<ConstructionSite, ConstructionSiteCach
         "status": "status",
         "ts": "ts",
     },
+    convertToFront: (data: ConstructionSite[]) => data,
     getFullData: reqGetCSList,
     getCacheData: reqGetCSCache,
     extractTs: d => d.ts!,

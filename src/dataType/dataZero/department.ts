@@ -3,8 +3,7 @@ import { Department, SimpDept } from "../types/department";
 import { getEmptyPerson } from "./person";
 
 export function getEmptySimpDept(): SimpDept {
-    const leader = getEmptyPerson();
-    
+    const leader = getEmptyPerson();    
     const simpDept: SimpDept = {
         id: 0,
         code: "",
@@ -23,7 +22,6 @@ export function getEmptySimpDept(): SimpDept {
 export function getEmptyDepartment(): Department {
     const emptyPerson = getEmptyPerson();
     const emptySimpDept = getEmptySimpDept();
-
     const dept: Department = {
         id: 0,
         code: "",

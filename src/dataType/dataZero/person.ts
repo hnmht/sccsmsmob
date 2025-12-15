@@ -8,7 +8,7 @@ export function getEmptyPerson(): Person {
         id: 0,
         code: "",
         name: "",
-        avater: file,
+        avatar: file,
         deptID: 0,
         deptCode: "",
         deptName: "",

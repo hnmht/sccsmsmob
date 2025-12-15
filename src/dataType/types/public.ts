@@ -1,4 +1,5 @@
 import { Person } from "./person";
+import { File } from "./file";
 // Voucher File
 export interface VoucherFile {
     id: number;

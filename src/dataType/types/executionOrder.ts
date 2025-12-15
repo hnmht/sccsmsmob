@@ -12,13 +12,13 @@ export interface ExecutionOrderRow {
     rowNumber: number;
     epa: ExecutionProject;
     allowDelRow: number;
-    executionValue: string;
+    executionValue: any;
     executionValueDisp: string;
     files: VoucherFile[];
     description: string;
     epaDescription: string;
     isCheckError: number;
-    errorValue: string;
+    errorValue: any;
     errorValueDisp: string;
     isRequireFile: number;
     isOnSitePhoto: number;

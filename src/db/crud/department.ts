@@ -1,9 +1,9 @@
 import { reqGetSimpDepts, reqGetSimpDeptsCache } from "../../api/department";
 import { SimpDept, SimpDeptCache } from "../../dataType/types/department";
-import { LocalRepository } from "./respository";
+import { MasterDataRepository } from "./respository";
 
 // Simple Department 
-export const simpDeptRepo = new LocalRepository<SimpDept, SimpDeptCache>({
+export const simpDeptRepo = new MasterDataRepository<SimpDept, SimpDeptCache>({
     table: "department",
     recentTable: "department_recent",
     primaryKey: "id",
@@ -14,6 +14,7 @@ export const simpDeptRepo = new LocalRepository<SimpDept, SimpDeptCache>({
         "name": "name",
         "ts": "ts",
     },
+    convertToFront: (data: SimpDept[]) => data,
     getFullData: reqGetSimpDepts,
     getCacheData: reqGetSimpDeptsCache,
     extractTs: d => d.ts!,

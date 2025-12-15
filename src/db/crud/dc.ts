@@ -1,9 +1,9 @@
 import { reqGetSimpDCList, reqGetSimpDCCache } from "../../api/dc";
 import { SimpDC, SimpDCCache } from "../../dataType/types/dc";
-import { LocalRepository } from "./respository";
+import { MasterDataRepository } from "./respository";
 
 // Simple Document Category
-export const simpDCRepo = new LocalRepository<SimpDC, SimpDCCache>({
+export const simpDCRepo = new MasterDataRepository<SimpDC, SimpDCCache>({
     table: "dc",
     recentTable: "dc_recent",
     primaryKey: "id",
@@ -12,8 +12,9 @@ export const simpDCRepo = new LocalRepository<SimpDC, SimpDCCache>({
     fieldsMap: {
         "name": "name",
         "ts": "ts",
-        "status":"status",
+        "status": "status",
     },
+    convertToFront: (data: SimpDC[]) => data,
     getFullData: reqGetSimpDCList,
     getCacheData: reqGetSimpDCCache,
     extractTs: d => d.ts!,

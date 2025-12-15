@@ -1,9 +1,9 @@
 import { reqGetSimpCSCList, reqGetSimpCSCCache } from "../../api/csc";
 import { SimpCSC, SimpCSCCache } from "../../dataType/types/csc";
-import { LocalRepository } from "./respository";
+import { MasterDataRepository } from "./respository";
 
 // Simple Construction Site Category
-export const simpCSCRepo = new LocalRepository<SimpCSC, SimpCSCCache>({
+export const simpCSCRepo = new MasterDataRepository<SimpCSC, SimpCSCCache>({
     table: "csc",
     recentTable: "csc_recent",
     primaryKey: "id",
@@ -14,6 +14,7 @@ export const simpCSCRepo = new LocalRepository<SimpCSC, SimpCSCCache>({
         "ts": "ts",
         "status": "status",
     },
+    convertToFront:(data:SimpCSC[])=> data,
     getFullData: reqGetSimpCSCList,
     getCacheData: reqGetSimpCSCCache,
     extractTs: d => d.ts!,
