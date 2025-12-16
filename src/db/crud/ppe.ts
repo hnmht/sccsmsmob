@@ -5,8 +5,8 @@ import { getEmptyPPE } from "../../dataType/dataZero/ppe";
 
 // Personal Protective Equipment
 export const PPERepo = new MasterDataRepository<PPE, PPECache>({
-    table: "risklevel",
-    recentTable: "risklevel_recent",
+    table: "ppe",
+    recentTable: "ppe_recent",
     primaryKey: "id",
     primaryPath: "id",
     valueField: "value",

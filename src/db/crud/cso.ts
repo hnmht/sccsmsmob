@@ -14,7 +14,6 @@ export const CSORepo = new MasterDataRepository<ConstructionSiteOption, Construc
         "code": "code",
         "name": "name",
         "ts": "ts",
-        "status": "status",
     },
     emptyFn: getEmptyCSO,
     convertToFront: (data: ConstructionSiteOption[]) => data,

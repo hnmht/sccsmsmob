@@ -88,8 +88,7 @@ export const initLoaclData = async (newDbid: string) => {
     await UDARepo.initCache();
     await EPARepo.initCache();
     await EPTRepo.initCache();
-    await simpDCRepo.initCache();
-    await simpDCRepo.initCache();
+    await simpDCRepo.initCache();    
     await positionRepo.initCache();
     await TCRepo.initCache();
     await PPERepo.initCache();

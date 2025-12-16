@@ -1,5 +1,5 @@
 import { executeSQL, executeSQLWithParams, withTransaction } from "../db";
-import { getEmptyByType, getEmptyQueryParams } from "../../dataType/dataZero/pubic";
+import { getEmptyQueryParams } from "../../dataType/dataZero/pubic";
 import { APIResponse } from "../../dataType/types/response";
 
 export interface MasterDataRepoConfig<T, TCache> {

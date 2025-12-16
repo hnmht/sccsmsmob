@@ -4,8 +4,8 @@ import { TC, TCCache } from "../../dataType/types/tc";
 import { getEmptyTC } from "../../dataType/dataZero/tc";
 // Training Course
 export const TCRepo = new MasterDataRepository<TC, TCCache>({
-    table: "risklevel",
-    recentTable: "risklevel_recent",
+    table: "tc",
+    recentTable: "tc_recent",
     primaryKey: "id",
     primaryPath: "id",
     valueField: "value",
