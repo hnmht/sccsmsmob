@@ -7,6 +7,16 @@ import { simpCSCRepo } from "./crud/csc";
 import { CSRepo } from "./crud/csa";
 import { CSORepo } from "./crud/cso";
 import { simpDCRepo } from "./crud/dc";
+import { personRepo } from "./crud/person";
+import { simpEPCRepo } from "./crud/epc";
+import { UDCRepo } from "./crud/udc";
+import { riskLevelRepo } from "./crud/risklevel";
+import { UDARepo } from "./crud/uda";
+import { EPARepo } from "./crud/epa";
+import { EPTRepo } from "./crud/ept";
+import { positionRepo } from "./crud/position";
+import { TCRepo } from "./crud/tc";
+import { PPERepo } from "./crud/ppe";
 // Local database table array
 const localTables: string[] = [
     "appinfo",
@@ -39,8 +49,8 @@ const localTables: string[] = [
     `tc_recent`,
     `ppe`,
     `ppe_recent`,
-    'udc',
-    'udc_recent',
+    'uda',
+    'uda_recent',
     'workorderref',
     'executionorderref',
     'workorder',
@@ -67,24 +77,22 @@ export const initLoaclData = async (newDbid: string) => {
     }
 
     //请求所有本地缓存数据
-    await simpDeptRepo.initCache()
-    // await initEICCache();
-    // await initPersonCache();
+    await simpDeptRepo.initCache();
+    await simpEPCRepo.initCache();
+    await personRepo.initCache();
     await simpCSCRepo.initCache();
     await CSRepo.initCache();
     await CSORepo.initCache();
-    // await initSIOCache();
-    // await initUDCCache();
-    // await initRLCache();
-    // await initUDDCache();
-    // await initEIDCache();
-    // await initEITCache();
+    await UDCRepo.initCache();
+    await riskLevelRepo.initCache();
+    await UDARepo.initCache();
+    await EPARepo.initCache();
+    await EPTRepo.initCache();
     await simpDCRepo.initCache();
-    // await initDCCache();
-    // await initOPCache();
-    // await initTCCache();
-    // await initLPCache();
-
+    await simpDCRepo.initCache();
+    await positionRepo.initCache();
+    await TCRepo.initCache();
+    await PPERepo.initCache();
 };
 
 //获取dbid字段

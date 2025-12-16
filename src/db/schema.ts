@@ -52,9 +52,9 @@ export const createTableSQL: SQLBatchTuple[] = [
     // ppe table
     [`CREATE TABLE IF NOT EXISTS ppe(id INTEGER NOT NULL UNIQUE,name TEXT,ts TEXT,status INTEGER,value JSON,PRIMARY KEY('id'))`],
     [`CREATE TABLE IF NOT EXISTS ppe_recent(autoid INTEGER,id INTEGER NOT NULL UNIQUE,name TEXT,ts TEXT,status INTEGER,value JSON,PRIMARY KEY('autoid' AUTOINCREMENT))`],
-    // udc table
-    [`CREATE TABLE IF NOT EXISTS udc(id INTEGER NOT NULL UNIQUE,docclass_id INTEGER,ts TEXT,status INTEGER,value JSON,PRIMARY KEY('id'))`],
-    [`CREATE TABLE IF NOT EXISTS udc_recent(autoid INTEGER,id INTEGER NOT NULL UNIQUE,docclass_id INTEGER,ts TEXT,status INTEGER,value JSON,PRIMARY KEY('autoid' AUTOINCREMENT))`],
+    // uda table
+    [`CREATE TABLE IF NOT EXISTS uda(id INTEGER NOT NULL UNIQUE,udcid INTEGER,ts TEXT,status INTEGER,value JSON,PRIMARY KEY('id'))`],
+    [`CREATE TABLE IF NOT EXISTS uda_recent(autoid INTEGER,id INTEGER NOT NULL UNIQUE,udcid INTEGER,ts TEXT,status INTEGER,value JSON,PRIMARY KEY('autoid' AUTOINCREMENT))`],
     // workorderref table
     [`CREATE TABLE IF NOT EXISTS workorderref(id INTEGER NOT NULL UNIQUE,hid INTEGER,billdate TEXT,billnumber TEXT,status INTEGER,ts TEXT,value JSON,PRIMARY KEY('id'))`],
     // executionorderref table
@@ -98,8 +98,8 @@ export const dropAllTableSQL: SQLBatchTuple[] = [
     ['drop table if exists tc_recent'],
     ['drop table if exists ppe'],
     ['drop table if exists ppe_recent'],
-    ['drop table if exists udc'],
-    ['drop table if exists udc_recent'],
+    ['drop table if exists uda'],
+    ['drop table if exists uda_recent'],
     ['drop table if exists workorderref'],
     ['drop table if exists executionorderref'],
     ['drop table if exists workorder'],

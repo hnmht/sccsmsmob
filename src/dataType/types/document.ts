@@ -1,6 +1,6 @@
 import { SimpDC } from "./dc";
 import { Person } from "./person";
-import { VoucherFile } from "./public";
+import { VoucherFile } from "./voucherFile";
 
 // Document
 export interface Document {

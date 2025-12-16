@@ -1,5 +1,5 @@
 import { SimpDept } from "./department";
-import { VoucherFile } from "./public";
+import { VoucherFile } from "./voucherFile";
 import { Person } from "./person";
 import { PPE } from "./ppe";
 

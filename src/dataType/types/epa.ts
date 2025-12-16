@@ -2,7 +2,7 @@ import { SimpEPC } from "./epc";
 import { RiskLevel } from "./riskLevel";
 import { Person } from "./person";
 import { UserDefineCategory } from "./udc";
-import { ScDataType } from "./public";
+import { ScDataType } from "./scDataType";
 
 // Execution Project
 export interface ExecutionProject {

@@ -1,6 +1,17 @@
-import { ScDataType, VoucherFile } from "../types/public";
-import { getEmptyFile } from "./file";
+import { getEmptyCSA } from "./csa";
+import { getEmptyCSC } from "./csc";
+import { getEmptyCSO } from "./cso";
+import { getEmptySimpDC } from "./dc";
+import { getEmptyDepartment } from "./department";
+import { getEmptyEP } from "./epa";
+import { getEmptySimpEPC } from "./epc";
+import { getEmptyEPT } from "./ept";
 import { getEmptyPerson } from "./person";
+import { getEmptyPosition } from "./position";
+import { getEmptyPPE } from "./ppe";
+import { getEmptyRiskLevel } from "./riskLevel";
+import { getEmptyTC } from "./tc";
+import { getEmptyUDC } from "./udc";
 
 export function getEmptyQueryParams<T>(ts: string): T {
     const emptyParam = {
@@ -13,32 +24,41 @@ export function getEmptyQueryParams<T>(ts: string): T {
     } as T;
     return emptyParam;
 }
-
-export function getDefaultDataType(): ScDataType {
-    const dataType: ScDataType = {
-        id: 301,
-        code: "ScTextInput",
-        name: "text",
-        dataType: "string",
-        frontDb: "",
-        inputMode: "Input"
+// export type ScTypeAllowInput = "department" | "epa" | "epc" |"ept"| "person" | "csa"| "csc" | "cso" | "udc" 
+// | "risklevel" | "dc" | "position" | "tc" | "ppe" | "udc";
+export function getEmptyByType(dataType: string): any {
+    switch (dataType) {
+        case "department":
+            return getEmptyDepartment();
+        case "epa":
+            return getEmptyEP();
+        case "epc":
+            return getEmptySimpEPC();
+        case "ept":
+            return getEmptyEPT();
+        case "person":
+            return getEmptyPerson();
+        case "csa":
+            return getEmptyCSA();
+        case "csc":
+            return getEmptyCSC();
+        case "cso":
+            return getEmptyCSO();
+        case "udc":
+            return getEmptyUDC();
+        case "risklevel":
+            return getEmptyRiskLevel();
+        case "dc":
+            return getEmptySimpDC();
+        case "position":
+            return getEmptyPosition();
+        case "tc":
+            return getEmptyTC();
+        case "ppe":
+            return getEmptyPPE();
+        case "udc":
+            return getEmptyUDC();
+        default:
+            throw new Error("Failed ScDataType");
     }
-    return dataType
-}
-
-export function getEmptyVoucherFile(): VoucherFile {
-    const vFile: VoucherFile = {
-        id: 0,
-        billBID: 0,
-        billHID: 0,
-        file: getEmptyFile(),
-        createDate: "",
-        creator: getEmptyPerson(),
-        modifyDate: "",
-        modifier: getEmptyPerson(),
-        ts: "",
-        dr: 0,
-    }
-
-    return vFile
 }

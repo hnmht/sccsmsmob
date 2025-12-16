@@ -1,4 +1,5 @@
 import { reqGetSimpDepts, reqGetSimpDeptsCache } from "../../api/department";
+import { getEmptySimpDept } from "../../dataType/dataZero/department";
 import { SimpDept, SimpDeptCache } from "../../dataType/types/department";
 import { MasterDataRepository } from "./respository";
 
@@ -14,6 +15,7 @@ export const simpDeptRepo = new MasterDataRepository<SimpDept, SimpDeptCache>({
         "name": "name",
         "ts": "ts",
     },
+    emptyFn:getEmptySimpDept,
     convertToFront: (data: SimpDept[]) => data,
     getFullData: reqGetSimpDepts,
     getCacheData: reqGetSimpDeptsCache,

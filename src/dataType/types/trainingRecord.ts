@@ -1,7 +1,7 @@
 import { SimpDept } from "./department";
 import { Person } from "./person";
 import { TC } from "./tc";
-import { VoucherFile } from "./public";
+import { VoucherFile } from "./voucherFile";
 
 // Training Record Row
 export interface TrainingRecordRow {

@@ -3,7 +3,7 @@ import { ConstructionSite } from "./csa";
 import { Person } from "./person";
 import { EPT } from "./ept";
 import { ExecutionProject } from "./epa";
-import { VoucherFile } from "./public";
+import { VoucherFile } from "./voucherFile";
 import { RiskLevel } from "./riskLevel";
 // Execution Order Row
 export interface ExecutionOrderRow {

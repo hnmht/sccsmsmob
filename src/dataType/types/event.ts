@@ -1,6 +1,6 @@
 import { ConstructionSite } from "./csa";
 import { EPT } from "./ept";
-import { VoucherFile } from "./public";
+import { VoucherFile } from "./voucherFile";
 import { Person } from "./person";
 
 // User Event

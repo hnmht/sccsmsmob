@@ -15,7 +15,7 @@ export interface UserDefineCategory {
 }
 // User Define Category Front-end Cache
 export interface UDCCache {
-    queryTS: string;
+    queryTs: string;
     resultNumber: number;
     delItems: UserDefineCategory[];
     updateItems: UserDefineCategory[];

@@ -1,4 +1,4 @@
-import { VoucherFile } from "./public";
+import { VoucherFile } from "./voucherFile";
 // Work Order Status Report 
 export interface WorkOrderReport {
     woBID: number;

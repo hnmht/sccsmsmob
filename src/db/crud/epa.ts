@@ -1,9 +1,15 @@
 import { reqGetEPList, reqGetEPCache } from "../../api/epa";
-import { queryDataTs, updateDataTs, addDataTs, executeSQL, getDocByID } from "../db";
 import { EPCache, ExecutionProject } from "../../dataType/types/epa";
 import { MasterDataRepository } from "./respository";
+import { personRepo } from "./person";
+import { simpDeptRepo } from "./department";
+import { simpCSCRepo } from "./csc";
+import { UDARepo } from "./uda";
+import { UDCRepo } from "./udc";
+import { simpEPCRepo } from "./epc";
+import { getEmptyEP } from "../../dataType/dataZero/epa";
 
-//执行项目档案后端批量转前端
+// Execution Order convert to Frontend 
 const transEPsToFrontend = (eps: ExecutionProject[]): ExecutionProject[] => {
     for (let newEP of eps) {
         switch (newEP.resultType.id) {
@@ -21,16 +27,32 @@ const transEPsToFrontend = (eps: ExecutionProject[]): ExecutionProject[] => {
                 newEP.errorValue = parseInt(newEP.errorValue);
                 break;
             case 510:
+                newEP.defaultValue = personRepo.getDetailByID(parseInt(newEP.defaultValue));
+                newEP.errorValue = personRepo.getDetailByID(parseInt(newEP.errorValue));
+                break
             case 520:
+                newEP.defaultValue = simpDeptRepo.getDetailByID(parseInt(newEP.defaultValue));
+                newEP.errorValue = simpDeptRepo.getDetailByID(parseInt(newEP.errorValue));
+                break;
             case 525:
+                newEP.defaultValue = simpCSCRepo.getDetailByID(parseInt(newEP.defaultValue));
+                newEP.errorValue = simpCSCRepo.getDetailByID(parseInt(newEP.errorValue));
+                break;
             case 530:
+                newEP.defaultValue = UDCRepo.getDetailByID(parseInt(newEP.defaultValue));
+                newEP.errorValue = UDCRepo.getDetailByID(parseInt(newEP.errorValue));
+                break;
             case 540:
+                newEP.defaultValue = simpEPCRepo.getDetailByID(parseInt(newEP.defaultValue));
+                newEP.errorValue = simpEPCRepo.getDetailByID(parseInt(newEP.errorValue));
+                break;
             case 550:
-                newEP.defaultValue = newEP.defaultValue !== "0" ? getDocByID(newEP.resultType.frontDb, parseInt(newEP.defaultValue)) : GetDataTypeDefaultValue(newEP.resultType.id);
-                newEP.errorValue = newEP.errorValue !== "0" ? getDocByID(newEP.resultType.frontDb, parseInt(newEP.errorValue)) : GetDataTypeDefaultValue(newEP.resultType.id);
+                newEP.defaultValue = UDARepo.getDetailByID(parseInt(newEP.defaultValue));
+                newEP.errorValue = UDARepo.getDetailByID(parseInt(newEP.errorValue));
                 break;
             default:
                 console.error("No matching DataType");
+                throw new Error("transEPsToFrontend failed: No matching DataType");
         }
     }
     return eps;
@@ -50,6 +72,7 @@ export const EPARepo = new MasterDataRepository<ExecutionProject, EPCache>({
         "status": "status",
         "ts": "ts",
     },
+    emptyFn: getEmptyEP,
     convertToFront: transEPsToFrontend,
     getFullData: reqGetEPList,
     getCacheData: reqGetEPCache,

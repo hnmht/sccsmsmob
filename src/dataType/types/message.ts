@@ -1,4 +1,4 @@
-import { VoucherFile } from "./public";
+import { VoucherFile } from "./voucherFile";
 import { Person } from "./person";
 
 // Execution Order Comment Message

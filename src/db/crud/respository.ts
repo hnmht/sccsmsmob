@@ -1,5 +1,5 @@
 import { executeSQL, executeSQLWithParams, withTransaction } from "../db";
-import { getEmptyQueryParams } from "../../dataType/dataZero/pubic";
+import { getEmptyByType, getEmptyQueryParams } from "../../dataType/dataZero/pubic";
 import { APIResponse } from "../../dataType/types/response";
 
 export interface MasterDataRepoConfig<T, TCache> {
@@ -9,6 +9,7 @@ export interface MasterDataRepoConfig<T, TCache> {
     primaryPath: string;
     valueField: string;
     fieldsMap: Record<string, string>;
+    emptyFn: () => T;
     convertToFront: (data: T[]) => T[];
     getFullData: (loading: boolean) => Promise<APIResponse<T[]>>;
     getCacheData: (params: TCache, loading: boolean) => Promise<APIResponse<TCache>>;
@@ -62,8 +63,8 @@ export class MasterDataRepository<T, TCache extends {
 
     // Batch add 
     async bulkAdd(originItems: T[]) {
-        if (!originItems || originItems.length === 0) return; 
-        const { table, valueField, fieldsMap, primaryKey, primaryPath,convertToFront } = this.cfg;
+        if (!originItems || originItems.length === 0) return;
+        const { table, valueField, fieldsMap, primaryKey, primaryPath, convertToFront } = this.cfg;
         // Convert Data
         const items = convertToFront(originItems);
         // Generate Insert SQL
@@ -85,7 +86,7 @@ export class MasterDataRepository<T, TCache extends {
     // Batch Update
     async bulkUpdate(originItems: T[]) {
         if (!originItems || originItems.length === 0) return;
-        const { table, valueField, fieldsMap, primaryKey, primaryPath, recentTable,convertToFront } = this.cfg;
+        const { table, valueField, fieldsMap, primaryKey, primaryPath, recentTable, convertToFront } = this.cfg;
         const items = convertToFront(originItems);
         const hasRecentTable = recentTable !== "";
         // Generate Update SQL
@@ -163,7 +164,22 @@ export class MasterDataRepository<T, TCache extends {
         executeSQLWithParams(sqlRec, [id]);
 
     }
-    
+
+    getDetailByID(id: number): T {
+        const { table, primaryKey, valueField, emptyFn } = this.cfg;
+        let data: T = emptyFn();
+        if (id === 0) {
+            return data;
+        }
+        const sql = `select ${valueField} from ${table} where ${primaryKey}=? limit 1`;
+        const { rows } = executeSQLWithParams(sql, [id]);
+
+        if (rows && rows.length > 0) {
+            data = JSON.parse(rows._array[0][valueField]);
+        }
+        return data;
+    }
+
     // Get recent used
     getRecent(): T[] {
         const { recentTable, valueField } = this.cfg;

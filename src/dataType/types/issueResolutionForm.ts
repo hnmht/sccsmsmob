@@ -3,7 +3,7 @@ import { ExecutionProject } from "./epa";
 import { Person } from "./person";
 import { SimpDept } from "./department";
 import { RiskLevel } from "./riskLevel";
-import { VoucherFile } from "./public";
+import { VoucherFile } from "./voucherFile";
 
 // Issue Resolution Form 
 export interface IssueResolutionForm {
