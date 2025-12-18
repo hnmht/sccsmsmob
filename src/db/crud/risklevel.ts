@@ -1,5 +1,5 @@
 import { reqGetRLList, reqGetRLsCache } from "../../api/riskLevel";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 import { RiskLevel,RLCache} from "../../dataType/types/riskLevel";
 import { getEmptyRiskLevel } from "../../dataType/dataZero/riskLevel";
 

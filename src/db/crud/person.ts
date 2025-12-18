@@ -1,6 +1,6 @@
 import { reqGetPersons, reqGetPersonsCache } from "../../api/person";
 import { Person, PersonCache } from "../../dataType/types/person";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 import { getEmptyPerson } from "../../dataType/dataZero/person";
 
 // Person

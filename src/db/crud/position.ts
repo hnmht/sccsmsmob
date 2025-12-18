@@ -1,5 +1,5 @@
 import { reqGetPositionCache, reqGetPositionList } from "../../api/position";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 import { Position, PositionCache } from "../../dataType/types/postion";
 import { getEmptyPosition } from "../../dataType/dataZero/position";
 // Position

@@ -1,5 +1,5 @@
 import { reqGetTCList, reqGetTCCache } from "../../api/tc";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 import { TC, TCCache } from "../../dataType/types/tc";
 import { getEmptyTC } from "../../dataType/dataZero/tc";
 // Training Course

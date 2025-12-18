@@ -1,7 +1,7 @@
 import { reqGetCSList, reqGetCSCache } from "../../api/csa";
 import { getEmptyCSA } from "../../dataType/dataZero/csa";
 import { ConstructionSite, ConstructionSiteCache } from "../../dataType/types/csa";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 
 // Construction Site
 export const CSRepo = new MasterDataRepository<ConstructionSite, ConstructionSiteCache>({

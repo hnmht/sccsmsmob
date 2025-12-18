@@ -1,5 +1,5 @@
 import { reqGetUDAAll, reqGetUDACache } from "../../api/uda";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 import { UserDefinedArchive,UDACache } from "../../dataType/types/uda";
 import { getEmptyUDA } from "../../dataType/dataZero/uda";
 

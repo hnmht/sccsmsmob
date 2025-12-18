@@ -1,7 +1,5 @@
 import { Person } from "./person";
 
-// export type ScTypeAllowInput = "department" | "epa" | "epc" |"ept"| "person" | "csa"| "csc" | "cso" | "udc" | "risklevel" | "dc" | "position" | "tc" | "ppe" | "udc";
-
 // Data query Params
 export interface QueryParams {
     queryString: string;

@@ -1,5 +1,5 @@
 import { reqGetPPEList, reqGetPPECache } from "../../api/ppe";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 import { PPE, PPECache } from "../../dataType/types/ppe";
 import { getEmptyPPE } from "../../dataType/dataZero/ppe";
 

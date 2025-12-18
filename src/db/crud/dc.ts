@@ -1,7 +1,7 @@
 import { reqGetSimpDCList, reqGetSimpDCCache } from "../../api/dc";
 import { getEmptySimpDC } from "../../dataType/dataZero/dc";
 import { SimpDC, SimpDCCache } from "../../dataType/types/dc";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 
 // Simple Document Category
 export const simpDCRepo = new MasterDataRepository<SimpDC, SimpDCCache>({

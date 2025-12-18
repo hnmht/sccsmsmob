@@ -1,7 +1,7 @@
 import { reqGetEPTList, reqGetEPTCache } from "../../api/ept";
 import { getEmptyEPT } from "../../dataType/dataZero/ept";
 import { EPT, EPTCache } from "../../dataType/types/ept";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 import { personRepo } from "./person";
 import { simpDeptRepo } from "./department";
 import { simpCSCRepo } from "./csc";

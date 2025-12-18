@@ -1,7 +1,7 @@
 import { reqGetSimpCSCList, reqGetSimpCSCCache } from "../../api/csc";
 import { getEmptyCSC } from "../../dataType/dataZero/csc";
 import { SimpCSC, SimpCSCCache } from "../../dataType/types/csc";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 
 // Simple Construction Site Category
 export const simpCSCRepo = new MasterDataRepository<SimpCSC, SimpCSCCache>({

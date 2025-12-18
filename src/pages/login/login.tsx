@@ -33,6 +33,7 @@ import { saveServerInfo, saveToken } from "../../db/crud/appInfo";
 import { initLoaclData } from "../../db/localData";
 import { saveUserInfo } from "../../db/crud/userInfo";
 import { saveIsOffLine } from "../../db/crud/appInfo";
+import { getAllDynamicDataOnline } from "../../store/pub";
 
 
 function Login() {
@@ -124,8 +125,8 @@ function Login() {
             setOverlayStatus({ visible: true, description: t("requestingDynamicData") });
             dispatch(setDbid(serverInfo.dbID));
             // Request Dynamic Data
-            // getAllDynamicData();
-            handleLoginFailed();
+            await getAllDynamicDataOnline();
+       
         }
         catch (err) {
             handleLoginFailed();

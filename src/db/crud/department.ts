@@ -1,7 +1,7 @@
 import { reqGetSimpDepts, reqGetSimpDeptsCache } from "../../api/department";
 import { getEmptySimpDept } from "../../dataType/dataZero/department";
 import { SimpDept, SimpDeptCache } from "../../dataType/types/department";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 
 // Simple Department 
 export const simpDeptRepo = new MasterDataRepository<SimpDept, SimpDeptCache>({

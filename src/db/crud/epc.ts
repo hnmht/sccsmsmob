@@ -1,5 +1,5 @@
 import { reqGetSimpEPCList, reqGetSimpEPCCache } from "../../api/epc";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 import { SimpEPC, SimpEPCCache } from "../../dataType/types/epc";
 import { getEmptySimpEPC } from "../../dataType/dataZero/epc";
 

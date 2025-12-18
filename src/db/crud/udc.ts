@@ -1,5 +1,5 @@
 import { reqGetUDCList, reqGetUDCsCache } from "../../api/udc";
-import { MasterDataRepository } from "./respository";
+import { MasterDataRepository } from "./masterDataRespository";
 import { UserDefineCategory, UDCCache } from "../../dataType/types/udc";
 import { getEmptyUDC } from "../../dataType/dataZero/udc";
 
