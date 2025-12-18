@@ -1,9 +1,10 @@
-import { EOCommentsParams, EOReviewsParams, ExecutionOrder, ExecutionOrderComment, ExecutionOrderReview } from "../dataType/types/executionOrder";
+import { EOCommentsParams, EOReviewsParams, ExecutionOrder, ExecutionOrderComment, ExecutionOrderReview, ReferExecutionOrder } from "../dataType/types/executionOrder";
 import { PagingQueryParams, QueryParams } from "../dataType/types/public";
+import { APIResponse } from "../dataType/types/response";
 import request from "../utils/request";
 
 // Add Execution Order
-export function reqAddEO(data:ExecutionOrder, isLoading:boolean = true) {
+export function reqAddEO(data:ExecutionOrder, isLoading:boolean = true): Promise<APIResponse<ExecutionOrder>> {
     return request({
         url: "/eo/add",
         method: 'post',
@@ -12,7 +13,7 @@ export function reqAddEO(data:ExecutionOrder, isLoading:boolean = true) {
     });
 }
 // Modify Execution Order
-export function reqEditEO(data:ExecutionOrder, isLoading:boolean = true) {
+export function reqEditEO(data:ExecutionOrder, isLoading:boolean = true) : Promise<APIResponse<ExecutionOrder>> {
     return request({
         url: "/eo/edit",
         method: 'post',
@@ -21,7 +22,7 @@ export function reqEditEO(data:ExecutionOrder, isLoading:boolean = true) {
     });
 }
 // Delete Execution Order
-export function reqDeleteEO(data:ExecutionOrder, isLoading:boolean = true) {
+export function reqDeleteEO(data:ExecutionOrder, isLoading:boolean = true): Promise<APIResponse<ExecutionOrder>> {
     return request({
         url: "/eo/del",
         method: 'post',
@@ -30,7 +31,7 @@ export function reqDeleteEO(data:ExecutionOrder, isLoading:boolean = true) {
     });
 }
 // Confirm Execution Order
-export function reqConfirmEO(data:ExecutionOrder, isLoading :boolean= true) {
+export function reqConfirmEO(data:ExecutionOrder, isLoading :boolean= true): Promise<APIResponse<ExecutionOrder>> {
     return request({
         url: "/eo/confirm",
         method: 'post',
@@ -39,7 +40,7 @@ export function reqConfirmEO(data:ExecutionOrder, isLoading :boolean= true) {
     });
 }
 // Unconfirm Execution Order 
-export function reqUnConfirmEO(data:ExecutionOrder, isLoading :boolean= true) {
+export function reqUnConfirmEO(data:ExecutionOrder, isLoading :boolean= true):Promise<APIResponse<ExecutionOrder>> {
     return request({
         url: "/eo/unconfirm",
         method: 'post',
@@ -48,7 +49,7 @@ export function reqUnConfirmEO(data:ExecutionOrder, isLoading :boolean= true) {
     });
 }
 // Get Execution Order List
-export function reqGetEOList(data:QueryParams, isLoading:boolean = true) {
+export function reqGetEOList(data:QueryParams, isLoading:boolean = true) :Promise<APIResponse<ExecutionOrder[]>> {
     return request({
         url: "/eo/list",
         method: 'post',
@@ -58,7 +59,7 @@ export function reqGetEOList(data:QueryParams, isLoading:boolean = true) {
 }
 
 // Get Execution Order list by pagination
-export function reqGetEOPaginationList(data:PagingQueryParams, isLoading:boolean = true) {
+export function reqGetEOPaginationList(data:PagingQueryParams, isLoading:boolean = true) :Promise<APIResponse<ExecutionOrder[]>> {
     return request({
         url: "/eo/listpage",
         method: 'post',
@@ -68,7 +69,7 @@ export function reqGetEOPaginationList(data:PagingQueryParams, isLoading:boolean
 }
 
 // Get Execution Order details
-export function reqGetEODetail(data:ExecutionOrder, isLoading:boolean = true) {
+export function reqGetEODetail(data:ExecutionOrder, isLoading:boolean = true): Promise<APIResponse<ExecutionOrder>> {
     return request({
         url: "/eo/detail",
         method: 'post',
@@ -78,7 +79,7 @@ export function reqGetEODetail(data:ExecutionOrder, isLoading:boolean = true) {
 }
 
 // Get the list of Execution Orders to be referenced
-export function reqReferEO(data:QueryParams, isLoading:boolean = true) {
+export function reqReferEO(data:QueryParams, isLoading:boolean = true) :Promise<APIResponse<ReferExecutionOrder[]>> {
     return request({
         url: "/eo/refer",
         method: 'post',
@@ -88,7 +89,7 @@ export function reqReferEO(data:QueryParams, isLoading:boolean = true) {
 }
 
 // Add Execution Order comment
-export function reqAddEOComment(data:ExecutionOrderComment, isLoading :boolean= true) {
+export function reqAddEOComment(data:ExecutionOrderComment, isLoading :boolean= true) : Promise<APIResponse<ExecutionOrderComment>> {
     return request({
         url: "/eo/addcomment",
         method: 'post',
@@ -98,7 +99,7 @@ export function reqAddEOComment(data:ExecutionOrderComment, isLoading :boolean= 
 }
 
 // Add Execution Order Review Record
-export function reqAddEOReview(data:ExecutionOrderReview, isLoading:boolean = true) {
+export function reqAddEOReview(data:ExecutionOrderReview, isLoading:boolean = true) : Promise<APIResponse<ExecutionOrderReview>> {
     return request({
         url: "/eo/addreview",
         method: 'post',
@@ -108,7 +109,7 @@ export function reqAddEOReview(data:ExecutionOrderReview, isLoading:boolean = tr
 }
 
 // Get the Execution Order Review Record
-export function reqGetEOReviews(data:EOReviewsParams, isLoading:boolean = true) {
+export function reqGetEOReviews(data:EOReviewsParams, isLoading:boolean = true) : Promise<APIResponse<ExecutionOrderReview[]>> {
     return request({
         url: "/eo/reviews",
         method: 'post',
@@ -118,7 +119,7 @@ export function reqGetEOReviews(data:EOReviewsParams, isLoading:boolean = true) 
 }
 
 // Get the Execution Order Comments list
-export function reqGetEOComments(data:EOCommentsParams, isLoading :boolean= true) {
+export function reqGetEOComments(data:EOCommentsParams, isLoading :boolean= true): Promise<APIResponse<ExecutionOrderComment[]>> {
     return request({
         url: "/eo/comments",
         method: 'post',

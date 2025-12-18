@@ -58,25 +58,25 @@ const localTables: string[] = [
     'issueresolutionform'
 ];
 
-//初始化本地数据
+// Initialize Local Data
 export const initLoaclData = async (newDbid: string) => {
     console.log("NewDbID:", newDbid);
-    //查询dbinfo表中是否存在dbid内容
+    // Get existing dbid
     let dbid = getLocalDBID();
-    if (dbid === "") {//为空表示第一次初始化
+    if (dbid === "") {//if no dbid exists, save the new one
         dbid = newDbid;
-        //向数据库中写入dbid
+        // Save dbid to local appinfo table
         saveDBID(dbid);
     }
-    //判断新旧dbId是否相等
-    if (newDbid !== dbid) {//更换了登录服务器或服务器进行了重置
-        //清除所有表数据
+    // Check if the new dbid is different from the existing one
+    if (newDbid !== dbid) {// If different, it means a different server has logged in
+        // Clear all table data
         localTables.forEach(tableName => {
             clearTableData(tableName);
         });
     }
 
-    //请求所有本地缓存数据
+    // Request all repos to initialize their caches
     await simpDeptRepo.initCache();
     await simpEPCRepo.initCache();
     await personRepo.initCache();
@@ -94,7 +94,7 @@ export const initLoaclData = async (newDbid: string) => {
     await PPERepo.initCache();
 };
 
-//获取dbid字段
+// Get DBID
 const getLocalDBID = () => {
     let sqlStr = `select dbid from appinfo where appname='${name}' limit 1`;
     let { rows } = executeSQL(sqlStr);

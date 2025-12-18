@@ -2,7 +2,7 @@ import { QueryParams } from "../dataType/types/public";
 import request from "../utils/request";
 
 // Get Training Record List
-export function reqGetTRList(data: QueryParams, isLoading: boolean = true) {
+export function reqGetTRList(data: QueryParams, isLoading: boolean = true)  {
     return request({
         url: "/tr/list",
         method: 'post',

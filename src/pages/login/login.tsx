@@ -26,6 +26,7 @@ import { reqLogin } from "../../api/login";
 import { reqUserInfo } from "../../api/user";
 import { setUserToken, setUserInfo } from "../../store/slice/user";
 import { setIsOffline } from "../../store/slice/appInfo";
+import { setDbid } from "../../store/slice/appInfo";
 
 import { setServerInfo } from "../../store/slice/appInfo";
 import { saveServerInfo, saveToken } from "../../db/crud/appInfo";
@@ -121,7 +122,7 @@ function Login() {
             await initLoaclData(serverInfo.dbID);
 
             setOverlayStatus({ visible: true, description: t("requestingDynamicData") });
-            // dispatch(setDbid(serverInfo.dbid));
+            dispatch(setDbid(serverInfo.dbID));
             // Request Dynamic Data
             // getAllDynamicData();
             handleLoginFailed();

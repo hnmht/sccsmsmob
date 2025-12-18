@@ -33,7 +33,7 @@ export const createTableSQL: SQLBatchTuple[] = [
     [`CREATE TABLE IF NOT EXISTS csc(id INTEGER NOT NULL UNIQUE,name TEXT,ts TEXT,status INTEGER,value JSON,PRIMARY KEY('id'))`],
     [`CREATE TABLE IF NOT EXISTS csc_recent(autoid INTEGER,id INTEGER NOT NULL UNIQUE,name TEXT,ts TEXT,status INTEGER,value JSON,PRIMARY KEY('autoid' AUTOINCREMENT))`],
     // cso table
-    [`CREATE TABLE IF NOT EXISTS cso(id INTEGER NOT NULL UNIQUE,code TEXT,name TEXT,ts TEXT, value JSON,PRIMARY KEY('id'))`],
+    [`CREATE TABLE IF NOT EXISTS cso(id INTEGER NOT NULL UNIQUE,code TEXT,name TEXT, ts TEXT, value JSON,PRIMARY KEY('id'))`],
     // udc table
     [`CREATE TABLE IF NOT EXISTS udc(id INTEGER NOT NULL UNIQUE,name TEXT,ts TEXT,status INTEGER,value JSON,PRIMARY KEY('id'))`],
     [`CREATE TABLE IF NOT EXISTS udc_recent(autoid INTEGER,id INTEGER NOT NULL UNIQUE,name TEXT,ts TEXT,status INTEGER,value JSON,PRIMARY KEY('autoid' AUTOINCREMENT))`],

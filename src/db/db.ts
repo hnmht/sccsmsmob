@@ -123,18 +123,7 @@ export function executeSQLWithParams(sqlString: string, params: any[]): QueryRes
         throw err;
     }
 }
-
-// // Get latest data TS
-// export function queryDataTs(dataName: string): string {
-//     const sqlStr = `select ts from tsinfo where dataname='${dataName}' limit 1`;
-//     let { rows } = DB.execute(sqlStr);
-//     let ts = "";
-//     if (rows && rows.length > 0) {
-//         ts = rows._array[0].ts;
-//     }
-//     return ts;
-// }
-
+// Execute Transaction
 export async function withTransaction(fn: () => Promise<void> | void) {
     try {
         DB.execute("BEGIN TRANSACTION");
@@ -147,22 +136,9 @@ export async function withTransaction(fn: () => Promise<void> | void) {
     }
 }
 
-// // Add Data ts
-// export function addDataTs(dataName: string, ts: string): QueryResult {
-//     const sqlStr = `insert into tsinfo(dataname,ts) values('${dataName}','${ts}')`;
-//     return DB.execute(sqlStr);
-// }
-
-// // Update Data ts 
-// export function updateDataTs(dataName: string, ts: string): QueryResult {
-//     const sqlStr = `update tsinfo set ts='${ts}' where dataname='${dataName}'`;
-//     return DB.execute(sqlStr);
-// }
-
 // Delete Table Data
 export function clearTableData(tableName: string): QueryResult {
     const sqlStr = `delete from ${tableName}`;
     return DB.execute(sqlStr);
 }
 
-// Get Master Data Details by ID
