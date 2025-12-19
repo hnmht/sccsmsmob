@@ -7,13 +7,13 @@ import { queryAppinfo } from "../../db/crud/appInfo";
 import { setInfoFromDb } from "../../store/slice/appInfo";
 import { queryUserInfo } from "../../db/crud/userInfo";
 import { setUserInfoFromDb } from "../../store/slice/user";
-import { useRootStackNavigation } from "../../dataType/types/navigation";
+import { useRootNavigation } from "../../navigation/config/screenParams";
 
 // Splash Page
 function Splash() {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const navigation = useRootStackNavigation();
+    const navigation = useRootNavigation();
     let attempts = 0;
     // Load initial data from the database
     const LoadApp = () => {

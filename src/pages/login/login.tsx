@@ -17,8 +17,8 @@ import { useAppDispatch } from "../../store/hooks";
 import { useAppSelector } from "../../store/hooks";
 
 import { appVersion } from "../../../app.json";
-import { useAuthStackNavigation } from "../../dataType/types/navigation";
 import ActivityOverlay from "../../components/ActivityOverlay/ActivityOverlay";
+import { useRootNavigation, useAuthNavigation, useBottomNavigation } from "../../navigation/config/screenParams";
 
 import { reqPubSysInfo } from "../../api/pub";
 import { reqGetPublicKey } from "../../api/security";
@@ -34,11 +34,15 @@ import { initLoaclData } from "../../db/localData";
 import { saveUserInfo } from "../../db/crud/userInfo";
 import { saveIsOffLine } from "../../db/crud/appInfo";
 import { getAllDynamicDataOnline } from "../../store/pub";
-
+import { getLocalWOR } from "../../db/crud/workorderref";
+import { updateDynamicEORefs, updateDynamicWORefs } from "../../store/slice/dynamicData";
+import { getLocalEOR } from "../../db/crud/executionOrderRef";
 
 function Login() {
     const { t } = useTranslation();
-    const navigation = useAuthStackNavigation();
+    const authNav = useAuthNavigation();
+    const bottomNav = useBottomNavigation();
+    const rootNav = useRootNavigation();
     const theme = useTheme()
     const userInfo = useAppSelector(state => state.user)
     const [overlayStatus, setOverlayStatus] = useState({ visible: false, description: "" });
@@ -52,7 +56,7 @@ function Login() {
     const offlineButtonDisp = canOffline ? `(${userInfo.name})` : "";
 
     const handleSetNetOnPress = () => {
-        navigation.navigate("Setup");
+        authNav.navigate("Setup");
     };
 
     // Actions after Login Failed
@@ -126,7 +130,7 @@ function Login() {
             dispatch(setDbid(serverInfo.dbID));
             // Request Dynamic Data
             await getAllDynamicDataOnline();
-       
+
         }
         catch (err) {
             handleLoginFailed();
@@ -137,14 +141,29 @@ function Login() {
         saveIsOffLine(0);
         // Write Online status into redux
         dispatch(setIsOffline(0));
-
         setOverlayStatus({ visible: false, description: "" });
-        // navigation.replace("Navigator", { screen: "Home" });
+        // Navigate to Home Screen
+        // bottomNav.replace("Home");
+        rootNav.replace("BottomNav",{screen:"Home"})
 
     };
 
-    const handleUseOffLine = () => {
-
+    const handleUseOffLine = async () => {
+        // Get Work Order Reference from local DB
+        setOverlayStatus({ visible: true, description: t("retrieveWOLocal") });
+        const woRefs = getLocalWOR();
+        dispatch(updateDynamicWORefs(woRefs));
+        // Get Execution Order Reference from local DB
+        setOverlayStatus({ visible: true, description: t("retrieveEOLocal") });
+        const eoRefs = getLocalEOR()
+        dispatch(updateDynamicEORefs(eoRefs));
+        // Set Is Offline Status
+        setOverlayStatus({ visible: true, description: t("redirectingToPage") });
+        dispatch(setIsOffline(1));
+        // Navigate to Business Page
+        setOverlayStatus({ visible: false, description: "" });
+        // bottomNav.replace("Business");
+        rootNav.replace("BottomNav",{screen:"Business"});
     };
     return (
         <SafeAreaView style={{ flex: 1 }}>

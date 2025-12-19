@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { Button, Text, Checkbox } from "react-native-paper";
-import { View, BackHandler, Platform, ScrollView } from "react-native";
+import { useTranslation } from "react-i18next";
+import { View, BackHandler, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../dataType/types/navigation";
-type SignPrivacyProps = NativeStackScreenProps<RootStackParamList, "SignPrivacy">;
 import PrivacyText from "./privacyText";
-import { useTranslation } from "react-i18next";
+import { useAuthNavigation } from "../../navigation/config/screenParams";
 
-function SignPrivacy({ navigation }: SignPrivacyProps) {
+function SignPrivacy() {
     const { t } = useTranslation();
+    const authNav = useAuthNavigation();
     const [agree, setAgree] = useState(false);
     // Actions after click Reject button
     const handleRefuse = () => {
@@ -18,7 +17,8 @@ function SignPrivacy({ navigation }: SignPrivacyProps) {
     };
     // Actions after click Agree button
     const handleAgree = () => {
-        navigation.replace("AuthStack", { screen: "Setup" });
+        // navigation.replace("AuthStack", { screen: "Setup" });
+        authNav.replace("Setup");
     };
 
     return (<SafeAreaView style={{ flex: 1 }}>

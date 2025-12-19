@@ -648,6 +648,9 @@
     "requestingDynamicData":"Requesting dynamic data...",
     "redirectingToPage":"Redirecting to page...",
     "offlineLogin":"Offline login",
+    "retrieveWOLocal":"Retrieving Work Order data from the local database...",
+    "retrieveEOLocal":"Retrieving Execution Order data from the local database...",
+
 
     
     "MenuDashboard": "Dashboard",

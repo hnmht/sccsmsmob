@@ -645,6 +645,8 @@
     "requestingDynamicData": "正在请求动态数据...",
     "redirectingToPage": "正在跳转页面...",
     "offlineLogin": "离线登录",
+    "retrieveWOLocal": "正在从本地数据库提取指令单数据...",
+    "retrieveEOLocal": "正在从本地数据库提取执行单数据...",
 
     "MenuDashboard": "首页",
     "MenuCalendar": "日程",

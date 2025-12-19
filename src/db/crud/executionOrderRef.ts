@@ -35,7 +35,7 @@ export function updateEoRefStatus(id: number, status: number) {
 }
 
 // Get Local Execution Order References
-export function getLocalEDR(): ReferExecutionOrder[] {
+export function getLocalEOR(): ReferExecutionOrder[] {
     const sqlStr = `select json(value) as value from ${dataName} where status=1`;
     const { rows } = executeSQL(sqlStr);
     const docs: ReferExecutionOrder[] = [];

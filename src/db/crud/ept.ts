@@ -84,6 +84,7 @@ export const EPTRepo = new MasterDataRepository<EPT, EPTCache>({
     valueField: "value",
     fieldsMap: {
         "code": "code",
+        "name": "name",
         "status": "status",
         "ts": "ts",
     },

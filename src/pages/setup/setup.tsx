@@ -7,8 +7,7 @@ import axios from "axios";
 
 import { ResSuccessCode, APIResponse, ServerStatus } from "../../dataType/types/response";
 import { saveGlobalPath, saveServerAddr } from "../../db/crud/appInfo";
-
-import { useAuthStackNavigation } from "../../dataType/types/navigation";
+import { useRootNavigation } from "../../navigation/config/screenParams";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { setGlobalPath, setServerAddr, setServerInfo } from "../../store/slice/appInfo";
 import { resetUser } from "../../store/slice/user";
@@ -18,7 +17,7 @@ import { getEmptyServerInfo } from "../../dataType/dataZero/appInfo";
 // Setup Server Address Page
 function Setup() {
     const { t } = useTranslation();
-    const navigation = useAuthStackNavigation();
+    const navigation = useRootNavigation();
     const theme = useTheme();
     const appInfo = useAppSelector(state => state.appInfo)
     const [text, setText] = useState(appInfo.serverAddr);
@@ -76,9 +75,9 @@ function Setup() {
                     [{
                         text: t("ok")
                     }]
-                ) 
-                return               
-            }            
+                )
+                return
+            }
         }
         catch (err) {
             setIsLoading(false);
@@ -87,7 +86,7 @@ function Setup() {
                 t("serverUnableConnect"),
                 [{
                     text: t("ok"),
-                }]);        
+                }]);
             return
         }
     };
@@ -136,7 +135,7 @@ function Setup() {
             <View style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center", marginBottom: 16 }}>
                 <Text variant="titleMedium" style={{ width: "90%", color: theme.colors.error }}>
                     {t("tipDownloadBackend")}
-                </Text>                
+                </Text>
                 <Button mode="text" onPress={handleCopyPress} style={{ marginBottom: 8 }}>{t("copyURL")}</Button>
             </View>
 
