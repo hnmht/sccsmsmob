@@ -2,11 +2,9 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-
 import { NavigatorScreenParams } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
-
-// AuthStack Navigation
+ // AuthStack 
 export type AuthStackParmList = {
     Login: undefined;
     Setup: undefined;
@@ -23,7 +21,7 @@ export type BottomNavParamList = {
     Home: undefined;
     Message: undefined;
     Calendar: undefined;
-    Business: undefined;
+    BusinessNav: undefined;
     SettingNav: undefined;
 }
 
@@ -48,4 +46,5 @@ export function useRootNavigation<T extends keyof RootStackParamList>() {
 }
 export function useRootRoute<T extends keyof RootStackParamList>() {
     return useRoute<RouteProp<RootStackParamList, T>>();
-}
+} 
+

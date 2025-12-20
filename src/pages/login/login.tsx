@@ -18,7 +18,8 @@ import { useAppSelector } from "../../store/hooks";
 
 import { appVersion } from "../../../app.json";
 import ActivityOverlay from "../../components/ActivityOverlay/ActivityOverlay";
-import { useRootNavigation, useAuthNavigation, useBottomNavigation } from "../../navigation/config/screenParams";
+import { useRootNavigation, useAuthNavigation, AuthStackParmList } from "../../navigation/config/screenParams";
+import { useNavigation } from "@react-navigation/native";
 
 import { reqPubSysInfo } from "../../api/pub";
 import { reqGetPublicKey } from "../../api/security";
@@ -41,9 +42,8 @@ import { getLocalEOR } from "../../db/crud/executionOrderRef";
 function Login() {
     const { t } = useTranslation();
     const authNav = useAuthNavigation();
-    const bottomNav = useBottomNavigation();
     const rootNav = useRootNavigation();
-    const theme = useTheme()
+    const theme = useTheme();
     const userInfo = useAppSelector(state => state.user)
     const [overlayStatus, setOverlayStatus] = useState({ visible: false, description: "" });
     const [userCode, setUserCode] = useState(userInfo.code);
@@ -57,6 +57,7 @@ function Login() {
 
     const handleSetNetOnPress = () => {
         authNav.navigate("Setup");
+      
     };
 
     // Actions after Login Failed
@@ -144,7 +145,8 @@ function Login() {
         setOverlayStatus({ visible: false, description: "" });
         // Navigate to Home Screen
         // bottomNav.replace("Home");
-        rootNav.replace("BottomNav",{screen:"Home"})
+        rootNav.replace("BottomNav",{screen:"Home"});
+        
 
     };
 
