@@ -63,7 +63,7 @@ export type BottomNavParamList = {
     Message: undefined;
     Calendar: undefined;
     BusinessNav: NavigatorScreenParams<BusinessNavParamList>;
-    SettingNav: undefined;
+    SettingNav: NavigatorScreenParams<SettingNavParamList>;
 }
 export function useBottomNavigation<T extends keyof BottomNavParamList>() {
     return useNavigation<BottomTabNavigationProp<BottomNavParamList, T>>();

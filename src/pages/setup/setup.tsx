@@ -7,7 +7,7 @@ import axios from "axios";
 
 import { ResSuccessCode, APIResponse, ServerStatus } from "../../dataType/types/response";
 import { saveGlobalPath, saveServerAddr } from "../../db/crud/appInfo";
-import { useRootNavigation } from "../../navigation/config/screenParams";
+import { useAuthNavigation } from "../../navigation/config/screenParams";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { setGlobalPath, setServerAddr, setServerInfo } from "../../store/slice/appInfo";
 import { resetUser } from "../../store/slice/user";
@@ -17,7 +17,7 @@ import { getEmptyServerInfo } from "../../dataType/dataZero/appInfo";
 // Setup Server Address Page
 function Setup() {
     const { t } = useTranslation();
-    const navigation = useRootNavigation();
+    const navigation = useAuthNavigation();
     const theme = useTheme();
     const appInfo = useAppSelector(state => state.appInfo)
     const [text, setText] = useState(appInfo.serverAddr);

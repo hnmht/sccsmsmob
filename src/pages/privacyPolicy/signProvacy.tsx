@@ -5,11 +5,11 @@ import { View, BackHandler, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import PrivacyText from "./privacyText";
-import { useAuthNavigation } from "../../navigation/config/screenParams";
+import { useAuthNavigation,useRootNavigation } from "../../navigation/config/screenParams";
 
 function SignPrivacy() {
     const { t } = useTranslation();
-    const authNav = useAuthNavigation();
+    const rootNav = useRootNavigation();
     const [agree, setAgree] = useState(false);
     // Actions after click Reject button
     const handleRefuse = () => {
@@ -18,7 +18,7 @@ function SignPrivacy() {
     // Actions after click Agree button
     const handleAgree = () => {
         // navigation.replace("AuthStack", { screen: "Setup" });
-        authNav.replace("Setup");
+        rootNav.replace("AuthStack",{screen:"Setup"});
     };
 
     return (<SafeAreaView style={{ flex: 1 }}>

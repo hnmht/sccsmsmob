@@ -10,6 +10,7 @@ import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-
 import { pubParams } from "../components/pub/pubParams";
 import { TabRouteName, TabConfig } from "./config/tab";
 import { BottomNavParamList } from "./config/screenParams";
+import { useTranslation } from "react-i18next";
 
 const Tab = createBottomTabNavigator<BottomNavParamList>();
 const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
@@ -43,6 +44,7 @@ const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
 };
 
 function BottomNav() {
+    const { t } = useTranslation();
     const dynamicData = useAppSelector(state => state.dynamicData);
     const appInfo = useAppSelector(state => state.appInfo);
     const isOffLine = appInfo.isOffline === 1;
@@ -91,7 +93,7 @@ function BottomNav() {
                         name={name}
                         component={config.component}
                         options={{
-                            title: config.title,
+                            title: t(config.title),
                             tabBarBadge: badgesNumber[name] > 0 ? badgesNumber[name] : undefined,
                             tabBarBadgeStyle: badgeOptions,
                         }}
