@@ -1,6 +1,4 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-
 import Login from "../pages/login/login";
 import Setup from "../pages/setup/setup";
 import { AuthStackParmList } from "./config/screenParams";

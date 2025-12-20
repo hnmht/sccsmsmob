@@ -2,19 +2,20 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import BusinessScreen from "../pages/businessScreen/businessScreen";
 import AddressBook from "../pages/addressBook/addressBook";
-import WorkOrderDoc from "../pages/workOrder/workOrder";
-// import WorkOrderList from "../pages/workOrderList/workOrderList";
-// import ExecuteDoc from "../pages/executeDoc/executeDoc";
-// import ExecuteDocList from "../pages/executeDocList/executeDocList";
-// import ExecuteDocReview from "../pages/executeDocReview/executeDocReview";
-// import ExecuteDocReviewList from "../pages/executeDocReviewList/executeDocReviewList";
-// import DisposeDoc from "../pages/disposeDoc/disposeDoc";
-// import DisposeDocList from "../pages/disposeList/disposeDocList";
-// import LookupDocument from "../pages/lookupDocument/lookupDocument";
-// import ReciveTraining from "../pages/reciveTraining/reciveTraining";
-// import LpaQuery from "../pages/lpaQuery/lpaQuery";
+import WorkOrder from "../pages/workOrder/workOrder";
+import WorkOrderList from "../pages/workOrderList/workOrderList";
+import ExecutionOrder from "../pages/executionOrder/executionOrder";
+import ExecutionOrderList from "../pages/executionOrderList/executionOrderList";
+import ExecutionOrderReview from "../pages/executionOrderReview/ExecutionOrderReview";
+import ExecutionOrderReviewList from "../pages/executionOrderReviewList/ExecutionOrderReviewList";
+import IssueResolutionForm from "../pages/issueResolutionForm/IssueResolutionForm";
+import IssueResolutionFormList from "../pages/issueResolutionFormList/IssueResolutionFormList";
+import LookupDocument from "../pages/lookupDocument/lookupDocument";
+import ReceivedTraining from "../pages/receivedTraining/receivedTraining";
+import PPEReport from "../pages/ppeReport/ppeReport";
+import { BusinessNavParamList } from "./config/screenParams";
 
-const BusinessStack = createNativeStackNavigator();
+const BusinessStack = createNativeStackNavigator<BusinessNavParamList>();
 
 const BusinessNav = () => {
     return (
@@ -25,43 +26,43 @@ const BusinessNav = () => {
                 name="WorkOrder"
                 options={{ headerShown: false, title: "指令单" }}
                 initialParams={{ isNew: true, isModify: false, oriWO: undefined }}
-                component={WorkOrderDoc}
+                component={WorkOrder}
             />
-            {/* <BusinessStack.Screen
+            <BusinessStack.Screen
                 name="WorkOrderList"
                 options={{ headerShown: false, title: "指令单列表" }}
                 component={WorkOrderList}
             />
             <BusinessStack.Screen
-                name="ExecuteDoc"
+                name="ExecutionOrder"
                 options={{ headerShown: false, title: "执行单" }}
                 initialParams={{ isNew: true, isModify: false, oriWO: undefined }}
-                component={ExecuteDoc}
+                component={ExecutionOrder}
             />
             <BusinessStack.Screen
-                name="ExecuteDocList"
+                name="ExecutionOrderList"
                 options={{ headerShown: false, title: "执行单列表" }}
-                component={ExecuteDocList}
+                component={ExecutionOrderList}
             />
             <BusinessStack.Screen
-                name="ExecuteDocReview"
+                name="ExecutionOrderReview"
                 options={{ headerShown: false, title: "执行单审阅" }}
-                component={ExecuteDocReview}
+                component={ExecutionOrderReview}
             />
             <BusinessStack.Screen
-                name="ExecuteDocReviewList"
+                name="ExecutionOrderReviewList"
                 options={{ headerShown: false, title: "执行单审阅列表" }}
-                component={ExecuteDocReviewList}
+                component={ExecutionOrderReviewList}
             />
             <BusinessStack.Screen
-                name="DisposeDoc"
+                name="IssueResolutionForm"
                 options={{ headerShown: false, title: "处理单" }}
-                component={DisposeDoc}
+                component={IssueResolutionForm}
             />
             <BusinessStack.Screen
-                name="DisposeDocList"
+                name="IssueResolutionFormList"
                 options={{ headerShown: false, title: "处理单列表" }}
-                component={DisposeDocList}
+                component={IssueResolutionFormList}
             />
             <BusinessStack.Screen
                 name="LookupDocument"
@@ -69,15 +70,15 @@ const BusinessNav = () => {
                 component={LookupDocument}
             />
             <BusinessStack.Screen
-                name="ReciveTraining"
+                name="ReceivedTraining"
                 options={{ headerShown: false, title: "培训查询" }}
-                component={ReciveTraining}
+                component={ReceivedTraining}
             />
             <BusinessStack.Screen
-                name="LpaQuery"
+                name="PPEReport"
                 options={{ headerShown: false, title: "劳保发放查询" }}
-                component={LpaQuery}
-            /> */}
+                component={PPEReport}
+            />
         </BusinessStack.Navigator>
     );
 };
