@@ -61,33 +61,33 @@ export async function getEORefsData() {
     // Update execution order references in Redux store
     store.dispatch(setDynamicEORefs(eorRefs));
 }
-/* 
-//获取带图片的执行单参照数据
-export const getEDRefsDataWithImage = async () => {
-    let edrRes = await reqUserEORefs();
-    let edrRefs = [];
-    if (edrRes.data.status === 0) {
-        edrRefs = edrRes.data.data;
+
+// Get Refer Execution Order with attachments
+export const getEORefsDataWithImage = async () => {
+    let eorRes = await reqUserEORefs();
+    let eorRefs: ReferExecutionOrder[] = [];
+    if (eorRes.status) {
+        eorRefs = eorRes.data;
     }
-    for (i = 0; i < edrRefs.length; i++) {
-        if (edrRefs[i].edfiles && edrRefs[i].edfiles.length > 0) {
-            for (ii = 0; ii < edrRefs[i].edfiles.length; ii++) {
-                const filePath = `${RNFS.DownloadDirectoryPath}/${edrRefs[i].edfiles[ii].file.miniofilename}`;
+    for (let i = 0; i < eorRefs.length; i++) {
+        if (eorRefs[i].eoFiles && eorRefs[i].eoFiles.length > 0) {
+            for (var ii = 0; ii < eorRefs[i].eoFiles.length; ii++) {
+                const filePath = `${RNFS.DownloadDirectoryPath}/${eorRefs[i].eoFiles[ii].file.minioFileName}`;
                 const fileExist = await RNFS.exists(filePath);
                 if (!fileExist) {
                     await downLoadDDFile({
-                        fromUrl: edrRefs[i].edfiles[ii].file.fileurl,
+                        fromUrl: eorRefs[i].eoFiles[ii].file.fileUrl,
                         toFile: filePath
                     });
                 }
-                edrRefs[i].edfiles[ii].file.fileurl = `file://${filePath}`;
+                eorRefs[i].eoFiles[ii].file.fileUrl = `file://${filePath}`;
             }
         }
     }
-    store.dispatch(setDynamicEORefs(edrRefs));
+    store.dispatch(setDynamicEORefs(eorRefs));
 };
 
-//下载文件
-const downLoadDDFile = async (options) => {
+// Download File
+const downLoadDDFile = async (options: RNFS.DownloadFileOptions) => {
     await RNFS.downloadFile(options).promise;
-}; */
+}; 

@@ -67,7 +67,7 @@ service.interceptors.response.use(
         res.status = res.resKey === ResSuccessCode;
 
         if (!res.status) {
-            Alert.alert("错误", res.msg || "请求返回错误", [{ text: "OK" }], { cancelable: false });
+            Alert.alert(i18n.t("error"), res.msg || "请求返回错误", [{ text: "OK" }], { cancelable: false });
 
             if (ResRemoveTokenCodes.includes(res.resKey)) {
                 // TODO: 你可以在这里 dispatch 清除 token 的 action
@@ -81,7 +81,7 @@ service.interceptors.response.use(
     },
     (err) => {
         Alert.alert(
-            "错误",
+            i18n.t("error"),
             err?.message === "Network Error" ? "网络错误，请检查设备网络！" : "连接服务器失败，请稍后再试！"
         );
         return Promise.reject(err);

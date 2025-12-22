@@ -2,6 +2,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Provider as PaperProvider } from "react-native-paper";
 import { StatusBar } from "react-native";
+import { NavigationBar } from "@zoontek/react-native-navigation-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
@@ -38,6 +39,7 @@ const App = () => {
                         <NavigationContainer theme={theme} ref={navigationRef}>
                             <RootStackScreen />
                         </NavigationContainer>
+                        <NavigationBar barStyle={theme.dark ? "light-content" : "dark-content"} />
                     </SafeAreaProvider>
                 </PaperProvider>
             </Provider>

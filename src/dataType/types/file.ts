@@ -14,7 +14,7 @@ export interface File {
     longitude?: number;
     latitude?: number;
     size?: number;
-    fileUrl?: string;
+    fileUrl: string;
     dateTimeOriginal?: string;
     uploadTime?: string;
     source?: string;

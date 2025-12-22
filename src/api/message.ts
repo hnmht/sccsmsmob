@@ -1,5 +1,8 @@
+import { ReferExecutionOrder } from "../dataType/types/executionOrder";
 import { CommentMessage } from "../dataType/types/message";
 import { QueryParams } from "../dataType/types/public";
+import { APIResponse } from "../dataType/types/response";
+import { WorkOrderRow } from "../dataType/types/workOrder";
 import request from "../utils/request";
 
 // Get user UnRead comments
@@ -22,7 +25,7 @@ export function reqReadComments(data: QueryParams, isLoading: boolean = true) {
 }
 
 // Get user work order awaiting execution
-export function reqUserWORefs(isLoading: boolean = true) {
+export function reqUserWORefs(isLoading: boolean = true):Promise<APIResponse<WorkOrderRow[]>> {
     return request({
         url: "/msg/wos",
         method: 'post',
@@ -31,7 +34,7 @@ export function reqUserWORefs(isLoading: boolean = true) {
 }
 
 // Get user execution order issues
-export function reqUserEORefs(isLoading: boolean = true) {
+export function reqUserEORefs(isLoading: boolean = true):Promise<APIResponse<ReferExecutionOrder[]>> {
     return request({
         url: "/msg/eos",
         method: 'post',
