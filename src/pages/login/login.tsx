@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View, KeyboardAvoidingView, Alert } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Alert, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
     IconButton,
@@ -10,16 +10,13 @@ import {
 } from "react-native-paper";
 import jsencrypt from "jsencrypt";
 import { useTranslation } from "react-i18next";
-
 import { UserInfo } from "../../dataType/types/user";
 import { ServerInfo } from "../../dataType/types/appInfo";
 import { useAppDispatch } from "../../store/hooks";
 import { useAppSelector } from "../../store/hooks";
-
 import { appVersion } from "../../../app.json";
 import ActivityOverlay from "../../components/ActivityOverlay/ActivityOverlay";
-import { useRootNavigation, useAuthNavigation, AuthStackParmList } from "../../navigation/config/screenParams";
-import { useNavigation } from "@react-navigation/native";
+import { useRootNavigation, useAuthNavigation } from "../../navigation/config/screenParams";
 
 import { reqPubSysInfo } from "../../api/pub";
 import { reqGetPublicKey } from "../../api/security";
@@ -57,7 +54,7 @@ function Login() {
 
     const handleSetNetOnPress = () => {
         authNav.navigate("Setup");
-      
+
     };
 
     // Actions after Login Failed
@@ -145,8 +142,7 @@ function Login() {
         setOverlayStatus({ visible: false, description: "" });
         // Navigate to Home Screen
         // bottomNav.replace("Home");
-        rootNav.replace("BottomNav",{screen:"Home"});
-        
+        rootNav.replace("BottomNav", { screen: "Home" });
 
     };
 
@@ -165,7 +161,8 @@ function Login() {
         // Navigate to Business Page
         setOverlayStatus({ visible: false, description: "" });
         // bottomNav.replace("Business");
-        rootNav.replace("BottomNav",{screen:"Business"});
+        rootNav.replace("BottomNav", { screen: "BusinessNav" });
+
     };
     return (
         <SafeAreaView style={{ flex: 1 }}>

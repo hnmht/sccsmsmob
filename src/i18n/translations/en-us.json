@@ -650,8 +650,14 @@
     "offlineLogin":"Offline login",
     "retrieveWOLocal":"Retrieving Work Order data from the local database...",
     "retrieveEOLocal":"Retrieving Execution Order data from the local database...",
-
-
+    "business":"Business",  
+    "serverAddress":"Server Address", 
+    "MenuWOList":"Work Order List",
+    "MenuEOList":"Execution Order List",
+    "MenuEOReviewList":"Execution Order Review List",
+    "MenuIRFList":"Issue Resolution Form List",
+    "privacyPolicy":"Privacy Policy",
+    "fileCleanup":"File Cleanup",
     
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

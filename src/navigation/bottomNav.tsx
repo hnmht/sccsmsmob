@@ -15,29 +15,29 @@ import { useTranslation } from "react-i18next";
 const Tab = createBottomTabNavigator<BottomNavParamList>();
 const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
     Home: {
-        title: '首页',
+        title: 'MenuDashboard',
         icon: 'home',
         component: Dashboard,
         showWhenOffline: false,
     },
     Message: {
-        title: '消息',
+        title: 'MenuMessage',
         icon: 'message',
         component: Message,
         showWhenOffline: false,
     },
     Calendar: {
-        title: '日程',
+        title: 'MenuCalendar',
         icon: 'calendar',
         component: Calendar,
     },
     BusinessNav: {
-        title: '业务',
+        title: 'business',
         icon: 'all-inclusive',
         component: BusinessNav,
     },
     SettingNav: {
-        title: '设置',
+        title: 'MenuSettings',
         icon: 'cog',
         component: SettingNav,
     },

@@ -1,10 +1,11 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { Provider as PaperProvider } from "react-native-paper";
+import { StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
-import {store} from "./store";
+import { store } from "./store";
 import { CombinedDefaultTheme, CombinedDarkTheme } from "./theme/theme";
 import { ThemeContext } from "./theme/context";
 import { RootStackScreen, navigationRef } from "./navigation/rootStack";
@@ -23,11 +24,17 @@ const App = () => {
         }),
         [toggleTheme, isThemeDark]
     );
+
+    theme.dark
     return (
         <ThemeContext.Provider value={preferences}>
             <Provider store={store}>
                 <PaperProvider theme={theme}>
                     <SafeAreaProvider>
+                        <StatusBar
+                            barStyle={theme.dark ? "light-content" : "dark-content"}
+                            backgroundColor={theme.colors.background}
+                        />
                         <NavigationContainer theme={theme} ref={navigationRef}>
                             <RootStackScreen />
                         </NavigationContainer>
