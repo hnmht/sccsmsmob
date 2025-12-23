@@ -1,7 +1,7 @@
 import { ExecutionOrder } from "../../dataType/types/executionOrder";
 import { VoucherRepository } from "./voucherRespository";
 
-export const executionOrderRepo = new VoucherRepository<ExecutionOrder>({
+export const EORepo = new VoucherRepository<ExecutionOrder>({
     table: "executionorder",
     primaryKey: "id",
 });

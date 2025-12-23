@@ -53,7 +53,7 @@ const Setting = () => {
         }
     };
 
-    //切换到离线模式数据准备
+    // Download data
     const handleDownOfflineData = async () => {
         try {
             setOverlayStatus({ visible: true, description: t("syncUDC") });
@@ -157,7 +157,11 @@ const Setting = () => {
                     <PersonAvatar url={person.avatar.fileUrl} isOffLine={appInfo.isOffline} name={person.name} />
                     <View style={{ marginLeft: 8 }}>
                         <Text variant="titleLarge" maxFontSizeMultiplier={1}>{person.name}</Text>
-                        <Text variant="titleSmall" maxFontSizeMultiplier={1}>{person.deptName}</Text>
+                        {person.deptName !== ""
+                            ? <Text variant="titleSmall" maxFontSizeMultiplier={1}>{person.deptName}</Text>
+                            : null
+                        }
+                        
                     </View>
                 </View>
                 <Button disabled={isOffLine} style={{ paddingRight: 16 }} onPress={handleUserDetail}>{t("detail")}</Button>

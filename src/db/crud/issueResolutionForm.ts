@@ -1,7 +1,7 @@
 import { IssueResolutionForm } from "../../dataType/types/issueResolutionForm";
 import { VoucherRepository } from "./voucherRespository";
 
-export const issueresolutionformRepo = new VoucherRepository<IssueResolutionForm>({
+export const IRFRepo = new VoucherRepository<IssueResolutionForm>({
     table: "issueresolutionform",
     primaryKey: "id",
 });

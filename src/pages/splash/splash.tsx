@@ -64,7 +64,7 @@ function Splash() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "red" }}>
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                 <ImageBackground source={require("./image/background.png")} resizeMode="cover" style={{ width: "100%", height: "100%", flex: 1, justifyContent: "center" }}>
                     <ActivityIndicator animating={true} color={theme.colors.primary} style={{ marginTop: 128 }} />
                 </ImageBackground>

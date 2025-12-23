@@ -59,6 +59,12 @@ export class VoucherRepository<T> {
         const sql = `DELETE FROM ${this.cfg.table}`;
         executeSQL(sql);
     }
+    delVoucher(voucher: T): void {
+        console.log(`Delete Voucher in the table ${this.cfg.table}`);
+        const sql = `delete from ${this.cfg.table} where id=?`;
+        const params: any[] = [(voucher as any).id];
+        executeSQLWithParams(sql, params);
+    }
     editVoucher(voucher: T): void {
         console.log(`Editing voucher in table ${this.cfg.table}`);
         const sql = `UPDATE ${this.cfg.table} SET value=? WHERE id=?`;

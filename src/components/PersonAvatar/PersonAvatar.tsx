@@ -7,10 +7,10 @@ interface PersonAvatarProps {
 }
 
 function PersonAvatar({ url, isOffLine, name }: PersonAvatarProps) {
-    const displayIcon = url === "" || url === undefined ||isOffLine === 1;
+    const displayIcon = url === "" || url === undefined || isOffLine === 1;
     return (
         displayIcon
-            ? <Avatar.Text size={48} label={name.charAt(0)} />
+            ? <Avatar.Text size={48} label={name.charAt(0).toUpperCase()} />
             : <Avatar.Image size={48} source={{ uri: url }} onError={(err) => console.error(err)} />
     );
 };
