@@ -1,4 +1,4 @@
-import i18n from "i18next";
+import i18n, { ResourceLanguage } from "i18next";
 import { initReactI18next } from "react-i18next";
 
 import dayjs from 'dayjs';
@@ -27,12 +27,21 @@ dayjs.extend(localData);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const resources = {
+interface ScResource {
+    [language: string]: {
+        translation: ResourceLanguage;
+        label: string
+    }
+}
+
+export const resources: ScResource = {
     "en-US": {
         translation: translationEnUS,
+        label: "English(United States)"
     },
     "zh-CN": {
-        translation: translationZhHans
+        translation: translationZhHans,
+        label: "简体中文"
     },
 };
 

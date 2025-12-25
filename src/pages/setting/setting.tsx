@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { View, Alert, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, Switch, List, Divider, useTheme, Button, Surface, IconButton } from "react-native-paper";
+import { Text, Switch, List, Divider, useTheme, Button, Surface, IconButton, Menu } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 
 import { ThemeContext } from "../../theme/context";
@@ -28,6 +28,7 @@ import { TCRepo } from "../../db/crud/tc";
 import { PPERepo } from "../../db/crud/ppe";
 import { useRootNavigation, useSettingNavigation } from "../../navigation/config/screenParams";
 import { reqLogout } from "../../api/login";
+import ChangeLanguage from "../../components/ChangeLang/changeLang";
 
 const Setting = () => {
     const navigation = useRootNavigation();
@@ -151,7 +152,7 @@ const Setting = () => {
             <ActivityOverlay
                 visible={overlayStatus.visible}
                 description={overlayStatus.description}
-            />
+            />          
             <Surface style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: 80 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", paddingLeft: 16 }}>
                     <PersonAvatar url={person.avatar.fileUrl} isOffLine={appInfo.isOffline} name={person.name} />
@@ -161,7 +162,7 @@ const Setting = () => {
                             ? <Text variant="titleSmall" maxFontSizeMultiplier={1}>{person.deptName}</Text>
                             : null
                         }
-                        
+
                     </View>
                 </View>
                 <Button disabled={isOffLine} style={{ paddingRight: 16 }} onPress={handleUserDetail}>{t("detail")}</Button>
@@ -180,6 +181,14 @@ const Setting = () => {
                         title={t(isOffLine ? "switchOnline" : "switchOffline")}
                         left={() => <List.Icon icon={isOffLine ? "wifi-off" : "wifi"} color={theme.colors.primary} />}
                         right={() => <Switch color={theme.colors.error} value={isOffLine} onValueChange={handleSwitchOffLine} />}
+                        style={{ paddingLeft: 16, height: 64, alignItems: "center", justifyContent: "center" }}
+                        titleMaxFontSizeMultiplier={1.2}
+                    />
+                    <Divider />
+                    <List.Item
+                        title={t("language")}
+                        left={() => <List.Icon icon={"google-translate"} color={theme.colors.primary} />}
+                        right={() => <ChangeLanguage />}
                         style={{ paddingLeft: 16, height: 64, alignItems: "center", justifyContent: "center" }}
                         titleMaxFontSizeMultiplier={1.2}
                     />
@@ -240,6 +249,7 @@ const Setting = () => {
                     </Button>
                 </View>
             </ScrollView>
+            
         </SafeAreaView>
     );
 };

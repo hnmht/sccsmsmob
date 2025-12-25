@@ -1,6 +1,6 @@
 import { QueryResult } from "react-native-quick-sqlite";
 import { name } from "../../../app.json"
-import { executeSQL } from "../db";
+import { executeSQL, executeSQLWithParams } from "../db";
 
 // Get language
 export function getLanguage(): string {
@@ -14,7 +14,8 @@ export function getLanguage(): string {
 }
 
 // Set languate
-export function setLanguage(languageTag: string): QueryResult {   
-    const sqlStr = `update lang set languagetag='${languageTag}' where  appname='${name}')`;
-    return executeSQL(sqlStr);
+export function setLanguage(languageTag: string): QueryResult {
+    const sql = `update lang set languagetag=? where  appname=?`;
+    const params = [languageTag, name]
+    return executeSQLWithParams(sql, params);
 }
