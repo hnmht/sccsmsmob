@@ -1,5 +1,5 @@
 // File
-export interface File {
+export interface File {   
     id: number;
     hash?: string;
     minioFileName?: string;

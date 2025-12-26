@@ -1,11 +1,12 @@
+import { APIResponse } from "../dataType/types/response";
+import { UserInfo } from "../dataType/types/user";
 import request from "../utils/request";
 
 // Get User Infomation
-export function reqUserInfo(data: string, isLoading = true) {
+export function reqUserInfo( isLoading = true):Promise<APIResponse<UserInfo>> {
     return request({
         url: "/user/info",
         method: "post",
-        data,
         isLoading
     });
 }

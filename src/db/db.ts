@@ -34,7 +34,7 @@ export function initDb() {
             id: 0,
             code: "",
             name: "",
-            avatar: { id: 0 },
+            avatar: { id: 0, fileUrl: "" },
             deptID: 0,
             deptCode: "",
             deptName: "",
@@ -68,7 +68,7 @@ export function initDb() {
             id: 0,
             code: "",
             name: "",
-            avatar: { id: 0 },
+            avatar: { id: 0 ,fileUrl:""},
             token: "",
             menuList: [],
             person: emptyPerson,
@@ -116,7 +116,7 @@ export function executeSQL(sqlString: string): QueryResult {
 }
 // Execute SQL With Parameters
 export function executeSQLWithParams(sqlString: string, params: any[]): QueryResult {
-    try {        
+    try {
         return DB.execute(sqlString, params);
     } catch (err) {
         console.log("DB.execute with params failed, sql:", sqlString, " params:", params, " Error:", err);
@@ -131,7 +131,7 @@ export async function withTransaction(fn: () => Promise<void> | void) {
         DB.execute("COMMIT");
     } catch (e) {
         DB.execute("ROLLBACK");
-        console.error("Transaction rollback:",e);
+        console.error("Transaction rollback:", e);
         throw e;
     }
 }
