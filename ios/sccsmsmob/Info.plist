@@ -56,10 +56,10 @@
 		<string>MaterialDesignIcons.ttf</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>需要使用相机拍摄附件</string>
+	<string>Used to take photos for attachments</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>需要获取拍摄时的地理位置</string>
+	<string>Used to include location information with you photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>需要访问相册选择附件</string>
+	<string>Used to let you choose photos from your library</string>
 </dict>
 </plist>

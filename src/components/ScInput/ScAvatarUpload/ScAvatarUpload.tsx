@@ -2,11 +2,13 @@ import { useState, memo, useEffect } from "react";
 import { View, Alert, Platform, PermissionsAndroid, PermissionStatus } from "react-native";
 import { Avatar, IconButton, Text, useTheme } from "react-native-paper";
 import ImageCropPicker, { Image } from "react-native-image-crop-picker";
-import { checkMultiple, PERMISSIONS } from "react-native-permissions";
+
+
 
 import { reqGetFileByHash, reqUploadFiles } from "../../../api/file";
-import { getCropImageInfo } from "../../tools/file";
+import { readImageInfo } from "../../tools/file";
 import { File } from "../../../dataType/types/file";
+import { requestPermissions } from "../../tools/permission";
 
 interface ScAvatarUploadProps {
     fieldIndex?: number;
@@ -16,7 +18,7 @@ interface ScAvatarUploadProps {
     initValue: File;
     pickDone: Function;
     width?: number;
-    onCancel: Function;
+    onCancel?: Function;
 }
 
 //901
@@ -36,7 +38,7 @@ const ScAvatarUpload = ({
     //检查授权
     useEffect(() => {
         const checkPermission = async () => {
-            const res = await checkMultiple([PERMISSIONS.IOS.CAMERA, PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, PERMISSIONS.IOS.PHOTO_LIBRARY]);
+            const res = await requestPermissions();
             console.log("checkPermission res:", res);
         }
         checkPermission();
@@ -44,17 +46,15 @@ const ScAvatarUpload = ({
     //选中文件后执行的操作
     const handleFileSelect = async (file: Image) => {
         setIsLoading(true);
-
         if ((file.size / 1024) > 5120) {
             setIsLoading(false);
             return
         }
         let formData = new FormData(); //准备formData
         //获取文件信息值
-        let fileInfo = await getCropImageInfo(file);
+        let fileInfo = await readImageInfo(file);
 
         if (fileInfo.isImage === 0) {
-
             setIsLoading(false);
             return
         }
@@ -83,11 +83,11 @@ const ScAvatarUpload = ({
         if (getFilesHashRes.data && getFilesHashRes.data.id === 0) {
             let uploadFile = { uri: file.path, type: file.mime, name: fileInfo.name };
             formData.append("files", uploadFile);
-            formData.append("filekey", 0);
-            formData.append("filehash", fileInfo.fileHash);
-            formData.append("filename", fileInfo.name);
-            formData.append("filetype", fileInfo.fileType);
-            formData.append("isimage", fileInfo.isImage);
+            formData.append("fileKey", 0);
+            formData.append("hash", fileInfo.fileHash);
+            formData.append("fileName", fileInfo.name);
+            formData.append("fileType", fileInfo.fileType);
+            formData.append("isImage", fileInfo.isImage);
             formData.append("model", fileInfo.Model); //相机型号
             formData.append("DateTimeOriginal", fileInfo.DateTimeOriginal); //初始拍摄时间
             formData.append("latitude", fileInfo.latitude);//纬度
@@ -96,7 +96,7 @@ const ScAvatarUpload = ({
             //向服务器上传文件
             const uploadRes = await reqUploadFiles(formData, false);
 
-            if (uploadRes.status) {
+            if (!uploadRes.status) {
                 Alert.alert("错误", uploadRes.msg);
                 setIsLoading(false);
                 return
