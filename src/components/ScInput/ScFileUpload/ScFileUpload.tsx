@@ -1,33 +1,38 @@
 import { useState } from "react";
 import { View, Modal, Alert } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
-import { useSelector } from "react-redux";
-import FilePicker from "./FilePicker";
 
-import { voucherFilesToFiles, filesToVoucherFiles } from "./constructor";
+import { useAppSelector } from "../../../store/hooks";
+import FilePicker from "./FilePicker";
+import { ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
+import { voucherFilesToFiles, filesToVoucherFiles } from "./constructions";
+import { File } from "../../../dataType/types/file";
+import { VoucherFile } from "../../../dataType/types/voucherFile";
+import { getEmptyErrMsg } from "../../../dataType/dataZero/scInput";
 
 //902 文件上传
-const ScFileUpload = (props) => {
+const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
     const { positionID, rowIndex, allowNull, isEdit, itemShowName, itemKey, initValue, pickDone, placeholder, errInfo, isOnSitePhoto, width, height, markTexts } = props;
     const [files, setFiles] = useState(voucherFilesToFiles(initValue));
     const [dialogOpen, setDialogOpen] = useState(false);
     const theme = useTheme();
     const label = allowNull ? itemShowName : "*" + itemShowName;
     //命令按钮位置
-    const { buttonPosition } = useSelector(state => state.swapposition);
+    const { buttonPosition } = useAppSelector(state => state.swapPosition);
     //向父组件传递数据
     const handleTransfer = async (items = files) => {
         if (!isEdit) {
             return
         }
-        let oldVoucherFiles = initValue ? initValue : [];
+
+        let oldVoucherFiles: VoucherFile[] = initValue ? initValue : [];
         let voucherFiles = filesToVoucherFiles(oldVoucherFiles, items);
         setFiles(items);
         pickDone(voucherFiles, itemKey, positionID, rowIndex, errInfo);
     };
 
     //对话框点击ok按钮
-    const handleSelectedOk = (items) => {
+    const handleSelectedOk = (items: File[]) => {
         setDialogOpen(false);
         handleTransfer(items);
     };
@@ -48,13 +53,13 @@ const ScFileUpload = (props) => {
                     ? errInfo.isErr
                         ? <TextInput.Icon
                             icon="alert"
-                            iconColor={theme.colors.error}
+                            color={theme.colors.error}
                             onPress={() => Alert.alert("错误", errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon
                         icon="paperclip"
-                        iconColor={isEdit ? theme.colors.primary : theme.colors.onBackground}
+                        color={isEdit ? theme.colors.primary : theme.colors.onBackground}
                         onPress={() => setDialogOpen(true)}
                     />
                 }
@@ -62,13 +67,13 @@ const ScFileUpload = (props) => {
                     ? errInfo.isErr
                         ? <TextInput.Icon
                             icon="alert"
-                            iconColor={theme.colors.error}
+                            color={theme.colors.error}
                             onPress={() => Alert.alert("错误", errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon
                         icon="paperclip"
-                        iconColor={isEdit ? theme.colors.primary : theme.colors.onBackground}
+                        color={isEdit ? theme.colors.primary : theme.colors.onBackground}
                         onPress={() => setDialogOpen(true)}
                     />
 
@@ -81,12 +86,12 @@ const ScFileUpload = (props) => {
             >
                 <FilePicker
                     key={`filepicker${itemKey}-p${positionID}-r${rowIndex}`}
-                    isOnSitePhoto={isOnSitePhoto}
+                    isOnSitePhoto={false}
                     isEdit={isEdit}
                     initFiles={files}
                     onCancel={() => setDialogOpen(false)}
                     onOk={handleSelectedOk}
-                    markTexts={markTexts}
+                    markTexts={markTexts ? markTexts : []}
                 />
             </Modal>
         </View>
@@ -95,10 +100,3 @@ const ScFileUpload = (props) => {
 
 export default ScFileUpload;
 
-ScFileUpload.defaultProps = {
-    initValue: [],
-    width: "100%",
-    height: 68,
-    errInfo: { isErr: false, msg: "" },
-    markTexts: []
-};

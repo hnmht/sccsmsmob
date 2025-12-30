@@ -1,5 +1,11 @@
 import { VoucherFile } from "../../../dataType/types/voucherFile";
 import { File } from "../../../dataType/types/file";
+import { getEmptyVoucherFile } from "../../../dataType/dataZero/voucherFile";
+
+type urlAndHash = {
+    url: string;
+    hash: string;
+}
 
 //单据附件列表转文件列表
 export const voucherFilesToFiles = (voucherFiles: VoucherFile[]) => {
@@ -14,7 +20,7 @@ export const voucherFilesToFiles = (voucherFiles: VoucherFile[]) => {
 }
 
 //文件列表转换为单据附件列表
-export const filesToVoucherFiles = (voucherFiles: VoucherFile[], files: File[]) => {
+export const filesToVoucherFiles = (voucherFiles: VoucherFile[], files: File[]): VoucherFile[] => {
     if (!voucherFiles) {
         return [];
     }
@@ -27,11 +33,11 @@ export const filesToVoucherFiles = (voucherFiles: VoucherFile[], files: File[]) 
     }
 
     //筛选出新增的文件
-    let newVoucherFiles = [];
+    let newVoucherFiles: VoucherFile[] = [];
     for (let i = 0; i < files.length; i++) {
         let voucherFileIndex = voucherFiles.findIndex(voucherFile => voucherFile.file.hash === files[i].hash);
         if (voucherFileIndex < 0) {
-            let newVoucherFile = { id: 0, billhid: 0, billbid: 0, file: files[i], dr: 0 };
+            let newVoucherFile: VoucherFile = getEmptyVoucherFile();
             newVoucherFiles.push(newVoucherFile);
         } else {
             if (voucherFiles[voucherFileIndex].dr === 1) {
@@ -54,10 +60,10 @@ export const filesToVoucherFiles = (voucherFiles: VoucherFile[], files: File[]) 
 
 //文件列表转urls
 export const filesToUrls = (files: File[]) => {
-    let imageUrls: [] = [];
+    let imageUrls: urlAndHash[] = [];
     files.forEach(file => {
         if (file.isImage === 1) {
-            imageUrls.push({ url: file.fileUrl, filehash: file.hash });
+            imageUrls.push({ url: file.fileUrl, hash: file.hash ? file.hash : "" });
         }
     })
     return imageUrls;

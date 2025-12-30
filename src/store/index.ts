@@ -4,7 +4,7 @@ import userReducer from "./slice/user";
 import reqStatusReducer from "./slice/reqStatus";
 import dynamicDataReducer from "./slice/dynamicData";
 // import loadStatusReducer from "./slice/loadStatus";
-// import swapPosition from "./slice/swapPosition";
+import swapPosition from "./slice/swapPosition";
 
 export const store = configureStore({
     reducer: {
@@ -13,7 +13,7 @@ export const store = configureStore({
         reqStatus: reqStatusReducer,
         dynamicData: dynamicDataReducer,
         // loadstatus: loadStatusReducer,
-        // swapposition: swapPosition
+        swapPosition: swapPosition
     }
 });
 

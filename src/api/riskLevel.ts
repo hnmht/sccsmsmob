@@ -1,4 +1,3 @@
-import { PPECache } from "../dataType/types/ppe";
 import { APIResponse } from "../dataType/types/response";
 import { RiskLevel, RLCache } from "../dataType/types/riskLevel";
 import request from "../utils/request";
@@ -12,7 +11,7 @@ export function reqGetRLList(isLoading:boolean = true) :Promise<APIResponse<Risk
     });
 }
 // Get latest Risk Level front-end cache
-export function reqGetRLsCache(data:RLCache, isLoading:boolean = true) :Promise<APIResponse<PPECache>> {
+export function reqGetRLsCache(data:RLCache, isLoading:boolean = true) :Promise<APIResponse<RLCache>> {
     return request({
         url: "/rl/cache",
         method: 'post',

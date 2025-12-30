@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
-import { ScrollView, View, TouchableOpacity, PermissionsAndroid, Platform, Alert } from "react-native";
+import { ScrollView, View, TouchableOpacity, Alert } from "react-native";
 import { Button, AnimatedFAB, useTheme, Text, Card, IconButton, Divider } from "react-native-paper";
 import Geolocation from "@react-native-community/geolocation";
 import ImageViewer from "react-native-image-zoom-viewer";
 import ImageCropPicker from "react-native-image-crop-picker";
-import DocumentPicker from "react-native-document-picker";
+import { pick, types } from "@react-native-documents/picker";
 import { downloadFile, getFSInfo, DownloadDirectoryPath, exists } from "react-native-fs";
-// import dayjs from "dayjs";
-import dayjs from "../../../utils/myDayjs";
-import { useDispatch, useSelector } from "react-redux";
-import { changeSwapPosition } from "../../../store/slice/swapPosition";
-import { DeepCloneJSON, RemoveDupObjectArr } from "../../../utils/tools";
-import { filesToUrls, fileIcon } from "./constructor";
-import { getFileInfo, getShotImageInfo, getChooseImageInfo } from "../../../utils/hash";
-import { pubParams } from "../../pub/pubParms";
+import { File } from "../../../dataType/types/file";
 
-const allowFileTypes = [DocumentPicker.types.plainText, DocumentPicker.types.pdf, DocumentPicker.types.zip, DocumentPicker.types.csv, DocumentPicker.types.doc,
-DocumentPicker.types.docx, DocumentPicker.types.ppt, DocumentPicker.types.pptx, DocumentPicker.types.xls, DocumentPicker.types.xlsx, "application/rar"];
+import { uniqBy, cloneDeep } from "lodash";
+
+import { dayjs } from "../../../i18n/i18n";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { changeSwapPosition } from "../../../store/slice/swapPosition";
+
+import { filesToUrls, fileIcon } from "./constructions";
+import { getFileInfo, readImageInfo, imageAddWaterMark } from "../../tools/file";
+import { pubParams } from "../../pub/pubParams";
+import { requestPermissions } from "../../tools/permission";
+import { MarkText } from "../../../dataType/types/scInput";
+
+const allowFileTypes = [types.plainText, types.pdf, types.zip, types.csv, types.doc,
+types.docx, types.ppt, types.pptx, types.xls, types.xlsx, "application/rar"];
 
 const fileSource = new Map([
     ["browser", "电脑端选择"],
@@ -25,17 +30,27 @@ const fileSource = new Map([
     ["", "未知"]
 ]);
 
-const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markTexts }) => {
+interface filePickerProps {
+    isOnSitePhoto: boolean;
+    isEdit: boolean;
+    onOk: (files: File[]) => void;
+    onCancel: () => void;
+    initFiles: File[];
+    markTexts: MarkText[];
+
+}
+
+const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markTexts }: filePickerProps) => {
     const [files, setFiles] = useState(initFiles);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [displayList, setDisplayList] = useState(true);
 
     const theme = useTheme();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const imageUrls = filesToUrls(files);
 
     //命令按钮位置
-    const { buttonPosition, swapPosition, orderPosition } = useSelector(state => state.swapposition);
+    const { buttonPosition, swapPosition, orderPosition } = useAppSelector(state => state.swapPosition);
     //切换命令按钮位置
     const handleSwapPosition = () => {
         dispatch(changeSwapPosition());
@@ -43,108 +58,17 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
 
     //检查授权
     useEffect(() => {
-        const checkPermisson = async () => {
-            //检查授权结果
-            const checkRes = (permissionsRes) => {
-                let denyNumber = 0;
-                for (let key in permissionsRes) {
-                    if (permissionsRes[key] !== "granted") {
-                        denyNumber++
-                    }
-                };
-                if (denyNumber > 0) {
-                    onCancel();
-                }
-            };
-            /*  //创建下载文件夹
-             const createFolder = () => {
-                 const floderPath = `${DownloadDirectoryPath}/scenemob`;
- 
-             }; */
-            //安卓33以下版本申请授权
-            const applyAdnroid33Below = async () => {
-                const reqPermissons = await PermissionsAndroid.requestMultiple(
-                    [
-                        PermissionsAndroid.PERMISSIONS.CAMERA,
-                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-                        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-                    ]
-                );
-                checkRes(reqPermissons);
-            };
-            //安卓33及以上版本申请授权
-            const applyAndroid33Above = async () => {
-                const reqPermissons = await PermissionsAndroid.requestMultiple([
-                    PermissionsAndroid.PERMISSIONS.CAMERA,
-                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                    PermissionsAndroid.PERMISSIONS.ACCESS_MEDIA_LOCATION,
-                    PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-                ]);
-                checkRes(reqPermissons);
-            };
-            //如果在web端运行直接退出
-            if (Platform.OS === "web") {
-                return
-            }
-            try {
-                if (Platform.OS === "android") {
-                    const cameraGranted = await PermissionsAndroid.check('android.permission.CAMERA');
-                    const locationGranted = await PermissionsAndroid.check("android.permission.ACCESS_FINE_LOCATION");
-                    const mediaLocationGranted = await PermissionsAndroid.check("android.permission.ACCESS_MEDIA_LOCATION");
-                    const readMediaGranted = await PermissionsAndroid.check("android.permission.READ_MEDIA_IMAGES");
-                    const readStorageGranted = await PermissionsAndroid.check("android.permission.READ_EXTERNAL_STORAGE");
-                    const writeStorageGranted = await PermissionsAndroid.check("android.permission.WRITE_EXTERNAL_STORAGE");
-
-                    if (Platform.Version >= 33) {
-                        if (!cameraGranted || !locationGranted || !readMediaGranted || !mediaLocationGranted) {
-                            Alert.alert(
-                                "申请权限",
-                                `1.为了使用相机拍摄附件,需申请摄像头权限;2.为记录照片类附件拍摄时的地理位置,需申请位置信息权限;3.为将附件临时存入本机,需申请手机存储写入权限;4.为从本机选择附件,需申请手机存储读取权限`,
-                                [
-                                    {
-                                        text: "拒绝",
-                                        onPress: () => onCancel(),
-                                        style: "cancel"
-                                    },
-                                    {
-                                        text: "同意",
-                                        onPress: () => applyAndroid33Above(),
-                                    }
-                                ],
-                            );
-                        }
-                    } else {
-                        if (!cameraGranted || !locationGranted || !readStorageGranted || !writeStorageGranted) {
-                            Alert.alert(
-                                "申请存储权限",
-                                `1.为了使用相机拍摄附件,需申请相机权限;2.为记录照片类附件拍摄时的地理位置,需申请定位权限;3.为将附件临时存入本机,需申请手机存储写入权限;4.为从本机选择附件,需申请手机存储读取权限`,
-                                [
-                                    {
-                                        text: "拒绝",
-                                        onPress: () => onCancel(),
-                                        style: "cancel"
-                                    },
-                                    {
-                                        text: "同意",
-                                        onPress: () => applyAdnroid33Below(),
-                                    }
-                                ],
-                            );
-                        }
-                    }
-                }
-            } catch (err) {
-                onCancel();
-            }
-        };
-        checkPermisson();
+        const checkPermission = async () => {
+            const res = await requestPermissions();
+            console.log("checkPermission res:", res);
+        }
+        checkPermission();
     }, []);
 
     //文件去重
-    const handleRemoveDupFile = (newFiles) => {
+    const handleRemoveDupFile = (newFiles: File[]) => {
         const fileNumber = newFiles.length; //原有的文件数量
-        const removeDupFiles = RemoveDupObjectArr(newFiles, "filehash");
+        const removeDupFiles: File[] = uniqBy(newFiles, "hash");
         if (fileNumber > removeDupFiles.length) {
             Alert.alert("提示", `已经去除${fileNumber - removeDupFiles.length}个重复项`);
         }
@@ -154,7 +78,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     //选择文件
     const handlePickFile = async () => {
         try {
-            const result = await DocumentPicker.pick({
+            const result = await pick({
                 allowMultiSelection: true,
                 presentationStyle: "fullScreen",
                 copyTo: "cachesDirectory",
@@ -164,10 +88,10 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                 return
             }
             //获取所有文件hash值
-            let fileArr = [];
+            let fileArr: File[] = [];
             for (let i = 0; i < result.length; i++) {
-                //检查文件大小
-                if ((result[i].size / 1024) > 20480) {
+                //检查文件大小          
+                if ((result[i].size ?? 0 / 1024) > 20480) {
                     Alert.alert(
                         "错误",
                         "单个文件不能大于20M!",
@@ -180,21 +104,21 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                 //获取文件信息
                 const fileInfo = await getFileInfo(result[i]);
 
-                let file = {
-                    fileid: 0,
-                    filekey: i,
-                    originfilename: result[i].name,
-                    fileuri: result[i].uri,
-                    fileurl: "",
+                let file: File = {
+                    id: 0,
+                    fileKey: i,
+                    originFileName: result[i].name ?? undefined,
+                    fileUri: result[i].uri,
+                    fileUrl: "",
                     mime: fileInfo.mime,
-                    filepath: fileInfo.filePath,
-                    filetype: fileInfo.fileType,
-                    isimage: fileInfo.isImage,
+                    filePath: fileInfo.filePath,
+                    fileType: fileInfo.fileType,
+                    isImage: fileInfo.isImage,
                     model: fileInfo.Model,
                     longitude: fileInfo.longitude,
                     latitude: fileInfo.latitude,
-                    filehash: fileInfo.fileHash,
-                    datetimeoriginal: fileInfo.DateTimeOriginal,
+                    hash: fileInfo.fileHash,
+                    dateTimeOriginal: fileInfo.DateTimeOriginal,
                     source: "mobilechoose"
                 };
 
@@ -209,7 +133,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     };
     //选择图片
     const handleChooseImage = async () => {
-        let fileArr = [];
+        let fileArr: File[] = [];
         try {
             const result = await ImageCropPicker.openPicker({
                 mediaType: "photo",
@@ -220,23 +144,23 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                 includeExif: true,
             });
 
-            const fileInfo = await getChooseImageInfo(result);
-            let file = {
-                fileid: 0,
-                filekey: 0,
-                originfilename: fileInfo.name,
-                fileurl: fileInfo.filePath,
-                fileuri: fileInfo.filePath,
+            const fileInfo = await readImageInfo(result);
+            let file: File = {
+                id: 0,
+                fileKey: 0,
+                originFileName: fileInfo.name,
+                fileUrl: fileInfo.filePath,
+                fileUri: fileInfo.filePath,
                 mime: fileInfo.mime,
                 size: result.size,
-                filepath: fileInfo.filePath,
-                filetype: fileInfo.fileType,
-                isimage: fileInfo.isImage,
+                filePath: fileInfo.filePath,
+                fileType: fileInfo.fileType,
+                isImage: fileInfo.isImage,
                 model: fileInfo.Model,
                 longitude: fileInfo.longitude,
                 latitude: fileInfo.latitude,
-                filehash: fileInfo.fileHash,
-                datetimeoriginal: fileInfo.DateTimeOriginal,
+                hash: fileInfo.fileHash,
+                dateTimeOriginal: fileInfo.DateTimeOriginal,
                 source: "mobilechoose"
             };
 
@@ -277,23 +201,23 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                 includeExif: true,
             });
 
-            const fileInfo = await getShotImageInfo(result, markTexts, currentLoacation);
-            let file = {
-                fileid: 0,
-                filekey: 0,
-                originfilename: fileInfo.name,
-                fileurl: fileInfo.filePath,
-                fileuri: fileInfo.filePath,
+            const fileInfo = await imageAddWaterMark(result, markTexts, currentLoacation);
+            let file: File = {
+                id: 0,
+                fileKey: 0,
+                originFileName: fileInfo.name,
+                fileUrl: fileInfo.filePath,
+                fileUri: fileInfo.filePath,
                 mime: fileInfo.mime,
                 size: result.size,
-                filepath: fileInfo.filePath,
-                filetype: fileInfo.fileType,
-                isimage: fileInfo.isImage,
+                filePath: fileInfo.filePath,
+                fileType: fileInfo.fileType,
+                isImage: fileInfo.isImage,
                 model: fileInfo.Model,
                 longitude: currentLoacation.longitude,
                 latitude: currentLoacation.latitude,
-                filehash: fileInfo.fileHash,
-                datetimeoriginal: fileInfo.DateTimeOriginal,
+                hash: fileInfo.fileHash,
+                dateTimeOriginal: fileInfo.DateTimeOriginal,
                 source: "mobileshoot"
             };
             fileArr.push(file);
@@ -305,28 +229,28 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
             console.log("拍照错误", err)
         }
     };
-    const handleDeleteFile = (index) => {
-        let newFiles = DeepCloneJSON(files);
+    const handleDeleteFile = (index: number) => {
+        let newFiles = cloneDeep(files);
         newFiles.splice(index, 1);
         setFiles(newFiles);
     };
     //点击文件封面
-    const handleOnPressImage = (item) => {
-        if (item.isimage === 0) {
+    const handleOnPressImage = (item: File) => {
+        if (item.isImage === 0) {
             return
         }
 
-        let index = imageUrls.findIndex(image => image.filehash === item.filehash);
+        let index = imageUrls.findIndex(image => image.hash === item.hash);
         setCurrentIndex(index);
         setDisplayList(false);
     };
 
     //保存文件到本机
-    const handleSaveFile = async (item) => {
-        const path = `${DownloadDirectoryPath}/${item.originfilename}`;
+    const handleSaveFile = async (item: File) => {
+        const path = `${DownloadDirectoryPath}/${item.originFileName}`;
         const fileExist = await exists(path);
         const resp = downloadFile({
-            fromUrl: item.fileurl,
+            fromUrl: item.fileUrl,
             toFile: path
         });
         resp.promise
@@ -375,14 +299,14 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                 ? <>
                     <ScrollView style={{ flex: 1 }}>
                         {files.map((file, index) => {
-                            const fileUri = file.isimage === 1 ? file.fileurl : fileIcon;
+                            const fileUri = file.isImage === 1 ? file.fileUrl : fileIcon;
                             return <Card style={{ margin: 8 }} key={index}>
                                 <TouchableOpacity onPress={() => handleOnPressImage(file)}>
-                                    <Card.Cover source={{ uri: fileUri }} resizeMode={file.isimage === 0 ? "contain" : "cover"} />
+                                    <Card.Cover source={{ uri: fileUri }} resizeMode={file.isImage === 0 ? "contain" : "cover"} />
                                 </TouchableOpacity>
-                                <Card.Title title={file.originfilename} titleMaxFontSizeMultiplier={1.5} />
+                                <Card.Title title={file.originFileName} titleMaxFontSizeMultiplier={1.5} />
                                 <Card.Content style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                                    <Text style={{ width: "100%" }} maxFontSizeMultiplier={1.5}>创建时间:  {dayjs(file.datetimeoriginal).format("YYYY-MM-DD HH:mm")}</Text>
+                                    <Text style={{ width: "100%" }} maxFontSizeMultiplier={1.5}>创建时间:  {dayjs(file.dateTimeOriginal).format("YYYY-MM-DD HH:mm")}</Text>
                                     <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }} maxFontSizeMultiplier={1.5}>经度: {file.longitude}</Text>
                                     <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }} maxFontSizeMultiplier={1.5}>纬度: {file.latitude}</Text>
                                     <Text style={{ width: "100%", overflow: "hidden" }} maxFontSizeMultiplier={1.5}>来源:{fileSource.get(file.source)}</Text>
@@ -393,7 +317,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                                         ? <Button mode="text" textColor="red" onPress={() => handleDeleteFile(index)}>删除</Button>
                                         : null
                                     }
-                                    <Button mode="text" disabled={file.fileid === 0} onPress={() => handleSaveFile(file)}>下载</Button>
+                                    <Button mode="text" disabled={file.id === 0} onPress={() => handleSaveFile(file)}>下载</Button>
                                 </View>
                             </Card>
                         })}
@@ -454,9 +378,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                         style={{ bottom: 64, position: "absolute", ...orderPosition }}
                     />
                     <IconButton
-                        icon="swap-horizontal"
-                        label="切换"
-                        visible={true}
+                        icon="swap-horizontal"          
                         iconColor={theme.colors.primary}
                         onPress={handleSwapPosition}
                         style={{ bottom: 160, position: "absolute", ...swapPosition }}

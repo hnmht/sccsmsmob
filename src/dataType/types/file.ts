@@ -17,7 +17,7 @@ export interface File {
     fileUrl: string;
     dateTimeOriginal?: string;
     uploadTime?: string;
-    source?: string;
+    source: string;
     creatorID?: number;
     creatorName?: string;
     dr?: number;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View, KeyboardAvoidingView, Alert, StatusBar } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
     IconButton,
@@ -89,7 +89,7 @@ function Login() {
             // update token in redux
             dispatch(setUserToken(token));
             setOverlayStatus({ visible: true, description: t("requestingUserInfo") });
-            const userInfoRes = await reqUserInfo(token);
+            const userInfoRes = await reqUserInfo();
             if (!userInfoRes.status) {
                 handleLoginFailed();
                 return

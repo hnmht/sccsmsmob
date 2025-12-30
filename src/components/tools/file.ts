@@ -1,27 +1,13 @@
-import jsSHA from "jssha";
+// import jsSHA from "jssha";
 import { Buffer } from "buffer"
 import { dayjs } from "../../i18n/i18n";
 import RNFS from "react-native-fs";
 import { Platform } from "react-native";
 import RNPhotoManipulator from "react-native-photo-manipulator";
 import { Image } from "react-native-image-crop-picker";
+import { DocumentPickerResponse } from "@react-native-documents/picker";
 import { checkIsImage } from "./image";
-
-interface MarkPosition {
-    x: number;
-    y: number;
-}
-interface MarkText {
-    position: MarkPosition;
-    text: string;
-    textSize: number;
-    color: string;
-}
-
-interface Location {
-    latitude: number;
-    longitude: number;
-}
+import { MarkText, Location } from "../../dataType/types/scInput";
 
 // Get File name and file type
 function parseFileName(path: string) {
@@ -65,39 +51,27 @@ function resolveLocation(file: Image) {
     return { latitude, longitude };
 };
 
-
-/*
-export const getFileInfo = async (file: RNFS.ReadDirItem) => {
-    let name = file.name; //获取文件名
-    let fileType = name.substring(name.lastIndexOf("."), name.length); //获取文件类型
+export const getFileInfo = async (file: DocumentPickerResponse) => {
+    const filePath = file.uri;
+    const { name, ext } = parseFileName(filePath);
     //解决中文文件名无法读取问题
-    const pos = file.fileCopyUri.lastIndexOf("/");
-    const filePath = file.fileCopyUri.substr(0, pos) + "/" + name;
-    //使用RNFS 耗时46毫秒
+    // const pos = file.fileCopyUri.lastIndexOf("/");
+    // const filePath = file.fileCopyUri.substr(0, pos) + "/" + name;
     const fileHash = await RNFS.hash(filePath, "sha256");
-
-    //设定文件属性的默认值
-    let isImage = 0; //是否图片
-    let Model = "n"; //相机型号,默认为"none"
-    let DateTimeOriginal = dayjs().format("YYYYMMDDHHmm"); //最近更新日期
-    let latitude = 0.01;  //纬度
-    let longitude = 0.01;//经度
-    let mime = file.type;
-
     return {
         name,
-        mime,
-        fileType,
+        mime: ext,
+        fileType: ext,
         filePath,
         fileHash,
-        isImage,
-        Model,
-        DateTimeOriginal,
-        latitude,
-        longitude,
+        isImage: 0,
+        Model: "unknown",
+        DateTimeOriginal: dayjs().format("YYYYMMDDHHmm"),
+        latitude: 0.01,
+        longitude: 0.01,
     };
 };
-*/
+
 //图片水印文本字体
 export const markFontOptions = {
     fontSize: 16,

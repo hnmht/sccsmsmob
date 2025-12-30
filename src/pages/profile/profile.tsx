@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
-import { Button, ActivityIndicator } from "react-native-paper";
+import { Button, ActivityIndicator, Text } from "react-native-paper";
 import { Alert, ScrollView, View, KeyboardAvoidingView } from "react-native";
 import { cloneDeep } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { useAppSelector } from "../../store/hooks";
 import { UserInfo } from "../../dataType/types/user";
 import { useSettingNavigation } from "../../navigation/config/screenParams";
-import ScAvatarUpload from "../../components/ScInput/ScAvatarUpload/ScAvatarUpload";
+
+import ScInput from "../../components/ScInput";
 import { reqUserInfo } from "../../api/user";
 import { getEmptyUser } from "../../dataType/dataZero/user";
+import { ScDataTypeList } from "../../dataType/types/scInput";
 /* import { setUserInfo } from "../../store/slice/user";
 import ScInput from "../../components/ScInput";
 
@@ -113,11 +115,21 @@ const Profile = () => {
             {currentUser !== undefined
                 ? <ScrollView>
                     <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
-                        <ScAvatarUpload
+                        <Text style={{ fontSize: 20, fontWeight: "bold", marginTop: 16 }}>个人资料</Text>
+                        <ScInput
+                            dataType={ScDataTypeList.FileUpload}
+                            positionID={0}
+                            rowIndex={0}
+                            rowNumber={0}
+                            allowNull={false}
+                            itemShowName=""
+                            errInfo={{isErr:false,msg:""}}
                             isEdit={true}
                             itemKey="avatar"
-                            initValue={currentUser.avatar}
+                            initValue={[]}
                             pickDone={() => { }}
+                            isBackendTest={false}
+                            isOnSitePhoto={false}
                             key="avatar"
                             onCancel={() => navigation.goBack()}
                         />

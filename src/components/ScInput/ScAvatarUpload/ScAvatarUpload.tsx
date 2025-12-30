@@ -1,29 +1,17 @@
-import { useState, memo, useEffect } from "react";
-import { View, Alert, Platform, PermissionsAndroid, PermissionStatus } from "react-native";
+import React, { useState, memo, useEffect } from "react";
+import { View, Alert } from "react-native";
 import { Avatar, IconButton, Text, useTheme } from "react-native-paper";
 import ImageCropPicker, { Image } from "react-native-image-crop-picker";
-
-
 
 import { reqGetFileByHash, reqUploadFiles } from "../../../api/file";
 import { readImageInfo } from "../../tools/file";
 import { File } from "../../../dataType/types/file";
 import { requestPermissions } from "../../tools/permission";
-
-interface ScAvatarUploadProps {
-    fieldIndex?: number;
-    rowIndex?: number;
-    isEdit: boolean;
-    itemKey: string;
-    initValue: File;
-    pickDone: Function;
-    width?: number;
-    onCancel?: Function;
-}
+import { ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
 
 //901
 const ScAvatarUpload = ({
-    fieldIndex,
+    positionID,
     rowIndex,
     isEdit,
     itemKey,
@@ -31,7 +19,7 @@ const ScAvatarUpload = ({
     pickDone,
     width,
     onCancel = () => { }
-}: ScAvatarUploadProps) => {
+}: ScInputProps<ScDataTypeList.AvatarUpload>) => {
     const [avatar, setAvatar] = useState(initValue);
     const [isLoading, setIsLoading] = useState(false);
     const theme = useTheme();
@@ -110,7 +98,7 @@ const ScAvatarUpload = ({
         setIsLoading(false);
         //将值反馈给父组件
         let err = { isErr: false, msg: "" };
-        pickDone(newAvatar, itemKey, fieldIndex, rowIndex, err);
+        pickDone(newAvatar, itemKey, positionID, rowIndex, err);
     };
 
     //选择图片
