@@ -13,7 +13,7 @@ export interface WorkOrderRow {
     ept: EPT;
     startTime: string;
     endTime: string;
-    status: number;
+    status: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     eoID: number;
     eoNumber: string;
     createDate: string;
@@ -23,7 +23,7 @@ export interface WorkOrderRow {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
     // Header fields duplicated in row for convenience:
     billNumber: string;
     billDate: string;
@@ -39,7 +39,7 @@ export interface WorkOrder {
     billDate: string;
     department: SimpDept;
     description: string;
-    status: number;
+    status: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     workDate: string;
     body: WorkOrderRow[];
     createDate: string;
@@ -49,5 +49,5 @@ export interface WorkOrder {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }

@@ -8,13 +8,13 @@ export interface UserDefinedArchive {
     name: string;
     description: string;
     fatherID: number;
-    status: number;
+    status: 0 | 1;
     createDate: string;
     creator: Person;
     modifier: Person;
     modifyDate: string;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // User Define Category Front-end Cache
 export interface UDACache {

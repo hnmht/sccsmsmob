@@ -8,18 +8,18 @@ export interface Person {
     deptID: number;
     deptCode: string;
     deptName: string;
-    isOperator: number;
+    isOperator: 0 | 1;
     positionID: number;
     positionName: string;
     description: string;
     mobile: string;
     email: string;
-    gender: number;
-    systemFlag: number;
-    status: number;
+    gender: 0 | 1 | 2;
+    systemFlag: 0 | 1;
+    status: 0 | 1;
     createDate: string;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 // Person Front-end Cache

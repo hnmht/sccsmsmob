@@ -9,14 +9,14 @@ export interface ConstructionSiteOption {
     displayName: string;
     udc: UserDefineCategory;
     defaultValue: UserDefinedArchive;
-    enable: number;
-    isModify: number;
+    enable: 0 | 1;
+    isModify: 0 | 1;
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // Construction Site Option Front-end Cache
 export interface ConstructionSiteOptionCache {

@@ -10,7 +10,7 @@ export interface Event {
     ept: EPT;
     start: string;
     end: string;
-    status: number;
+    status: 0 | 1;
     editable: boolean;
     allDay: boolean;
     backgroundColor: string;

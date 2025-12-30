@@ -11,26 +11,26 @@ export interface ExecutionOrderRow {
     hid: number;
     rowNumber: number;
     epa: ExecutionProject;
-    allowDelRow: number;
+    allowDelRow: 0 | 1;
     executionValue: any;
     executionValueDisp: string;
     files: VoucherFile[];
     description: string;
     epaDescription: string;
-    isCheckError: number;
+    isCheckError: 0 | 1;
     errorValue: any;
     errorValueDisp: string;
-    isRequireFile: number;
-    isOnSitePhoto: number;
-    isIssue: number;
-    isRectify: number;
-    isHandle: number;
+    isRequireFile: 0 | 1;
+    isOnSitePhoto: 0 | 1;
+    isIssue: 0 | 1;
+    isRectify: 0 | 1;
+    isHandle: 0 | 1;
     issueOwner: Person;
     handleStartTime: string;
     handleEndTime: string;
-    status: number;
-    isFromEpt: number;
-    isFinish: number;
+    status: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
+    isFromEpt: 0 | 1;
+    isFinish: 0 | 1;
     irfID: number;
     irfNumber: string;
     riskLevel: RiskLevel;
@@ -41,7 +41,7 @@ export interface ExecutionOrderRow {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 // Execution Order Header
@@ -51,7 +51,7 @@ export interface ExecutionOrder {
     billDate: string;
     department: SimpDept;
     description: string;
-    status: number; // 0: free, 1: confirmed, 2: executing, 3: completed
+    status: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     sourceType: string;
     sourceBillNumber: string;
     sourceHID: number;
@@ -63,8 +63,8 @@ export interface ExecutionOrder {
     csa: ConstructionSite;
     executor: Person;
     ept: EPT;
-    allowAddRow: number;
-    allowDelRow: number;
+    allowAddRow: 0 | 1;
+    allowDelRow: 0 | 1;
     body: ExecutionOrderRow[];
     issueNumber: number;
     reviewedNumber: number;
@@ -76,7 +76,7 @@ export interface ExecutionOrder {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 // Execution Order Record for Reference by Downstreams Voucher
@@ -93,9 +93,9 @@ export interface ReferExecutionOrder {
     issueOwner: Person;
     handleStartTime: string;
     handleEndTime: string;
-    status: number;
+    status: 0 | 1;
     riskLevel: RiskLevel;
-    dr: number;
+    dr: 0 | 1;
     ts: string;
     isFinish: number;
     billNumber: string;
@@ -121,7 +121,7 @@ export interface ExecutionOrderComment {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // Execution Order Review Record 
 export interface ExecutionOrderReview {
@@ -134,7 +134,7 @@ export interface ExecutionOrderReview {
     createDate: string;
     creator: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 // Execution Order Comments Params

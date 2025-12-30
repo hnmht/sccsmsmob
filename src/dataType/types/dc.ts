@@ -6,13 +6,13 @@ export interface SimpDC {
     name: string;
     description: string;
     fatherID: number;
-    status: number;
+    status: 0 | 1;
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // Document Category
 export interface DC {
@@ -20,13 +20,13 @@ export interface DC {
     name: string;
     description: string;
     fatherID: SimpDC;
-    status: number;
+    status: 0 | 1;
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // Simple Document Category Front-end Cache
 export interface SimpDCCache {

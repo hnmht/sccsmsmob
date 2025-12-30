@@ -20,6 +20,6 @@ export interface FrontDBInfo {
     cryptoKey: string;
     createDate: string;
     creator: Person;
-    dr: number;
+    dr: 0 | 1;
     ts: string;
 }

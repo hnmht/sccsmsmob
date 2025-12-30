@@ -17,7 +17,7 @@ export interface TrainingRecordRow {
     description: string;
     examRes: number;
     examScore: number;
-    status: number;
+    status: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     files: VoucherFile[]; // BFiles
     createDate: string;
     creator: Person;
@@ -26,7 +26,7 @@ export interface TrainingRecordRow {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 // Training Record Header
@@ -42,10 +42,10 @@ export interface TrainingRecord {
     startTime: string;
     endTime: string;
     classHour: number;
-    isExam: number;
+    isExam: 0 | 1;
     hFiles: VoucherFile[];
     body: TrainingRecordRow[];
-    status: number; // 0 free 1 confirmed 2 executing 3 completed
+    status: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     createDate: string;
     creator: Person;
     confirmDate: string;
@@ -53,7 +53,7 @@ export interface TrainingRecord {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // Taught Lessons Report 
 export interface TaughtLessonsReport {
@@ -74,11 +74,11 @@ export interface TaughtLessonsReport {
     startTime: string;
     endTime: string;
     classHour: number;
-    isExam: number;
+    isExam: 0 | 1;
     studentNumber: number;
     qualifiedNumber: number;
     disqualificationNumber: number;
-    status: number;
+    status: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     creatorID: number;
     creatorCode: string;
     creatorName: string;
@@ -101,8 +101,8 @@ export interface RecivedTrainingReport {
     startTime: string;
     endTime: string;
     tcClassHour: number;
-    isExam: number;
-    hStatus: number;
+    isExam: 0 | 1;
+    hStatus: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     hDescription: string;
     studentID: number;
     studentCode: string;
@@ -113,9 +113,9 @@ export interface RecivedTrainingReport {
     signEndTime: string;
     bClassHour: number;
     bDescription: string;
-    examRes: number;
+    examRes: 0 | 1;
     examScore: number;
-    bStatus: number;
+    bStatus: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     creatorID: number;
     creatorCode: string;
     creatorName: string;

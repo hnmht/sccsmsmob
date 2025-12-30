@@ -17,7 +17,7 @@ export interface CommentMessage {
     executionValueDisp: string;
     eoFiles: VoucherFile[];
     sendTo: Person;
-    isRead: number;
+    isRead: 0 | 1;
     readTime: string;
     content: string;
     sendTime: string;
@@ -26,5 +26,5 @@ export interface CommentMessage {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }

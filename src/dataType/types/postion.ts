@@ -5,12 +5,12 @@ export interface Position {
     id: number;
     name: string;
     description: string;
-    status: number;
+    status: 0 | 1;
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
-    dr: number;
+    dr: 0 | 1;
     ts: string;
 }
 // Position Front-end Cache

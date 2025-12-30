@@ -114,7 +114,7 @@ export interface BaseScInputProps {
     rowNumber?: number;
     itemShowName?: string;
     itemKey: string;
-    width?: number;
+    width?: number | string;
     height?: number;
     placeholder?:string;
     errInfo:ErrMsg;

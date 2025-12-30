@@ -17,7 +17,7 @@ export interface PPEIssuanceFormRow {
     ppeUnit: string;
     quantity: number;
     description: string;
-    status: number; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
+    status: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     files: VoucherFile[]; // BFiles
     createDate: string;
     creator: Person;
@@ -26,7 +26,7 @@ export interface PPEIssuanceFormRow {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 // Personal Protective Equipment Issuance Form Header
@@ -42,7 +42,7 @@ export interface PPEIssuanceForm {
     hFiles: VoucherFile[];
     body: PPEIssuanceFormRow[];
     sourceType: string; // DA: Direct Add WG: Wizard Generation
-    status: number; // 0 Free 1 Confirmed 2 Executing 3 Completed
+    status: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     createDate: string;
     creator: Person;
     confirmDate: string;
@@ -50,7 +50,7 @@ export interface PPEIssuanceForm {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // PPE Issuance Form Wizard Params
 export interface PPEIssuanceFormWizardParams {
@@ -61,7 +61,7 @@ export interface PPEIssuanceFormWizardParams {
     startDate: string;
     endDate: string;
     creator: Person;
-    generationType: number; // 0: Combined Generation 1: Separate Generation
+    generationType: 0 | 1; // 0: Combined Generation 1: Separate Generation
 }
 // PPE Issuance Form Wizard
 export interface PPEIssuanceFormWizard {
@@ -86,7 +86,7 @@ export interface PPEIssuanceFormReport {
     ppeUnit: string;
     quantity: number;
     bDescription: string;
-    bStatus: number;
+    bStatus: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     billNumber: string;
     billDate: string;
     issuingDeptID: number;
@@ -97,7 +97,7 @@ export interface PPEIssuanceFormReport {
     startDate: string;
     endDate: string;
     sourceType: string;
-    hStatus: number;
+    hStatus: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     creatorID: number;
     creatorCode: string;
     creatorName: string;

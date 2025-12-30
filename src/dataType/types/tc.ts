@@ -9,14 +9,14 @@ export interface TC {
     classHour: number;
     isExamine: number;
     description: string;
-    status: number;
+    status: 0 | 1;
     files: VoucherFile[];
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 // Training Course Front-end Cache

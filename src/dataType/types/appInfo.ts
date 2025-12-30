@@ -40,5 +40,5 @@ export interface AppInfo {
     serverAddr: string;
     globalPath: string;
     serverInfo: ServerInfo;
-    isOffline: number;
+    isOffline: 0 | 1;
 }

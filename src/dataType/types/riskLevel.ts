@@ -5,13 +5,13 @@ export interface RiskLevel {
     name: string;
     description: string;
     color: string;
-    status: number;
+    status: 0 | 1;
     createDate: string;
     creator: Person;
     modifier: Person;
     modifyDate: string;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // Risk Level front-end cache
 export interface RLCache {

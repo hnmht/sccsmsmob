@@ -19,7 +19,7 @@ export interface Document {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // Document Query pagination parameters by category
 export interface DCPagingParams {

@@ -11,5 +11,5 @@ export interface VoucherFile {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }

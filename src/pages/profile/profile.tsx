@@ -115,7 +115,6 @@ const Profile = () => {
             {currentUser !== undefined
                 ? <ScrollView>
                     <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
-                        <Text style={{ fontSize: 20, fontWeight: "bold", marginTop: 16 }}>个人资料</Text>
                         <ScInput
                             dataType={ScDataTypeList.FileUpload}
                             positionID={0}
@@ -126,10 +125,11 @@ const Profile = () => {
                             errInfo={{isErr:false,msg:""}}
                             isEdit={true}
                             itemKey="avatar"
+                            width={"100%"}
                             initValue={[]}
                             pickDone={() => { }}
                             isBackendTest={false}
-                            isOnSitePhoto={false}
+                            isOnSitePhoto={false}                          
                             key="avatar"
                             onCancel={() => navigation.goBack()}
                         />

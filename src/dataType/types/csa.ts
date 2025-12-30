@@ -13,8 +13,8 @@ export interface ConstructionSite {
     subDept: SimpDept;
     respDept: SimpDept;
     respPerson: Person;
-    status: number;
-    endFlag: number;
+    status: 0 | 1;
+    endFlag: 0 | 1;
     endDate: string;
     longitude: number;
     latitude: number;
@@ -33,7 +33,7 @@ export interface ConstructionSite {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 // Construction Site Archive Front-end Cache

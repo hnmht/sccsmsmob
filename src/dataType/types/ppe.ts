@@ -6,14 +6,14 @@ export interface PPE {
     name: string;
     model: string;
     unit: string;
-    status: number;
+    status: 0 | 1;
     description: string;
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // Personal Protective Equipment Front-end cache
 export interface PPECache {

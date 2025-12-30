@@ -1,5 +1,5 @@
 // File
-export interface File {   
+export interface File {
     id: number;
     hash?: string;
     minioFileName?: string;
@@ -9,7 +9,7 @@ export interface File {
     fileUri?: string;
     mime?: string;
     fileType?: string;
-    isImage?: number;
+    isImage?: 0 | 1;
     model?: string;
     longitude?: number;
     latitude?: number;
@@ -20,6 +20,6 @@ export interface File {
     source: string;
     creatorID?: number;
     creatorName?: string;
-    dr?: number;
+    dr: 0 | 1;
     ts?: string;
 }

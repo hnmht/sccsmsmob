@@ -37,7 +37,7 @@ export interface WorkOrderReport {
     woDeptCode: string;
     woDeptName: string;
     woDescription: string;
-    woStatus: number;
+    woStatus: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     woWorkDate: string;
     eoHID: number;
     eoNumber: string;
@@ -47,7 +47,7 @@ export interface WorkOrderReport {
     eoBillDate: string;
     eoStartTime: string;
     eoEndTime: string;
-    eoHStatus: number;
+    eoHStatus: 0 | 1 | 2 | 3 | 4; // 0 Free 1 Confirmed 2 Executing 3 Completed 4 none
     udf1Code: string;
     udf1Name: string;
     udf2Code: string;

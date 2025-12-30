@@ -17,13 +17,13 @@ export interface IssueResolutionForm {
     executor: Person;
     department: SimpDept;
     issueOwner: Person;
-    isFinish: number;
+    isFinish: 0 | 1;
     handler: Person;
     startTime: string;
     endTime: string;
     eoDescription: string;
     description: string;
-    status: number;
+    status: 0 | 1;
     sourceType: string;
     sourceBillNumber: string;
     sourceHID: number;
@@ -40,5 +40,5 @@ export interface IssueResolutionForm {
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }

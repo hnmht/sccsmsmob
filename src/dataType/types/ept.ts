@@ -8,22 +8,22 @@ export interface EPTRow {
     hid: number;
     rowNumber: number;
     epa: ExecutionProject; // EP
-    allowDelRow: number;
+    allowDelRow: 0 | 1;
     description: string;
     defaultValue: any;
     defaultValueDisp: string;
-    isCheckError: number;
+    isCheckError: 0 | 1;
     errorValue: any;
     errorValueDisp: string;
-    isRequireFile: number;
-    isOnSitePhoto: number;
+    isRequireFile: 0 | 1;
+    isOnSitePhoto: 0 | 1;
     riskLevel: RiskLevel;
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // Execution Project Template Header
 export interface EPT {
@@ -31,16 +31,16 @@ export interface EPT {
     code: string;
     name: string;
     description: string;
-    status: number;
-    allowAddRow: number;
-    allowDelRow: number;
+    status: 0 | 1;
+    allowAddRow: 0 | 1;
+    allowDelRow: 0 | 1;
     body: EPTRow[];
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 // Execution Project Template Front-end Cache

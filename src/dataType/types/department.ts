@@ -7,10 +7,10 @@ export interface SimpDept {
     fatherID: number;
     leader: Person;
     description: string;
-    status: number;
+    status: 0 | 1;
     createDate: string;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 export interface Department {
@@ -20,13 +20,13 @@ export interface Department {
     fatherID: SimpDept;
     leader: Person;
     description: string;
-    status: number;
+    status: 0 | 1;
     createDate: string;
     creator: Person;
     modifier: Person;
     modifyDate: string;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 export interface SimpDeptCache {

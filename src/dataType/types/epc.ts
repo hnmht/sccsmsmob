@@ -6,13 +6,13 @@ export interface SimpEPC {
     name: string;
     description: string;
     fatherID: number;
-    status: number;
+    status: 0 | 1;
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 // Execution Project Category
@@ -21,13 +21,13 @@ export interface EPC {
     name: string;
     description: string;
     fatherID: SimpEPC;
-    status: number;
+    status: 0 | 1;
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // Execution Project Category Front-end Cache
 export interface SimpEPCCache {

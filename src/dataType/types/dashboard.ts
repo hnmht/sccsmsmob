@@ -42,8 +42,8 @@ export interface IssueItem {
     rlID: number;
     rlName: string;
     rlColor: string;
-    isRectify: string;
-    isFinish: string;
+    isRectify: 0 | 1;
+    isFinish: 0 | 1;
     creatorID: number;
     creatorCode: string;
     creatorName: string;

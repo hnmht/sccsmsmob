@@ -6,13 +6,13 @@ export interface SimpCSC {
     name: string;
     description: string;
     fatherID: number;
-    status: number;
+    status: 0 | 1;
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 // Construction Site Category
 export interface CSC {
@@ -20,13 +20,13 @@ export interface CSC {
     name: string;
     description: string;
     fatherID: SimpCSC;
-    status: number;
+    status: 0 | 1;
     createDate: string;
     creator: Person;
     modifyDate: string;
     modifier: Person;
     ts: string;
-    dr: number;
+    dr: 0 | 1;
 }
 
 // Simple Construction Site Category Front-end cache
