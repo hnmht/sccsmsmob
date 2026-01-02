@@ -1,5 +1,5 @@
 import { VoucherFile } from "../../../dataType/types/voucherFile";
-import { File } from "../../../dataType/types/file";
+import { ScFile } from "../../../dataType/types/file";
 import { getEmptyVoucherFile } from "../../../dataType/dataZero/voucherFile";
 
 type urlAndHash = {
@@ -8,11 +8,12 @@ type urlAndHash = {
 }
 
 //单据附件列表转文件列表
+// Convert VoucherFile Arrar to ScFile Array
 export const voucherFilesToFiles = (voucherFiles: VoucherFile[]) => {
     if (!voucherFiles) {
         return [];
     }
-    let files: File[] = [];
+    let files: ScFile[] = [];
     voucherFiles.forEach(voucherFile => {
         files.push(voucherFile.file);
     });
@@ -20,7 +21,7 @@ export const voucherFilesToFiles = (voucherFiles: VoucherFile[]) => {
 }
 
 //文件列表转换为单据附件列表
-export const filesToVoucherFiles = (voucherFiles: VoucherFile[], files: File[]): VoucherFile[] => {
+export const filesToVoucherFiles = (voucherFiles: VoucherFile[], files: ScFile[]): VoucherFile[] => {
     if (!voucherFiles) {
         return [];
     }
@@ -59,7 +60,7 @@ export const filesToVoucherFiles = (voucherFiles: VoucherFile[], files: File[]):
 };
 
 //文件列表转urls
-export const filesToUrls = (files: File[]) => {
+export const filesToUrls = (files: ScFile[]) => {
     let imageUrls: urlAndHash[] = [];
     files.forEach(file => {
         if (file.isImage === 1) {

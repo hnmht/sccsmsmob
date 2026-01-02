@@ -1,10 +1,10 @@
-import { File } from "./file";
+import { ScFile } from "./file";
 
 export interface Person {
     id: number;
     code: string;
     name: string;
-    avatar: File;
+    avatar: ScFile;
     deptID: number;
     deptCode: string;
     deptName: string;

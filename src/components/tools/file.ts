@@ -8,20 +8,19 @@ import { Image } from "react-native-image-crop-picker";
 import { DocumentPickerResponse } from "@react-native-documents/picker";
 import { checkIsImage } from "./image";
 import { MarkText, Location } from "../../dataType/types/scInput";
+import { ScFile } from "../../dataType/types/file";
 
-// Get File name and file type
+// Get ScFile name and file type
 function parseFileName(path: string) {
-    const name = path.split("/").pop() ?? "unknown"
-    const ext = name.includes(".") ? name.slice(name.lastIndexOf(".")) : ""
-    return { name, ext }
+    const originFileName = path.split("/").pop() ?? "unknown"
+    const ext = originFileName.includes(".") ? originFileName.slice(originFileName.lastIndexOf(".")) : ""
+    return { originFileName, ext }
 }
-
-// Read File Header
+// Read ScFile Header
 export async function readFileHeader(path: string, length = 64): Promise<Uint8Array> {
     const base64 = await RNFS.read(path, length, 0, "base64");
     return Uint8Array.from(Buffer.from(base64, "base64"))
 }
-
 // Read Image Create time
 function resolveDateTime(file: Image) {
     if (file.exif?.DateTimeDigitized) {
@@ -36,7 +35,6 @@ function resolveDateTime(file: Image) {
 
     return dayjs(ts || Date.now()).format("YYYYMMDDHHmm")
 }
-
 // Read Image location
 function resolveLocation(file: Image) {
     let latitude: number = 0.01;
@@ -50,28 +48,30 @@ function resolveLocation(file: Image) {
     }
     return { latitude, longitude };
 };
-
-export const getFileInfo = async (file: DocumentPickerResponse) => {
+export const getFileInfo = async (file: DocumentPickerResponse): Promise<ScFile> => {
     const filePath = file.uri;
-    const { name, ext } = parseFileName(filePath);
+    const { originFileName, ext } = parseFileName(filePath);
     //解决中文文件名无法读取问题
     // const pos = file.fileCopyUri.lastIndexOf("/");
     // const filePath = file.fileCopyUri.substr(0, pos) + "/" + name;
-    const fileHash = await RNFS.hash(filePath, "sha256");
+    const hash = await RNFS.hash(filePath, "sha256");
     return {
-        name,
+        id: 0,
+        originFileName,
         mime: ext,
         fileType: ext,
         filePath,
-        fileHash,
+        hash,
         isImage: 0,
-        Model: "unknown",
-        DateTimeOriginal: dayjs().format("YYYYMMDDHHmm"),
+        model: "unknown",
+        dateTimeOriginal: dayjs().format("YYYYMMDDHHmm"),
         latitude: 0.01,
         longitude: 0.01,
+        fileUrl: "",
+        source: "",
+        dr: 0
     };
 };
-
 //图片水印文本字体
 export const markFontOptions = {
     fontSize: 16,
@@ -100,33 +100,21 @@ const buildTextBlock = (
         color: options.textColor,
     }));
 };
-
 const estimateTextWidth = (texts: string[], fontSize: number) => {
     const maxLength = Math.max(...texts.map(t => t.length));
     // 中文 ≈ fontSize，英文 ≈ 0.6 * fontSize
     return maxLength * fontSize;
 };
-
-
 // Add Water Mark in an image
-export const imageAddWaterMark = async (file: Image, markTexts: MarkText[], currentLocation: Location) => {
+export const imageAddWaterMark = async (file: Image, markTexts: MarkText[], currentLocation: Location): Promise<ScFile> => {
+    const filePath = file.path;
     const imageInfo = await readImageInfo(file);
-    const { name,
-        fileType,
-        mime,
-        filePath,
-        fileHash,
-        isImage,
-        Model,
-        DateTimeOriginal,
-        latitude,
-        longitude } = imageInfo;
-    // 没尺寸直接返回
+    // Return immediately if no size is provided
     if (!file.width || !file.height) {
-        return { ...imageInfo, filePath };
+        return imageInfo;
     }
     const marks: MarkText[] = [];
-    /** 左上角：业务水印 */
+    // Top-left corner, business watermark
     marks.push(
         ...buildTextBlock(
             markTexts.map(t => t.text),
@@ -134,6 +122,7 @@ export const imageAddWaterMark = async (file: Image, markTexts: MarkText[], curr
             markFontOptions.margin.top
         )
     );
+    // Bottom-right: Photo info watermark
     const infoTexts = [
         `经度：${currentLocation.longitude}`,
         `纬度：${currentLocation.latitude}`,
@@ -160,44 +149,40 @@ export const imageAddWaterMark = async (file: Image, markTexts: MarkText[], curr
         marks
     );
 
-    return {
-        name,
-        fileType,
-        filePath: markImagePath,
-        fileHash,
-        isImage,
-        Model,
-        DateTimeOriginal,
-        latitude,
-        longitude,
-        mime
-    };
+    imageInfo.filePath = markImagePath;
+
+    return imageInfo;
 };
 
 // Get Image info
-export const readImageInfo = async (file: Image) => {
+export const readImageInfo = async (file: Image): Promise<ScFile> => {
     const filePath = file.path;
-    const { name, ext } = parseFileName(filePath);
+    const { originFileName, ext } = parseFileName(filePath);
     const header = await readFileHeader(filePath, 64);
     const typeInfo = checkIsImage(header);
-    const fileHash = await RNFS.hash(file.path, "sha256");
+    const hash = await RNFS.hash(file.path, "sha256");
     const isImage = typeInfo.isImage ? 1 : 0;
     const fileType = typeInfo.isImage ? typeInfo.type : ext;
-    const Model = file.exif?.Model ?? "unknown";
-    const DateTimeOriginal = resolveDateTime(file);
+    const model = file.exif?.Model ?? "unknown";
+    const dateTimeOriginal = resolveDateTime(file);
     const { latitude, longitude } = resolveLocation(file);
     const mime = file.mime;
     return {
-        name,
+        id: 0,
+        fileKey: 0,
+        originFileName,
         fileType,
         mime,
         filePath,
-        fileHash,
+        hash,
         isImage,
-        Model,
-        DateTimeOriginal,
+        model,
+        dateTimeOriginal,
         latitude,
         longitude,
+        fileUrl: "",
+        source: "",
+        dr: 0
     };
 };
 

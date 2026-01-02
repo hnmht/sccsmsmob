@@ -1,11 +1,11 @@
 import { Person } from "./person";
-import { File } from "./file";
-// Voucher File
+import { ScFile } from "./file";
+// Voucher ScFile
 export interface VoucherFile {
     id: number;
     billBID: number;
     billHID: number;
-    file: File;
+    file: ScFile;
     createDate: string;
     creator: Person;
     modifyDate: string;

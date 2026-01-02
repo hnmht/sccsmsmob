@@ -681,6 +681,8 @@
     "switchOnline":"Switch to online mode",
     "switchOffline":"Switch to offline mode",
     "language":"Language",
+    "insufficientPermission":"Insufficient permissions. The app will now exit.",
+    "mustImage":"An image is required.",
     
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

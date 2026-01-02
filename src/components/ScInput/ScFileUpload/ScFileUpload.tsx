@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { View, Modal, Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
 
 import { useAppSelector } from "../../../store/hooks";
 import FilePicker from "./FilePicker";
 import { ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
 import { voucherFilesToFiles, filesToVoucherFiles } from "./constructions";
-import { File } from "../../../dataType/types/file";
+import { ScFile } from "../../../dataType/types/file";
 import { VoucherFile } from "../../../dataType/types/voucherFile";
 import { getEmptyErrMsg } from "../../../dataType/dataZero/scInput";
 
@@ -32,13 +33,15 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
     };
 
     //对话框点击ok按钮
-    const handleSelectedOk = (items: File[]) => {
+    const handleSelectedOk = (items: ScFile[]) => {
         setDialogOpen(false);
         handleTransfer(items);
     };
 
+    
+
     return (
-        <View id={`View${itemKey}-p${positionID}-r${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
+        <SafeAreaView id={`View${itemKey}-p${positionID}-r${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
             <TextInput
                 id={`TextInput${itemKey}-p${positionID}-r${rowIndex}`}
                 mode="outlined"
@@ -94,7 +97,7 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
                     markTexts={markTexts ? markTexts : []}
                 />
             </Modal>
-        </View>
+        </SafeAreaView>
     );
 };
 

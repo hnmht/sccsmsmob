@@ -678,6 +678,8 @@
     "switchOnline": "切换到在线模式",
     "switchOffline": "切换到离线模式",
     "language": "语言",
+    "insufficientPermission": "缺少权限, 应用将退出.",
+    "mustImage": "必须为图片.",
 
     "MenuDashboard": "首页",
     "MenuCalendar": "日程",

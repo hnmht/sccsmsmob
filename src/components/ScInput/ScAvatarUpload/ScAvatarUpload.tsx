@@ -2,14 +2,13 @@ import React, { useState, memo, useEffect } from "react";
 import { View, Alert } from "react-native";
 import { Avatar, IconButton, Text, useTheme } from "react-native-paper";
 import ImageCropPicker, { Image } from "react-native-image-crop-picker";
-
+import { useTranslation } from "react-i18next";
 import { reqGetFileByHash, reqUploadFiles } from "../../../api/file";
 import { readImageInfo } from "../../tools/file";
-import { File } from "../../../dataType/types/file";
 import { requestPermissions } from "../../tools/permission";
-import { ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
+import { ErrMsg, ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
 
-//901
+// 901 SeaCloud Avatar Upload Component
 const ScAvatarUpload = ({
     positionID,
     rowIndex,
@@ -18,92 +17,87 @@ const ScAvatarUpload = ({
     initValue,
     pickDone,
     width,
-    onCancel = () => { }
+    onCancel = () => { console.log("exit") }
 }: ScInputProps<ScDataTypeList.AvatarUpload>) => {
     const [avatar, setAvatar] = useState(initValue);
     const [isLoading, setIsLoading] = useState(false);
     const theme = useTheme();
-    //检查授权
+    const { t } = useTranslation();
+    // Check Permission
     useEffect(() => {
         const checkPermission = async () => {
             const res = await requestPermissions();
-            console.log("checkPermission res:", res);
+            if (!res) {
+                Alert.alert(
+                    t("error"),
+                    t("insufficientPermission"),
+                    [
+                        {
+                            text: t("ok"),
+                            onPress: onCancel
+                        }
+                    ]
+                )
+            }
         }
         checkPermission();
     }, []);
-    //选中文件后执行的操作
-    const handleFileSelect = async (file: Image) => {
+    // Actions after choose Image
+    const handleFileSelect = async (image: Image) => {
         setIsLoading(true);
-        if ((file.size / 1024) > 5120) {
+        if ((image.size / 1024) > 5120) {
             setIsLoading(false);
             return
         }
-        let formData = new FormData(); //准备formData
-        //获取文件信息值
-        let fileInfo = await readImageInfo(file);
-
-        if (fileInfo.isImage === 0) {
+        let formData = new FormData(); // Prepare FormData
+        // Read Image Information
+        let file = await readImageInfo(image);
+        if (file.isImage === 0) {
+            Alert.alert(t("error"), t("mustImage"));
             setIsLoading(false);
             return
         }
-        const scFile: File = {
-            id: 0,
-            fileKey: 0,
-            originFileName: fileInfo.name,
-            fileType: fileInfo.fileType,
-            isImage: fileInfo.isImage,
-            model: fileInfo.Model,
-            longitude: fileInfo.longitude,
-            latitude: fileInfo.latitude,
-            hash: fileInfo.fileHash,
-            dateTimeOriginal: fileInfo.DateTimeOriginal,
-            fileUrl: ""
-        }
-        const getFilesHashRes = await reqGetFileByHash(scFile, false);
-        //检查服务器返回错误情况
+        const getFilesHashRes = await reqGetFileByHash(file, false);
+        // Checking server return error message
         if (!getFilesHashRes.status) {
-            Alert.alert("错误", getFilesHashRes.msg);
+            Alert.alert(t("error"), getFilesHashRes.msg);
             setIsLoading(false);
             return
         }
-        let newAvatar: File = { id: 0, fileUrl: "" };
-        //如果文件不存在，则需要上传文件
-        if (getFilesHashRes.data && getFilesHashRes.data.id === 0) {
-            let uploadFile = { uri: file.path, type: file.mime, name: fileInfo.name };
+        let newAvatar = getFilesHashRes.data;
+        // If the file does not exist, need upload it.
+        if (newAvatar && newAvatar.id === 0) {
+            let uploadFile = { uri: image.path, type: file.mime, name: file.originFileName };
             formData.append("files", uploadFile);
             formData.append("fileKey", 0);
-            formData.append("hash", fileInfo.fileHash);
-            formData.append("fileName", fileInfo.name);
-            formData.append("fileType", fileInfo.fileType);
-            formData.append("isImage", fileInfo.isImage);
-            formData.append("model", fileInfo.Model); //相机型号
-            formData.append("DateTimeOriginal", fileInfo.DateTimeOriginal); //初始拍摄时间
-            formData.append("latitude", fileInfo.latitude);//纬度
-            formData.append("longitude", fileInfo.longitude);//经度 
-            formData.append("source", "mobilechoose");
-            //向服务器上传文件
+            formData.append("hash", file.hash);
+            formData.append("fileName", file.originFileName);
+            formData.append("fileType", file.fileType);
+            formData.append("isImage", file.isImage);
+            formData.append("model", file.model);
+            formData.append("DateTimeOriginal", file.dateTimeOriginal);
+            formData.append("latitude", file.latitude);
+            formData.append("longitude", file.longitude);
+            formData.append("source", "mobileChoose");
+            // Upload file to server
             const uploadRes = await reqUploadFiles(formData, false);
-
             if (!uploadRes.status) {
-                Alert.alert("错误", uploadRes.msg);
+                Alert.alert(t("error"), uploadRes.msg);
                 setIsLoading(false);
                 return
             }
             newAvatar = uploadRes.data[0];
-        } else {
-            newAvatar = getFilesHashRes.data;
         }
 
         setAvatar(newAvatar);
         setIsLoading(false);
-        //将值反馈给父组件
-        let err = { isErr: false, msg: "" };
+        // Call the pickDone function to pass the value to the parent component
+        let err: ErrMsg = { isErr: false, msg: "" };
         pickDone(newAvatar, itemKey, positionID, rowIndex, err);
     };
 
-    //选择图片
+    // Pick Image
     const handlePickImage = async () => {
-        console.log("开始选择图片")
         ImageCropPicker.openPicker({
             width: 256,
             height: 256,
@@ -113,7 +107,7 @@ const ScAvatarUpload = ({
         }).then(image => {
             handleFileSelect(image);
         }).catch(err => {
-            console.log("选择错误", err)
+            console.log(t("error"), err)
         })
 
     };
@@ -144,8 +138,7 @@ const ScAvatarUpload = ({
                     }}
                     >
                         <View style={{ alignItems: "center" }}>
-                            <IconButton icon="camera" disabled={isLoading} iconColor={theme.colors.primary} size={32} onPress={handlePickImage} />
-                            <Text>上传</Text>
+                            <IconButton icon="camera" disabled={isLoading} iconColor={theme.colors.primary} size={32} onPress={handlePickImage} />                  
                         </View>
                     </View>
                     : null

@@ -1,8 +1,8 @@
 import { dayjs, EpochTime } from "../../i18n/dayjs";
-import { File } from "../types/file";
+import { ScFile } from "../types/file";
 
-export function getEmptyFile(): File {
-    const file: File = {
+export function getEmptyFile(): ScFile {
+    const file: ScFile = {
         id: 0,
         hash: "",
         minioFileName: "",

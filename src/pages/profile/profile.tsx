@@ -11,6 +11,7 @@ import ScInput from "../../components/ScInput";
 import { reqUserInfo } from "../../api/user";
 import { getEmptyUser } from "../../dataType/dataZero/user";
 import { ScDataTypeList } from "../../dataType/types/scInput";
+import { getEmptyFile } from "../../dataType/dataZero/file";
 /* import { setUserInfo } from "../../store/slice/user";
 import ScInput from "../../components/ScInput";
 
@@ -116,20 +117,20 @@ const Profile = () => {
                 ? <ScrollView>
                     <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
                         <ScInput
-                            dataType={ScDataTypeList.FileUpload}
+                            dataType={ScDataTypeList.AvatarUpload}
                             positionID={0}
                             rowIndex={0}
                             rowNumber={0}
                             allowNull={false}
-                            itemShowName=""
-                            errInfo={{isErr:false,msg:""}}
+                            itemShowName="附件"
+                            errInfo={{ isErr: false, msg: "" }}
                             isEdit={true}
                             itemKey="avatar"
                             width={"100%"}
-                            initValue={[]}
+                            initValue={getEmptyFile()}
                             pickDone={() => { }}
                             isBackendTest={false}
-                            isOnSitePhoto={false}                          
+                            isOnSitePhoto={false}
                             key="avatar"
                             onCancel={() => navigation.goBack()}
                         />

@@ -1,5 +1,5 @@
-// File
-export interface File {
+// ScFile
+export interface ScFile {
     id: number;
     hash?: string;
     minioFileName?: string;

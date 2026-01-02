@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { ScrollView, View, TouchableOpacity, Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, AnimatedFAB, useTheme, Text, Card, IconButton, Divider } from "react-native-paper";
 import Geolocation from "@react-native-community/geolocation";
 import ImageViewer from "react-native-image-zoom-viewer";
 import ImageCropPicker from "react-native-image-crop-picker";
 import { pick, types } from "@react-native-documents/picker";
 import { downloadFile, getFSInfo, DownloadDirectoryPath, exists } from "react-native-fs";
-import { File } from "../../../dataType/types/file";
-
+import { ScFile } from "../../../dataType/types/file";
 import { uniqBy, cloneDeep } from "lodash";
-
 import { dayjs } from "../../../i18n/i18n";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { changeSwapPosition } from "../../../store/slice/swapPosition";
@@ -33,11 +32,10 @@ const fileSource = new Map([
 interface filePickerProps {
     isOnSitePhoto: boolean;
     isEdit: boolean;
-    onOk: (files: File[]) => void;
+    onOk: (files: ScFile[]) => void;
     onCancel: () => void;
-    initFiles: File[];
+    initFiles: ScFile[];
     markTexts: MarkText[];
-
 }
 
 const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markTexts }: filePickerProps) => {
@@ -66,9 +64,9 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     }, []);
 
     //文件去重
-    const handleRemoveDupFile = (newFiles: File[]) => {
+    const handleRemoveDupFile = (newFiles: ScFile[]) => {
         const fileNumber = newFiles.length; //原有的文件数量
-        const removeDupFiles: File[] = uniqBy(newFiles, "hash");
+        const removeDupFiles: ScFile[] = uniqBy(newFiles, "hash");
         if (fileNumber > removeDupFiles.length) {
             Alert.alert("提示", `已经去除${fileNumber - removeDupFiles.length}个重复项`);
         }
@@ -88,7 +86,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                 return
             }
             //获取所有文件hash值
-            let fileArr: File[] = [];
+            let fileArr: ScFile[] = [];
             for (let i = 0; i < result.length; i++) {
                 //检查文件大小          
                 if ((result[i].size ?? 0 / 1024) > 20480) {
@@ -104,7 +102,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                 //获取文件信息
                 const fileInfo = await getFileInfo(result[i]);
 
-                let file: File = {
+                let file: ScFile = {
                     id: 0,
                     fileKey: i,
                     originFileName: result[i].name ?? undefined,
@@ -113,7 +111,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                     mime: fileInfo.mime,
                     filePath: fileInfo.filePath,
                     fileType: fileInfo.fileType,
-                    isImage: fileInfo.isImage,
+                    isImage: fileInfo.isImage ?? 0,
                     model: fileInfo.Model,
                     longitude: fileInfo.longitude,
                     latitude: fileInfo.latitude,
@@ -133,7 +131,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     };
     //选择图片
     const handleChooseImage = async () => {
-        let fileArr: File[] = [];
+        let fileArr: ScFile[] = [];
         try {
             const result = await ImageCropPicker.openPicker({
                 mediaType: "photo",
@@ -145,7 +143,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
             });
 
             const fileInfo = await readImageInfo(result);
-            let file: File = {
+            let file: ScFile = {
                 id: 0,
                 fileKey: 0,
                 originFileName: fileInfo.name,
@@ -155,7 +153,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                 size: result.size,
                 filePath: fileInfo.filePath,
                 fileType: fileInfo.fileType,
-                isImage: fileInfo.isImage,
+                isImage: fileInfo.isImage ?? 0,
                 model: fileInfo.Model,
                 longitude: fileInfo.longitude,
                 latitude: fileInfo.latitude,
@@ -202,7 +200,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
             });
 
             const fileInfo = await imageAddWaterMark(result, markTexts, currentLoacation);
-            let file: File = {
+            let file: ScFile = {
                 id: 0,
                 fileKey: 0,
                 originFileName: fileInfo.name,
@@ -235,7 +233,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
         setFiles(newFiles);
     };
     //点击文件封面
-    const handleOnPressImage = (item: File) => {
+    const handleOnPressImage = (item: ScFile) => {
         if (item.isImage === 0) {
             return
         }
@@ -246,7 +244,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     };
 
     //保存文件到本机
-    const handleSaveFile = async (item: File) => {
+    const handleSaveFile = async (item: ScFile) => {
         const path = `${DownloadDirectoryPath}/${item.originFileName}`;
         const fileExist = await exists(path);
         const resp = downloadFile({
@@ -294,7 +292,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     };
 
     return (
-        <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+        <SafeAreaView style={{ backgroundColor: theme.colors.background, flex: 1 }}>
             {displayList
                 ? <>
                     <ScrollView style={{ flex: 1 }}>
@@ -378,7 +376,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                         style={{ bottom: 64, position: "absolute", ...orderPosition }}
                     />
                     <IconButton
-                        icon="swap-horizontal"          
+                        icon="swap-horizontal"
                         iconColor={theme.colors.primary}
                         onPress={handleSwapPosition}
                         style={{ bottom: 160, position: "absolute", ...swapPosition }}
@@ -396,7 +394,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
             }
 
 
-        </View>
+        </SafeAreaView>
     );
 };
 

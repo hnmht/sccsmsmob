@@ -1,3 +1,4 @@
+import { DimensionValue } from "react-native";
 import { ComponentType } from "react";
 import { ConstructionSite } from "./csa";
 import { SimpCSC } from "./csc";
@@ -13,7 +14,7 @@ import { RiskLevel } from "./riskLevel";
 import { TC } from "./tc";
 import { UserDefinedArchive } from "./uda";
 import { UserDefineCategory } from "./udc";
-import { File } from "./file";
+import { ScFile } from "./file";
 import { VoucherFile } from "./voucherFile";
 
 export interface MarkPosition {
@@ -100,7 +101,7 @@ export type InitialValueMap = {
     // [ScDataTypeList.TC]: TC;
     // [ScDataTypeList.PPE]: PPE;
 
-    [ScDataTypeList.AvatarUpload]: File;
+    [ScDataTypeList.AvatarUpload]: ScFile;
     [ScDataTypeList.FileUpload]: VoucherFile[];
 }
 
@@ -114,12 +115,12 @@ export interface BaseScInputProps {
     rowNumber?: number;
     itemShowName?: string;
     itemKey: string;
-    width?: number | string;
-    height?: number;
-    placeholder?:string;
-    errInfo:ErrMsg;
-    isOnSitePhoto?:boolean;
-    markTexts?:MarkText[];
+    width?: DimensionValue;
+    height?: DimensionValue;
+    placeholder?: string;
+    errInfo: ErrMsg;
+    isOnSitePhoto?: boolean;
+    markTexts?: MarkText[];
     onCancel: () => void;
 }
 
