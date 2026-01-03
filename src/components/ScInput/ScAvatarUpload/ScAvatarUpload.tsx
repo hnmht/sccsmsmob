@@ -1,6 +1,6 @@
 import React, { useState, memo, useEffect } from "react";
 import { View, Alert } from "react-native";
-import { Avatar, IconButton, Text, useTheme } from "react-native-paper";
+import { Avatar, IconButton, useTheme } from "react-native-paper";
 import ImageCropPicker, { Image } from "react-native-image-crop-picker";
 import { useTranslation } from "react-i18next";
 import { reqGetFileByHash, reqUploadFiles } from "../../../api/file";
@@ -138,7 +138,7 @@ const ScAvatarUpload = ({
                     }}
                     >
                         <View style={{ alignItems: "center" }}>
-                            <IconButton icon="camera" disabled={isLoading} iconColor={theme.colors.primary} size={32} onPress={handlePickImage} />                  
+                            <IconButton icon="camera" disabled={isLoading} iconColor={theme.colors.primary} size={32} onPress={handlePickImage} />
                         </View>
                     </View>
                     : null

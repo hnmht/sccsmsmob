@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { View, Modal, Alert } from "react-native";
+import { Modal, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
+import { useTranslation } from "react-i18next";
 
 import { useAppSelector } from "../../../store/hooks";
 import FilePicker from "./FilePicker";
@@ -9,18 +10,18 @@ import { ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
 import { voucherFilesToFiles, filesToVoucherFiles } from "./constructions";
 import { ScFile } from "../../../dataType/types/file";
 import { VoucherFile } from "../../../dataType/types/voucherFile";
-import { getEmptyErrMsg } from "../../../dataType/dataZero/scInput";
 
-//902 文件上传
+// 902 SeaCloud File Upload Component
 const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
     const { positionID, rowIndex, allowNull, isEdit, itemShowName, itemKey, initValue, pickDone, placeholder, errInfo, isOnSitePhoto, width, height, markTexts } = props;
+    const { t } = useTranslation();
     const [files, setFiles] = useState(voucherFilesToFiles(initValue));
     const [dialogOpen, setDialogOpen] = useState(false);
     const theme = useTheme();
     const label = allowNull ? itemShowName : "*" + itemShowName;
-    //命令按钮位置
+    // Button position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
-    //向父组件传递数据
+    // Pass value to the parent component 
     const handleTransfer = async (items = files) => {
         if (!isEdit) {
             return
@@ -32,13 +33,13 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
         pickDone(voucherFiles, itemKey, positionID, rowIndex, errInfo);
     };
 
-    //对话框点击ok按钮
+    // Actions after click ok button in the dialog
     const handleSelectedOk = (items: ScFile[]) => {
         setDialogOpen(false);
         handleTransfer(items);
     };
 
-    
+
 
     return (
         <SafeAreaView id={`View${itemKey}-p${positionID}-r${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
@@ -57,7 +58,7 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
                         ? <TextInput.Icon
                             icon="alert"
                             color={theme.colors.error}
-                            onPress={() => Alert.alert("错误", errInfo.msg)}
+                            onPress={() => Alert.alert(t("error"), errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon
@@ -71,7 +72,7 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
                         ? <TextInput.Icon
                             icon="alert"
                             color={theme.colors.error}
-                            onPress={() => Alert.alert("错误", errInfo.msg)}
+                            onPress={() => Alert.alert(t("error"), errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon
@@ -89,7 +90,7 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
             >
                 <FilePicker
                     key={`filepicker${itemKey}-p${positionID}-r${rowIndex}`}
-                    isOnSitePhoto={false}
+                    isOnSitePhoto={isOnSitePhoto ?? false}
                     isEdit={isEdit}
                     initFiles={files}
                     onCancel={() => setDialogOpen(false)}

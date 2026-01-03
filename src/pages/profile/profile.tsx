@@ -12,6 +12,7 @@ import { reqUserInfo } from "../../api/user";
 import { getEmptyUser } from "../../dataType/dataZero/user";
 import { ScDataTypeList } from "../../dataType/types/scInput";
 import { getEmptyFile } from "../../dataType/dataZero/file";
+import { SafeAreaView } from "react-native-safe-area-context";
 /* import { setUserInfo } from "../../store/slice/user";
 import ScInput from "../../components/ScInput";
 
@@ -112,22 +113,23 @@ const Profile = () => {
         };
     */
     return (
+
         <KeyboardAvoidingView style={{ flex: 1 }}>
             {currentUser !== undefined
                 ? <ScrollView>
                     <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
                         <ScInput
-                            dataType={ScDataTypeList.AvatarUpload}
+                            dataType={ScDataTypeList.FileUpload}
                             positionID={0}
                             rowIndex={0}
                             rowNumber={0}
-                            allowNull={false}
+                            allowNull={true}
                             itemShowName="附件"
                             errInfo={{ isErr: false, msg: "" }}
                             isEdit={true}
                             itemKey="avatar"
                             width={"100%"}
-                            initValue={getEmptyFile()}
+                            initValue={[]}
                             pickDone={() => { }}
                             isBackendTest={false}
                             isOnSitePhoto={false}

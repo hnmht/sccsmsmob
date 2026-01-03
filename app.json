@@ -2,5 +2,6 @@
   "name": "sccsmsmob",
   "displayName": "Sea&cloud Construction Site Management System Moblie",
   "appVersion":"1.0.0",
-  "dbName":"seacloud.db"
+  "dbName":"seacloud.db",
+  "fileMaxSize":20480
 }
