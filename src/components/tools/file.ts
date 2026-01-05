@@ -130,8 +130,6 @@ export const imageAddWaterMark = async (file: Image, markTexts: MarkText[], curr
 
     imageInfo.filePath = markImagePath;
     imageInfo.fileUrl = markImagePath;
-    
-
     return imageInfo;
 };
 
@@ -167,6 +165,3 @@ export const readImageInfo = async (file: Image): Promise<ScFile> => {
         dr: 0
     };
 };
-
-
-

@@ -10,7 +10,7 @@ import { useSettingNavigation } from "../../navigation/config/screenParams";
 import ScInput from "../../components/ScInput";
 import { reqUserInfo } from "../../api/user";
 import { getEmptyUser } from "../../dataType/dataZero/user";
-import { ScDataTypeList } from "../../dataType/types/scInput";
+import { ScDataTypeList, InitialValueMap, ErrMsg } from "../../dataType/types/scInput";
 import { getEmptyFile } from "../../dataType/dataZero/file";
 import { SafeAreaView } from "react-native-safe-area-context";
 /* import { setUserInfo } from "../../store/slice/user";
@@ -51,67 +51,69 @@ const Profile = () => {
         }
         initialData();
     }, []);
-    /* 
-        const handleGetValue = (value, itemkey, fieldIndex, rowIndex, errMsg) => {
-            if (currentUser === undefined || !isEdit) {
-                return
-            }
-            //更新errors
-            setErrors((prevState) => {
-                return ({
-                    ...prevState,
-                    [itemkey]: errMsg,
-                });
+
+    const handleGetValue = <T extends keyof InitialValueMap>(value: InitialValueMap[T], itemkey: string, positionID: 0 | 1 | 2, rowIndex: number, errMsg: ErrMsg) => {
+        console.log("value:", value);
+        if (currentUser === undefined || !isEdit) {
+            return
+        }
+       
+        //更新errors
+        setErrors((prevState) => {
+            return ({
+                ...prevState,
+                [itemkey]: errMsg,
             });
-            //更新输入的用户信息
-            setCurrentUser((prevState) => {
-    
-                // 结构赋值方法
-                return ({
-                    ...prevState,
-                    [itemkey]: value,
-                });
+        });
+        //更新输入的用户信息
+        setCurrentUser((prevState: any) => {
+
+            // 结构赋值方法
+            return ({
+                ...prevState,
+                [itemkey]: value,
             });
-        }; 
-        //修改提交
-        const handleModifyUser = async () => {
-            setIsLoading(true)
-            let thisUser = cloneDeep(currentUser);
-            delete thisUser.menulist;
-            delete thisUser.createdate;
-            delete thisUser.modifydate;
-            delete thisUser.roles;
-            const modifyRes = await reqModifyProfile(thisUser);
-            if (modifyRes.data.status === 0) {
-                thisUser = modifyRes.data.data;
-                Alert.prompt("提示", "修改成功!");
-            } else {
-                Alert.alert("错误", modifyRes.data.statusMsg);
-            }
-            setCurrentUser(thisUser);
-            setIsEdit(false);
-            setIsLoading(false);
-            handleUpdateUserInfo();
-        };
-    
-        //更新用户信息
-        const handleUpdateUserInfo = () => {
-            reqUserInfo(token).then(userInfoRes => {
-                if (userInfoRes.data.status !== 0) {
-                    Alert.alert(
-                        "错误",
-                        `请求用户信息失败:${userInfoRes.data.statusMsg}`,
-                        [{
-                            text: "确定",
-                        }]);
-                    return
-                }
-                //将userInfo存入store
-                const latestUserInfo = userInfoRes.data.data;
-                dispatch(setUserInfo(latestUserInfo));
-            })
-        };
-    */
+        });
+    };
+    /* //修改提交
+ const handleModifyUser = async () => {
+     setIsLoading(true)
+     let thisUser = cloneDeep(currentUser);
+     delete thisUser.menulist;
+     delete thisUser.createdate;
+     delete thisUser.modifydate;
+     delete thisUser.roles;
+     const modifyRes = await reqModifyProfile(thisUser);
+     if (modifyRes.data.status === 0) {
+         thisUser = modifyRes.data.data;
+         Alert.prompt("提示", "修改成功!");
+     } else {
+         Alert.alert("错误", modifyRes.data.statusMsg);
+     }
+     setCurrentUser(thisUser);
+     setIsEdit(false);
+     setIsLoading(false);
+     handleUpdateUserInfo();
+ };
+ 
+ //更新用户信息
+ const handleUpdateUserInfo = () => {
+     reqUserInfo(token).then(userInfoRes => {
+         if (userInfoRes.data.status !== 0) {
+             Alert.alert(
+                 "错误",
+                 `请求用户信息失败:${userInfoRes.data.statusMsg}`,
+                 [{
+                     text: "确定",
+                 }]);
+             return
+         }
+         //将userInfo存入store
+         const latestUserInfo = userInfoRes.data.data;
+         dispatch(setUserInfo(latestUserInfo));
+     })
+ };
+*/
     return (
 
         <KeyboardAvoidingView style={{ flex: 1 }}>
@@ -119,7 +121,7 @@ const Profile = () => {
                 ? <ScrollView>
                     <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
                         <ScInput
-                            dataType={ScDataTypeList.FileUpload}
+                            dataType={ScDataTypeList.CheckYesOrNo}
                             positionID={0}
                             rowIndex={0}
                             rowNumber={0}
@@ -129,8 +131,8 @@ const Profile = () => {
                             isEdit={true}
                             itemKey="avatar"
                             width={"100%"}
-                            initValue={[]}
-                            pickDone={() => { }}
+                            initValue={0}
+                            pickDone={handleGetValue}
                             isBackendTest={false}
                             isOnSitePhoto={false}
                             key="avatar"

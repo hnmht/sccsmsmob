@@ -10,7 +10,7 @@ import React from "react";
 
 // import ScSelectGender from "./ScSelectGender/ScSelectGender"; //401 选择性别
 // import ScSwitchYesOrNo from "./ScSwitchYesOrNo/ScSwitchYesOrNo"; //402 switch选择是否
-// import ScCheckYesOrNo from "./ScCheckYesOrNo/ScCheckYesOrNo"; //403 CheckBox选择是否
+import ScCheckYesOrNo from "./ScCheckYesOrNo/ScCheckYesOrNo"; //403 CheckBox选择是否
 // import ScSelectYesOrNo from "./ScSelectYesOrNo/ScSelectYesOrNo"; //404 Select是否选择
 // import ScVoucherStatus from "./ScVoucherStatus/ScVoucherStatus"; //405 单据状态显示
 
@@ -65,8 +65,8 @@ const ScInput: React.FC<ScInputUnionProps> = (props) => {
         // case ScDataTypeList.SwitchYesNo:
         //     return <ScSwitchYesOrNo {...props} />;
 
-        // case ScDataTypeList.CheckYesNo:
-        //     return <ScCheckYesOrNo {...props} />;
+        case ScDataTypeList.CheckYesOrNo:
+            return <ScCheckYesOrNo {...props} />;
 
         // case ScDataTypeList.SelectYesNo:
         //     return <ScSelectYesOrNo {...props} />;

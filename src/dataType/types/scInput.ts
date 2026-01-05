@@ -35,7 +35,7 @@ export interface Location {
 
 export enum ScDataTypeList {
     // Text = 301,
-    // Number = 302,
+    Number = 302,
     // Password = 303,
     // Mobile = 304,
     // Email = 305,
@@ -44,7 +44,7 @@ export enum ScDataTypeList {
 
     // Gender = 401,
     // SwitchYesOrNo = 402,
-    // CheckYesOrNo = 403,
+    CheckYesOrNo = 403,
     // SelectYesOrNo = 404,
     // VoucherStatus = 405,
 
@@ -83,7 +83,7 @@ export type InitialValueMap = {
 
     // [ScDataTypeList.Gender]: 0 | 1 | 2;
     // [ScDataTypeList.SwitchYesOrNo]: 0 | 1;
-    // [ScDataTypeList.CheckYesOrNo]: 0 | 1;
+    [ScDataTypeList.CheckYesOrNo]: 0 | 1;
     // [ScDataTypeList.SelectYesOrNo]: 0 | 1;
 
     // [ScDataTypeList.Person]: Person;
@@ -121,6 +121,7 @@ export interface BaseScInputProps {
     errInfo: ErrMsg;
     isOnSitePhoto?: boolean;
     markTexts?: MarkText[];
+    color?:string;
     onCancel: () => void;
 }
 
