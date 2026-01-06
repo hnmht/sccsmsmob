@@ -1,6 +1,6 @@
 import React from "react";
 // // import ScDataTypeSelect from "./ScDataTypeSelect/ScDataTypeSelect"; //101 数据类型输入组件
-// import ScTextInput from "./ScTextInput/ScTextInput"; //301 文本输入组件
+import ScTextInput from "./ScTextInput/ScTextInput"; //301 文本输入组件
 // import ScNumberInput from "./ScNumberInput/ScNumberInput"; //302 数字输入组件
 // import ScPasswordInput from "./ScPasswordInput/ScPasswordInput"; //303 密码输入组件
 // import ScMobileInput from "./ScMobileInput/ScMobileInput"; //304 移动电话号码输入组件
@@ -38,8 +38,8 @@ import { ScDataTypeList,  ScInputUnionProps } from "../../dataType/types/scInput
 const ScInput: React.FC<ScInputUnionProps> = (props) => {
     const { dataType } = props;
     switch (dataType) {
-        // case ScDataTypeList.Text:
-        //     return <ScTextInput {...props} />;
+        case ScDataTypeList.Text:
+            return <ScTextInput {...props} />;
 
         // case ScDataTypeList.Number:
         //     return <ScNumberInput {...props} />;

@@ -34,13 +34,13 @@ export interface Location {
 }
 
 export enum ScDataTypeList {
-    // Text = 301,
+    Text = 301,
     Number = 302,
-    // Password = 303,
-    // Mobile = 304,
-    // Email = 305,
-    // Date = 306,
-    // DateTime = 307,
+    Password = 303,
+    Mobile = 304,
+    Email = 305,
+    Date = 306,
+    DateTime = 307,
 
     // Gender = 401,
     // SwitchYesOrNo = 402,
@@ -73,13 +73,13 @@ export interface ErrMsg {
 }
 
 export type InitialValueMap = {
-    // [ScDataTypeList.Text]: string;
-    // [ScDataTypeList.Number]: number;
-    // [ScDataTypeList.Password]: string;
-    // [ScDataTypeList.Mobile]: string;
-    // [ScDataTypeList.Email]: string;
-    // [ScDataTypeList.Date]: string | Date;
-    // [ScDataTypeList.DateTime]: string | Date;
+    [ScDataTypeList.Text]: string;
+    [ScDataTypeList.Number]: number;
+    [ScDataTypeList.Password]: string;
+    [ScDataTypeList.Mobile]: string;
+    [ScDataTypeList.Email]: string;
+    [ScDataTypeList.Date]: string | Date;
+    [ScDataTypeList.DateTime]: string | Date;
 
     // [ScDataTypeList.Gender]: 0 | 1 | 2;
     // [ScDataTypeList.SwitchYesOrNo]: 0 | 1;
@@ -122,7 +122,7 @@ export interface BaseScInputProps {
     isOnSitePhoto?: boolean;
     markTexts?: MarkText[];
     color?:string;
-    onCancel: () => void;
+    onCancel?: () => void;
 }
 
 export type PickDone<T extends keyof InitialValueMap> = (

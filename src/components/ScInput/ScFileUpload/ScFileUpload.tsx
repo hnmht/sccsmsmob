@@ -38,9 +38,6 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
         setDialogOpen(false);
         handleTransfer(items);
     };
-
-
-
     return (
         <SafeAreaView id={`View${itemKey}-p${positionID}-r${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
             <TextInput

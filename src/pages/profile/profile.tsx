@@ -1,22 +1,23 @@
 import { useState, useEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, ActivityIndicator, Text } from "react-native-paper";
 import { Alert, ScrollView, View, KeyboardAvoidingView } from "react-native";
 import { cloneDeep } from "lodash";
-import { useDispatch, useSelector } from "react-redux";
-import { useAppSelector } from "../../store/hooks";
+import { useTranslation } from "react-i18next";
+
+import { useAppSelector,useAppDispatch } from "../../store/hooks";
 import { UserInfo } from "../../dataType/types/user";
 import { useSettingNavigation } from "../../navigation/config/screenParams";
+import { pubParams } from "../../components/pub/pubParams";
+
 
 import ScInput from "../../components/ScInput";
 import { reqUserInfo } from "../../api/user";
 import { getEmptyUser } from "../../dataType/dataZero/user";
 import { ScDataTypeList, InitialValueMap, ErrMsg } from "../../dataType/types/scInput";
 import { getEmptyFile } from "../../dataType/dataZero/file";
-import { SafeAreaView } from "react-native-safe-area-context";
-/* import { setUserInfo } from "../../store/slice/user";
-import ScInput from "../../components/ScInput";
 
-import { pubParams } from "../../components/pub/pubParms"; */
+/* 
 
 /* const checkError = (errors) => {
     let number = 0;
@@ -33,9 +34,10 @@ const Profile = () => {
     const [isEdit, setIsEdit] = useState(false);
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const token = useAppSelector(state => state.user.token);
     const navigation = useSettingNavigation();
+    const {t} = useTranslation();
 
     useEffect(() => {
         async function initialData() {
@@ -44,9 +46,10 @@ const Profile = () => {
             if (userRes.status) {
                 user = userRes.data;
             } else {
-                Alert.alert("错误", userRes.msg);
+                Alert.alert(t("error"), userRes.msg);
                 user = undefined;
             }
+            console.log("user:",user)
             setCurrentUser(user);
         }
         initialData();
@@ -59,7 +62,7 @@ const Profile = () => {
         }
        
         //更新errors
-        setErrors((prevState) => {
+        setErrors((prevState:any) => {
             return ({
                 ...prevState,
                 [itemkey]: errMsg,
@@ -67,7 +70,6 @@ const Profile = () => {
         });
         //更新输入的用户信息
         setCurrentUser((prevState: any) => {
-
             // 结构赋值方法
             return ({
                 ...prevState,
@@ -121,22 +123,54 @@ const Profile = () => {
                 ? <ScrollView>
                     <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
                         <ScInput
-                            dataType={ScDataTypeList.CheckYesOrNo}
+                            dataType={ScDataTypeList.AvatarUpload}
                             positionID={0}
                             rowIndex={0}
                             rowNumber={0}
                             allowNull={true}
-                            itemShowName="附件"
+                            itemShowName={t("avatar")}
                             errInfo={{ isErr: false, msg: "" }}
                             isEdit={true}
                             itemKey="avatar"
                             width={"100%"}
-                            initValue={0}
+                            initValue={getEmptyFile()}
                             pickDone={handleGetValue}
                             isBackendTest={false}
                             isOnSitePhoto={false}
                             key="avatar"
                             onCancel={() => navigation.goBack()}
+                        />
+                        <ScInput
+                            dataType={ScDataTypeList.Text}
+                            positionID={0}
+                            rowIndex={0}
+                            rowNumber={0}
+                            allowNull={false}
+                            itemShowName={t("code")}
+                            errInfo={{ isErr: false, msg: "" }}
+                            isEdit={false}                       
+                            itemKey="code"
+                            initValue={currentUser.code}
+                            pickDone={handleGetValue}
+                            isBackendTest={false}
+                            key="code"
+                            width={pubParams.screen.isOverSize ? "100%" : "50%"}
+                        />
+                        <ScInput
+                            dataType={ScDataTypeList.Text}
+                            positionID={0}
+                            rowIndex={0}
+                            rowNumber={0}
+                            allowNull={false}
+                            itemShowName={t("name")}
+                            errInfo={{ isErr: false, msg: "" }}
+                            isEdit={false}
+                            itemKey="name"
+                            initValue={currentUser.name}
+                            pickDone={handleGetValue}
+                            isBackendTest={false}
+                            key="name"
+                            width={pubParams.screen.isOverSize ? "100%" : "50%"}
                         />
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 16 }}>
