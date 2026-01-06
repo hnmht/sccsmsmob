@@ -42,26 +42,26 @@ export enum ScDataTypeList {
     Date = 306,
     DateTime = 307,
 
-    // Gender = 401,
-    // SwitchYesOrNo = 402,
+    Gender = 401,
+    SwitchYesOrNo = 402,
     CheckYesOrNo = 403,
-    // SelectYesOrNo = 404,
-    // VoucherStatus = 405,
+    SelectYesOrNo = 404,
+    VoucherStatus = 405,
 
-    // Person = 510,
-    // SimpDept = 520,
-    // SimpCSC = 525,
-    // UserDefineCategory = 530,
-    // SimpEPC = 540,
-    // UserDefinedArchive = 550,
-    // ExecutionProject = 560,
-    // ConstructionSite = 570,
-    // EPT = 580,
-    // RiskLevel = 590,
-    // SimpDC = 600,
-    // Position = 610,
-    // TC = 620,
-    // PPE = 630,
+    Person = 510,
+    SimpDept = 520,
+    SimpCSC = 525,
+    UserDefineCategory = 530,
+    SimpEPC = 540,
+    UserDefinedArchive = 550,
+    ExecutionProject = 560,
+    ConstructionSite = 570,
+    EPT = 580,
+    RiskLevel = 590,
+    SimpDC = 600,
+    Position = 610,
+    TC = 620,
+    PPE = 630,
 
     AvatarUpload = 901,
     FileUpload = 902,
@@ -81,25 +81,25 @@ export type InitialValueMap = {
     [ScDataTypeList.Date]: string | Date;
     [ScDataTypeList.DateTime]: string | Date;
 
-    // [ScDataTypeList.Gender]: 0 | 1 | 2;
-    // [ScDataTypeList.SwitchYesOrNo]: 0 | 1;
+    [ScDataTypeList.Gender]: 0 | 1 | 2;
+    [ScDataTypeList.SwitchYesOrNo]: 0 | 1;
     [ScDataTypeList.CheckYesOrNo]: 0 | 1;
-    // [ScDataTypeList.SelectYesOrNo]: 0 | 1;
+    [ScDataTypeList.SelectYesOrNo]: 0 | 1;
 
-    // [ScDataTypeList.Person]: Person;
-    // [ScDataTypeList.SimpDept]: SimpDept;
-    // [ScDataTypeList.SimpCSC]: SimpCSC;
-    // [ScDataTypeList.UserDefineCategory]: UserDefineCategory;
-    // [ScDataTypeList.SimpEPC]: SimpEPC;
-    // [ScDataTypeList.UserDefinedArchive]: UserDefinedArchive;
-    // [ScDataTypeList.ExecutionProject]: ExecutionProject;
-    // [ScDataTypeList.ConstructionSite]: ConstructionSite;
-    // [ScDataTypeList.EPT]: EPT;
-    // [ScDataTypeList.RiskLevel]: RiskLevel;
-    // [ScDataTypeList.SimpDC]: SimpDC;
-    // [ScDataTypeList.Position]: Position;
-    // [ScDataTypeList.TC]: TC;
-    // [ScDataTypeList.PPE]: PPE;
+    [ScDataTypeList.Person]: Person;
+    [ScDataTypeList.SimpDept]: SimpDept;
+    [ScDataTypeList.SimpCSC]: SimpCSC;
+    [ScDataTypeList.UserDefineCategory]: UserDefineCategory;
+    [ScDataTypeList.SimpEPC]: SimpEPC;
+    [ScDataTypeList.UserDefinedArchive]: UserDefinedArchive;
+    [ScDataTypeList.ExecutionProject]: ExecutionProject;
+    [ScDataTypeList.ConstructionSite]: ConstructionSite;
+    [ScDataTypeList.EPT]: EPT;
+    [ScDataTypeList.RiskLevel]: RiskLevel;
+    [ScDataTypeList.SimpDC]: SimpDC;
+    [ScDataTypeList.Position]: Position;
+    [ScDataTypeList.TC]: TC;
+    [ScDataTypeList.PPE]: PPE;
 
     [ScDataTypeList.AvatarUpload]: ScFile;
     [ScDataTypeList.FileUpload]: VoucherFile[];

@@ -5,7 +5,7 @@ import { Alert, ScrollView, View, KeyboardAvoidingView } from "react-native";
 import { cloneDeep } from "lodash";
 import { useTranslation } from "react-i18next";
 
-import { useAppSelector,useAppDispatch } from "../../store/hooks";
+import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { UserInfo } from "../../dataType/types/user";
 import { useSettingNavigation } from "../../navigation/config/screenParams";
 import { pubParams } from "../../components/pub/pubParams";
@@ -37,7 +37,7 @@ const Profile = () => {
     const dispatch = useAppDispatch();
     const token = useAppSelector(state => state.user.token);
     const navigation = useSettingNavigation();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     useEffect(() => {
         async function initialData() {
@@ -49,7 +49,7 @@ const Profile = () => {
                 Alert.alert(t("error"), userRes.msg);
                 user = undefined;
             }
-            console.log("user:",user)
+            console.log("user:", user)
             setCurrentUser(user);
         }
         initialData();
@@ -60,9 +60,9 @@ const Profile = () => {
         if (currentUser === undefined || !isEdit) {
             return
         }
-       
+
         //更新errors
-        setErrors((prevState:any) => {
+        setErrors((prevState: any) => {
             return ({
                 ...prevState,
                 [itemkey]: errMsg,
@@ -130,7 +130,7 @@ const Profile = () => {
                             allowNull={true}
                             itemShowName={t("avatar")}
                             errInfo={{ isErr: false, msg: "" }}
-                            isEdit={true}
+                            isEdit={isEdit}
                             itemKey="avatar"
                             width={"100%"}
                             initValue={getEmptyFile()}
@@ -148,7 +148,7 @@ const Profile = () => {
                             allowNull={false}
                             itemShowName={t("code")}
                             errInfo={{ isErr: false, msg: "" }}
-                            isEdit={false}                       
+                            isEdit={false}
                             itemKey="code"
                             initValue={currentUser.code}
                             pickDone={handleGetValue}
@@ -170,6 +170,23 @@ const Profile = () => {
                             pickDone={handleGetValue}
                             isBackendTest={false}
                             key="name"
+                            width={pubParams.screen.isOverSize ? "100%" : "50%"}
+                        />
+                        <ScInput
+                            dataType={ScDataTypeList.Gender}
+                            positionID={0}
+                            rowIndex={0}
+                            rowNumber={0}
+                            allowNull={true}
+                            isEdit={false}
+                            itemShowName={t("gender")}
+                            errInfo={{ isErr: false, msg: "" }}
+                            itemKey="gender"
+                            initValue={currentUser.person.gender}
+                            pickDone={handleGetValue}
+                            placeholder="请选择性别"
+                            key="gender"
+                            isBackendTest={false}
                             width={pubParams.screen.isOverSize ? "100%" : "50%"}
                         />
                     </View>
