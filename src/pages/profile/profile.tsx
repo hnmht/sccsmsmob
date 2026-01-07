@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, ActivityIndicator, Text } from "react-native-paper";
+import { Button, ActivityIndicator, Text, TextInput } from "react-native-paper";
 import { Alert, ScrollView, View, KeyboardAvoidingView } from "react-native";
 import { cloneDeep } from "lodash";
 import { useTranslation } from "react-i18next";
@@ -16,8 +16,6 @@ import { reqUserInfo } from "../../api/user";
 import { getEmptyUser } from "../../dataType/dataZero/user";
 import { ScDataTypeList, InitialValueMap, ErrMsg } from "../../dataType/types/scInput";
 import { getEmptyFile } from "../../dataType/dataZero/file";
-
-/* 
 
 /* const checkError = (errors) => {
     let number = 0;
@@ -186,6 +184,23 @@ const Profile = () => {
                             pickDone={handleGetValue}
                             placeholder="请选择性别"
                             key="gender"
+                            isBackendTest={false}
+                            width={pubParams.screen.isOverSize ? "100%" : "50%"}
+                        />
+                        <ScInput
+                            dataType={ScDataTypeList.SimpDept}
+                            positionID={0}
+                            rowIndex={0}
+                            rowNumber={0}
+                            allowNull={true}
+                            isEdit={true}
+                            itemShowName="所属部门"
+                            itemKey="department"
+                            initValue={currentUser.department}
+                            pickDone={handleGetValue}
+                            errInfo={{ isErr: false, msg: "" }}
+                            placeholder="请选择部门"
+                            key="department"
                             isBackendTest={false}
                             width={pubParams.screen.isOverSize ? "100%" : "50%"}
                         />

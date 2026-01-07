@@ -164,7 +164,7 @@ export class MasterDataRepository<T, TCache extends {
         executeSQLWithParams(sqlRec, [id]);
 
     }
-
+    // Get Detail by ID
     getDetailByID(id: number): T {
         const { table, primaryKey, valueField, emptyFn } = this.cfg;
         let data: T = emptyFn();
@@ -178,6 +178,14 @@ export class MasterDataRepository<T, TCache extends {
             data = JSON.parse(rows._array[0][valueField]);
         }
         return data;
+    }
+    // Get All Local master data
+    getAllData(): T[] {
+        const { table, valueField } = this.cfg;
+        const sql = `select ${valueField} from ${table}`
+        const { rows } = executeSQL(sql);
+        if (!rows || rows.length === 0) return [];
+        return rows._array.map((i: any) => JSON.parse(i[valueField]));
     }
 
     // Get recent used

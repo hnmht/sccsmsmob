@@ -17,7 +17,7 @@ import ScCheckYesOrNo from "./ScCheckYesOrNo/ScCheckYesOrNo"; //403 CheckBox选�
 // // import ScRoleSelects from "./ScRoleSelects/ScRoleSelects"; //501 角色列表多选组件
 // // import ScPersonSelects from "./ScPersonSelects/ScPersonSelects"; // 502 人员多选组件
 // import ScPersonSelect from "./ScPersonSelect/ScPersonSelect"; // 510 人员单选组件
-// import ScDeptSelect from "./ScDeptSelect/ScDeptSelect"; //520 部门单选
+import ScDeptSelect from "./ScDeptSelect/ScDeptSelect"; //520 部门单选
 // import ScSICSelect from "./ScSICSelect/ScSICSelect"; //525 现场档案分类单选
 // import ScUDCSelect from "./ScUDCSelect/ScUDCSelect"; //530 自定义档案类别单选组件
 // import ScEICSelect from "./ScEICSelect/ScEICSelect"; //540 执行项目类别单选组件
@@ -74,8 +74,8 @@ const ScInput: React.FC<ScInputUnionProps> = (props) => {
         // case ScDataTypeList.Person:
         //     return <ScPersonSelect {...props} />;
 
-        // case ScDataTypeList.Dept:
-        //     return <ScDeptSelect {...props} />;
+        case ScDataTypeList.SimpDept:
+            return <ScDeptSelect {...props} />;
 
         case ScDataTypeList.AvatarUpload:
             return <ScAvatarUpload {...props} />;
