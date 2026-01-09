@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
 import { Text, useTheme, SegmentedButtons, AnimatedFAB, Card, IconButton } from "react-native-paper";
 import { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { changeSwapPosition } from "../../../store/slice/swapPosition";
@@ -12,6 +13,7 @@ import DocList from "../../DocList/DocList";
 import { pubParams } from "../../pub/pubParams";
 import { SimpDept } from "../../../dataType/types/department";
 
+
 interface deptPickerProps {
     pressItemAction: (item: SimpDept) => void;
     cancelAction: () => void;
@@ -21,7 +23,7 @@ interface deptPickerProps {
 interface deptCardProps {
     item: SimpDept
 }
-//将当前选择部门转换为部门id数组
+// Convert an Array of department objects into an array of department IDs
 const transforDeptIDs = (dept: SimpDept) => {
     let selectDeptIds = [];
     selectDeptIds.push(dept.id);
@@ -35,10 +37,11 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
     const theme = useTheme();
     const dispatch = useAppDispatch();
     const selectedDeptIds = transforDeptIDs(currentItem);
+    const { t } = useTranslation();
 
-    //命令按钮位置
+    // Command buttons position
     const { buttonPosition, swapPosition, orderPosition } = useAppSelector(state => state.swapPosition);
-    //切换命令按钮位置
+    // Switch command buttons postion
     const handleSwapPosition = () => {
         dispatch(changeSwapPosition());
     };
@@ -57,20 +60,20 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
         handleInitDepts();
     }, []);
 
-    //最近和所有值全部切换
+    // Switch  SegmentedButtons
     const handleChangeSeg = (value: "recent" | "all") => {
         setAllOrRecent(value);
         handleInitDepts(value);
     };
 
-    //点击后的操作
+    // Actions after press SimpDept Item
     const handlePress = (item: SimpDept) => {
         if (allOrRecent === "all") {
             simpDeptRepo.addRecent(item);
         }
         pressItemAction(item);
     };
-    //长按删除最近
+    // Actions after long press SimpDept Item
     const handleLongPress = (item: SimpDept) => {
         if (allOrRecent === "recent") {
             simpDeptRepo.deleteRecent(item);
@@ -79,7 +82,7 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
         return
     };
 
-    //刷新部门
+    // Refersh 
     const handleDocRefresh = async () => {
         await simpDeptRepo.initCache();
         handleInitDepts(allOrRecent);
@@ -98,11 +101,11 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
                     onPress={() => pressItemAction(item)}
                     onLongPress={() => handleLongPress(item)}
                 >
-                    <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%", padding: 2, fontWeight: "bold", color: item.status === 1 ? "red" : theme.colors.onBackground }}>部门名称:{item.name}</Text>
-                    <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%", padding: 2 }}>部门编码:{item.code}</Text>
-                    <Text style={{ width: "100%", padding: 2 }}>部门说明:{item.description}</Text>
-                    <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%", padding: 2 }}>负责人:{item.leader.name}</Text>
-                    <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%", padding: 2 }}>状态:{item.status === 0 ? "正常" : "停用"}</Text>
+                    <Text style={{ width: "100%", padding: 2, fontWeight: "bold", color: item.status === 1 ? "red" : theme.colors.primary }}>{t("deptName")}:{item.name}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("deptCode")}:{item.code}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("description")}:{item.description}</Text>
+                    <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%", padding: 2 }}>{t("leader")}:{item.leader.name}</Text>
+                    <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%", padding: 2 }}>{t("status")}:{t(item.status === 0 ? "normal" : "disable")}</Text>
                 </TouchableOpacity>
             </Card>
         );
@@ -120,7 +123,7 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
                 backgroundColor: theme.colors.background
             }}>
                 <View style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <Text variant="titleMedium">选择部门</Text>
+                    <Text variant="titleMedium">{t("chooseDept")}</Text>
                 </View>
                 <View style={{ width: "100%", minHeight: 42, padding: 2 }}>
                     <SegmentedButtons
@@ -129,11 +132,11 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
                         buttons={[
                             {
                                 value: "recent",
-                                label: "最近"
+                                label: t("recents")
                             },
                             {
                                 value: "all",
-                                label: "全部"
+                                label: t("all")
                             }
                         ]}
                     />
@@ -142,8 +145,8 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
             {allOrRecent === "all"
                 ? <ScrollView>
                     <ScPubTree
-                        docName={"部门"}
-                        isDisplayAll={false}
+                        docName={t("department")}
+                        isDisplayAll={true}
                         oriDocs={depts}
                         onDocPress={handlePress}
                         selectDocIDs={selectedDeptIds}
@@ -163,7 +166,7 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
             {isOffline === 0
                 ? <AnimatedFAB
                     icon="refresh"
-                    label="刷新"
+                    label={t("refresh")}
                     extended={false}
                     visible={true}
                     onPress={handleDocRefresh}
@@ -174,7 +177,7 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
             }
             <AnimatedFAB
                 icon="keyboard-return"
-                label="返回"
+                label={t("back")}
                 extended={false}
                 visible={true}
                 onPress={cancelAction}
@@ -187,7 +190,6 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
                 onPress={handleSwapPosition}
                 style={{ bottom: 160, position: "absolute", ...swapPosition }}
             />
-
         </View>
     )
 };

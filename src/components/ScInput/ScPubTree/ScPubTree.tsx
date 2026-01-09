@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useTheme, IconButton, Text } from "react-native-paper";
+import { useTranslation } from "react-i18next";
 import { List, ListItem, ListItemButton } from "./leaf";
 import ScCollapse from "../../ScCollapse/ScCollapse";
 import { toTree } from "../../tools/tree";
+
 
 interface ScPubTreeProps<T> {
     docName: string;
@@ -28,6 +30,7 @@ interface RenderListProps<T> {
 const ScPubTree = ({ docName, isDisplayAll, oriDocs, onDocPress, selectDocIDs, onDocLongPress, isEdit }: ScPubTreeProps<any>) => {
     const theme = useTheme();
     const [openAll, setOpenAll] = useState(true);
+    const { t } = useTranslation();
     const docTree = toTree(oriDocs, 0);
     const RenderItem = ({ item, level }: RenderItemProps<any>) => {
         const [open, setOpen] = useState(true);
@@ -101,7 +104,7 @@ const ScPubTree = ({ docName, isDisplayAll, oriDocs, onDocPress, selectDocIDs, o
                             onLongPress={() => onDocLongPress(oriDocs, 3)}
                             disabled={!isEdit}
                         >
-                            <Text variant="titleMedium">{"所有" + docName}</Text>
+                            <Text variant="titleMedium">{t("all") + " " + docName}</Text>
                         </ListItemButton>
                         {oriDocs.length <= selectDocIDs.length && oriDocs.length !== 0 ? <IconButton icon="check" /> : null}
                     </ListItem>

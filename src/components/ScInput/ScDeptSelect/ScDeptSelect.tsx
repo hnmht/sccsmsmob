@@ -1,6 +1,7 @@
 import { memo, useState, useEffect } from "react";
 import { View, Modal, Alert } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAppSelector } from "../../../store/hooks";
 import DeptPicker from "./DeptPicker";
@@ -33,13 +34,13 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
     const theme = useTheme();
     const label = allowNull ? itemShowName : "*" + itemShowName;
     const { t } = useTranslation();
-    //命令按钮位置
+    // Commands button position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
     useEffect(() => {
         setCurrentDept(initValue);
     }, [initValue]);
 
-    //检查值及向父组件传递数据
+    // Pass value to the parent component
     const handleTransfer = async (doc = currentDept) => {
         if (!isEdit) {
             return
@@ -47,17 +48,17 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
         pickDone(doc, itemKey, positionID, rowIndex, errInfo);
     };
 
-    //对话框取消
+    // Actions after press cancle button
     const handleCancelAction = () => {
         setDialogOpen(false);
     };
-    //对话框确认
+    // Actions after press SimpDept item
     const handlePressItemAction = (item: SimpDept) => {
         setCurrentDept(item);
         handleTransfer(item);
         setDialogOpen(false);
     };
-    //点击清除按钮
+    // Actions after press clear button
     const handleClear = () => {
         if (!allowNull) {
             return
@@ -83,7 +84,7 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
                         ? <TextInput.Icon
                             icon="alert"
                             color={theme.colors.error}
-                            onPress={() => Alert.alert("错误", errInfo.msg)}
+                            onPress={() => Alert.alert(t("error"), errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon
@@ -98,7 +99,7 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
                         ? <TextInput.Icon
                             icon="alert"
                             color={theme.colors.error}
-                            onPress={() => Alert.alert("错误", errInfo.msg)}
+                            onPress={() => Alert.alert(t("error"), errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon
@@ -115,14 +116,14 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
                 visible={dialogOpen}
                 id={`modal${itemKey}${positionID}${rowIndex}`}
             >
-                <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+                <SafeAreaView style={{ backgroundColor: theme.colors.background, flex: 1 }}>
                     <DeptPicker
                         cancelAction={handleCancelAction}
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDept}
                         t={t}
                     />
-                </View>
+                </SafeAreaView>
             </Modal>
             {isEdit
                 ? null

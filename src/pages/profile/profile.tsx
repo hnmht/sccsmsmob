@@ -115,7 +115,6 @@ const Profile = () => {
  };
 */
     return (
-
         <KeyboardAvoidingView style={{ flex: 1 }}>
             {currentUser !== undefined
                 ? <ScrollView>
@@ -193,16 +192,16 @@ const Profile = () => {
                             rowIndex={0}
                             rowNumber={0}
                             allowNull={true}
-                            isEdit={true}
-                            itemShowName="所属部门"
+                            isEdit={false}
+                            itemShowName={t("subDept")}
                             itemKey="department"
                             initValue={currentUser.department}
                             pickDone={handleGetValue}
                             errInfo={{ isErr: false, msg: "" }}
-                            placeholder="请选择部门"
+                            placeholder={t("deptPlaceholder")}
                             key="department"
                             isBackendTest={false}
-                            width={pubParams.screen.isOverSize ? "100%" : "50%"}
+                            width= "100%" 
                         />
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 16 }}>

@@ -49,7 +49,7 @@ function DocList<T>({ rows, ItemElement, rowsPerPage, searchFields, sortFunction
                     mode="outlined"
                     value={keyWord}
                     onChangeText={(text) => setKeyWord(text)}
-                    left={<TextInput.Icon icon="text-search" />}
+                    left={<TextInput.Icon icon="text-search" color={theme.colors.primary} />}
                     right={keyWord !== "" ? <TextInput.Icon icon="close" color={theme.colors.primary} onPress={() => setKeyWord("")} /> : null}
                     placeholder={t("enterToSearch")}
                     dense

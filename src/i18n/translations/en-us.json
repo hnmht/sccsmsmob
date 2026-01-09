@@ -692,7 +692,9 @@
     "choosePhoto": "Choose Photo",
     "takePhoto": "Take Photo",
     "of": "Of",
-    
+    "all":"All",
+    "recents":"Recents",
+
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",
     "MenuMessage": "Message",

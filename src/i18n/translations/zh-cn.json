@@ -689,7 +689,9 @@
     "choosePhoto": "选择图片",
     "takePhoto": "拍摄图片",
     "of": "之",
-
+    "all": "所有",
+    "recents": "最近常用",
+    
     "MenuDashboard": "首页",
     "MenuCalendar": "日程",
     "MenuMessage": "消息",
