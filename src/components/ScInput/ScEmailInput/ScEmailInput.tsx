@@ -1,14 +1,16 @@
 import { useState, memo, useEffect } from "react";
 import { View, Alert } from "react-native";
-import { useTranslation } from "react-i18next";
-import { useAppSelector } from "../../../store/hooks";
 import { TextInput, useTheme } from "react-native-paper";
-import ScTextDetail from "./TextDetail";
+import { useTranslation } from "react-i18next";
 import { ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
+import { useAppSelector } from "../../../store/hooks";
+import ScEmailDetail from "./emailDetail";
+// Email regular expression
+const mailRegex = new RegExp(/^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/);
 
-
-//301 Seacloud Text Input Component
-const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
+const zeroValue = "";
+//305 SeaCloud Email Input Component
+const ScEmailInput = (props: ScInputProps<ScDataTypeList.Email>) => {
     const {
         positionID = 0,
         rowIndex = 0,
@@ -16,22 +18,24 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
         isEdit = true,
         itemShowName = "",
         itemKey,
-        initValue = "",
+        initValue = zeroValue,
+        isBackendTest = false,
+        backendTest,
         pickDone,
         placeholder,
         errInfo = { isErr: false, msg: "" },
         width = "100%",
-        height = 68,
-        rowNumber = 0
+        height = 68
     } = props;
     const [textValue, setTextValue] = useState(initValue);
     const [detailOpen, setDetailOpen] = useState(false);
-    const { t } = useTranslation();
-    const theme = useTheme();
+    const [err, setErr] = useState(errInfo);
     const label = allowNull ? itemShowName : "*" + itemShowName;
+    const theme = useTheme();
+    const { t } = useTranslation();
+    //Button Position
+    const { buttonPosition } = useAppSelector(state => state.swapPosition)
 
-    // Button Position
-    const { buttonPosition } = useAppSelector(state => state.swapPosition);
     useEffect(() => {
         function updateInitvalue() {
             setTextValue(initValue);
@@ -43,31 +47,32 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
         if (!isEdit) {
             return
         }
-
-        let newTextValue = "";
-        if (textValue.length > 0) {
-            newTextValue = textValue.trim();
+        let err = { isErr: false, msg: "" };
+        if (textValue.trim() === "" && !allowNull) {
+            err = { isErr: true, msg: t("cannotEmpty") };
+        } else if (textValue.trim() !== "") {
+            let isMoblie = mailRegex.test(textValue);
+            err = isMoblie ? { isErr: false, msg: "" } : { isErr: true, msg: t("emailIncorrect") };
+        } else if (isBackendTest && backendTest) {
+            err = await backendTest(textValue);
         }
-
-        setTextValue(newTextValue);
-        pickDone(newTextValue, itemKey, positionID, rowIndex, errInfo);
+        pickDone(textValue, itemKey, positionID, rowIndex, err);
     };
 
     const handleOnChangeText = (text: string) => {
         setTextValue(text);
-    };
-
+    }
 
     return (
-        <View id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, padding: 2 }}>
+        <View id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
             <TextInput
                 mode="outlined"
-                keyboardType="default"
-                onChangeText={(text) => handleOnChangeText(text)}
+                keyboardType="email-address"
                 label={label}
                 id={`${itemKey}${positionID}${rowIndex}`}
                 disabled={!isEdit}
-                placeholder={isEdit ? placeholder : ""}
+                placeholder={placeholder}
+                onChangeText={(text) => handleOnChangeText(text)}
                 value={textValue}
                 error={errInfo.isErr}
                 left={buttonPosition === "right"
@@ -100,12 +105,10 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
                 }
                 onBlur={handleOnBlur}
                 style={{ width: "100%", textAlign: "left" }}
-                multiline={rowNumber !== 1}
-                numberOfLines={rowNumber}
             />
             {isEdit
                 ? null
-                : <ScTextDetail
+                : <ScEmailDetail
                     currentItem={textValue}
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
@@ -116,6 +119,5 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
     );
 };
 
-
-export default memo(ScTextInput);
+export default memo(ScEmailInput);
 

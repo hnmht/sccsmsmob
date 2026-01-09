@@ -4,7 +4,7 @@ import ScTextInput from "./ScTextInput/ScTextInput"; //301 文本输入组件
 // import ScNumberInput from "./ScNumberInput/ScNumberInput"; //302 数字输入组件
 // import ScPasswordInput from "./ScPasswordInput/ScPasswordInput"; //303 密码输入组件
 // import ScMobileInput from "./ScMobileInput/ScMobileInput"; //304 移动电话号码输入组件
-// import ScEmailInput from "./ScEmailInput/ScEmailInput"; //305 电子邮件输入组件
+import ScEmailInput from "./ScEmailInput/ScEmailInput"; //305 电子邮件输入组件
 // import ScDateInput from "./ScDateInput/ScDateInput"; //306 日期输入组件
 // import ScDateTimeInput from "./ScDateTimeInput/ScDateTimeInput"; //307 日期时间输入组件
 
@@ -50,8 +50,8 @@ const ScInput: React.FC<ScInputUnionProps> = (props) => {
         // case ScDataTypeList.Mobile:
         //     return <ScMobileInput {...props} />;
 
-        // case ScDataTypeList.Email:
-        //     return <ScEmailInput {...props} />;
+        case ScDataTypeList.Email:
+            return <ScEmailInput {...props} />;
 
         // case ScDataTypeList.Date:
         //     return <ScDateInput {...props} />;
