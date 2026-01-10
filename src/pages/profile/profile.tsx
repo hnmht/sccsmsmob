@@ -1,149 +1,112 @@
 import { useState, useEffect } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, ActivityIndicator, Text, TextInput } from "react-native-paper";
+import { Button, ActivityIndicator } from "react-native-paper";
 import { Alert, ScrollView, View, KeyboardAvoidingView } from "react-native";
 import { cloneDeep } from "lodash";
 import { useTranslation } from "react-i18next";
-
-import { useAppSelector, useAppDispatch } from "../../store/hooks";
+import { useAppDispatch } from "../../store/hooks";
+import { setUserInfo } from "../../store/slice/user";
+import { saveUserInfo } from "../../db/crud/userInfo";
 import { UserInfo } from "../../dataType/types/user";
-import { Person } from "../../dataType/types/person";
 import { useSettingNavigation } from "../../navigation/config/screenParams";
-import { pubParams } from "../../components/pub/pubParams";
-
 import ScInput from "../../components/ScInput";
-import { reqUserInfo } from "../../api/user";
+import { reqUserInfo, reqModifyProfile } from "../../api/user";
 import { getEmptyUser } from "../../dataType/dataZero/user";
 import { ScDataTypeList, InitialValueMap, ErrMsg } from "../../dataType/types/scInput";
-import { getEmptyFile } from "../../dataType/dataZero/file";
-import { getEmptyPerson } from "../../dataType/dataZero/person";
+import { getFieldErrMsg } from "../../dataType/dataZero/errors";
+import { ToErrorType } from "../../dataType/types/errors";
 
-interface profileErrors {
-    gender:ErrMsg;
-    mobile:ErrMsg;
-    email:ErrMsg
-}
-
-/* const checkError = (errors) => {
+function checkError<T extends object>(errors: ToErrorType<T>): boolean {
     let number = 0;
-    for (let key in errors) {
+    for (let key of Object.keys(errors) as Array<keyof T>) {
         if (errors[key].isErr) {
             number = number + 1;
         }
     }
     return number > 0;
-}; */
-
+};
+// Update user avatar, gender, mobile, email, and description.
 const Profile = () => {
-    const [currentPerson, setCurrentPerson] = useState<Person | undefined>(undefined);
+    const [currentUser, setCurrentUser] = useState<UserInfo | undefined>(undefined);
     const [isEdit, setIsEdit] = useState(false);
-    const [errors, setErrors] = useState<profileErrors>({
-        gender:{isErr:false,msg:""},
-        mobile: { isErr: false, msg: "" },
-        email: { isErr: false, msg: "" },
-    });
+    const [errors, setErrors] = useState(getFieldErrMsg(getEmptyUser(), { isErr: false, msg: "" }));
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useAppDispatch();
-    const token = useAppSelector(state => state.user.token);
     const navigation = useSettingNavigation();
     const { t } = useTranslation();
 
     useEffect(() => {
         async function initialData() {
             let userRes = await reqUserInfo();
-            let user: Person | undefined = getEmptyPerson();
+            let user: UserInfo = getEmptyUser();
             if (userRes.status) {
-                user = userRes.data.person;
+                user = userRes.data;         
+                dispatch(setUserInfo(user));
             } else {
                 Alert.alert(t("error"), userRes.msg);
-                user = undefined;
             }
-            console.log("user:", user)
-            setCurrentPerson(user);
+            setCurrentUser(user);
         }
         initialData();
     }, []);
 
     const handleGetValue = <T extends keyof InitialValueMap>(value: InitialValueMap[T], itemkey: string, positionID: 0 | 1 | 2, rowIndex: number, errMsg: ErrMsg) => {
-        console.log("value:", value);
-        // if (currentPerson === undefined || !isEdit) {
-        //     return
-        // }
-
-        //更新errors
-        setErrors((prevState: profileErrors) => {
-            console.log("prestate:", prevState);
+        if (currentUser === undefined || !isEdit || errors === undefined) {
+            return
+        }
+        // Update Errors
+        setErrors((prevState) => {
             return ({
                 ...prevState,
                 [itemkey]: errMsg,
             });
         });
-        //更新输入的用户信息
-        setCurrentPerson((prevState: any) => {
-            // 结构赋值方法
+        // Update currentUser
+        setCurrentUser((prevState: any) => {
             return ({
                 ...prevState,
                 [itemkey]: value,
             });
         });
     };
-    /* //修改提交
- const handleModifyUser = async () => {
-     setIsLoading(true)
-     let thisUser = cloneDeep(currentPerson);
-     delete thisUser.menulist;
-     delete thisUser.createdate;
-     delete thisUser.modifydate;
-     delete thisUser.roles;
-     const modifyRes = await reqModifyProfile(thisUser);
-     if (modifyRes.data.status === 0) {
-         thisUser = modifyRes.data.data;
-         Alert.prompt("提示", "修改成功!");
-     } else {
-         Alert.alert("错误", modifyRes.data.statusMsg);
-     }
-     setCurrentPerson(thisUser);
-     setIsEdit(false);
-     setIsLoading(false);
-     handleUpdateUserInfo();
- };
- 
- //更新用户信息
- const handleUpdateUserInfo = () => {
-     reqUserInfo(token).then(userInfoRes => {
-         if (userInfoRes.data.status !== 0) {
-             Alert.alert(
-                 "错误",
-                 `请求用户信息失败:${userInfoRes.data.statusMsg}`,
-                 [{
-                     text: "确定",
-                 }]);
-             return
-         }
-         //将userInfo存入store
-         const latestUserInfo = userInfoRes.data.data;
-         dispatch(setUserInfo(latestUserInfo));
-     })
- };
-*/
-    console.log("errors:", errors)
+    // Actions after press Save button
+    const handleModifyUser = async () => {
+        if (!currentUser) {
+            return
+        }
+        setIsLoading(true)
+        let thisUser = cloneDeep(currentUser);
+        console.log("thisUser:", thisUser)
+        const modifyRes = await reqModifyProfile(thisUser);
+        if (modifyRes.status) {
+            thisUser = modifyRes.data;
+            Alert.alert(t("tip"), t("modifySuccessful"));
+        } else {
+            Alert.alert(t("err"), modifyRes.msg);
+        }
+        
+        setCurrentUser(thisUser);
+        setIsEdit(false);
+        setIsLoading(false);
+        saveUserInfo(thisUser);
+        dispatch(setUserInfo(thisUser));
+    };
+
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>
-            {currentPerson !== undefined
+            {currentUser !== undefined
                 ? <ScrollView>
                     <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
                         <ScInput
                             dataType={ScDataTypeList.AvatarUpload}
                             positionID={0}
                             rowIndex={0}
-                            rowNumber={0}
                             allowNull={true}
                             itemShowName={t("avatar")}
                             errInfo={{ isErr: false, msg: "" }}
                             isEdit={isEdit}
                             itemKey="avatar"
                             width={"100%"}
-                            initValue={currentPerson.avatar}
+                            initValue={currentUser.avatar}
                             pickDone={handleGetValue}
                             isBackendTest={false}
                             isOnSitePhoto={false}
@@ -154,13 +117,12 @@ const Profile = () => {
                             dataType={ScDataTypeList.Text}
                             positionID={0}
                             rowIndex={0}
-                            rowNumber={0}
                             allowNull={false}
                             itemShowName={t("code")}
                             errInfo={{ isErr: false, msg: "" }}
                             isEdit={false}
                             itemKey="code"
-                            initValue={currentPerson.code}
+                            initValue={currentUser.code}
                             pickDone={handleGetValue}
                             isBackendTest={false}
                             key="code"
@@ -170,28 +132,26 @@ const Profile = () => {
                             dataType={ScDataTypeList.Text}
                             positionID={0}
                             rowIndex={0}
-                            rowNumber={0}
                             allowNull={false}
                             itemShowName={t("name")}
                             errInfo={{ isErr: false, msg: "" }}
                             isEdit={false}
                             itemKey="name"
-                            initValue={currentPerson.name}
+                            initValue={currentUser.name}
                             pickDone={handleGetValue}
                             isBackendTest={false}
                             key="name"
                             width="100%"
-                        />                     
+                        />
                         <ScInput
-                            dataType={ScDataTypeList.Text}
+                            dataType={ScDataTypeList.SimpDept}
                             positionID={0}
                             rowIndex={0}
-                            rowNumber={0}
                             allowNull={true}
                             isEdit={false}
                             itemShowName={t("subDept")}
                             itemKey="deptName"
-                            initValue={currentPerson.deptName}
+                            initValue={currentUser.department}
                             pickDone={handleGetValue}
                             errInfo={{ isErr: false, msg: "" }}
                             placeholder={t("deptPlaceholder")}
@@ -203,15 +163,14 @@ const Profile = () => {
                             dataType={ScDataTypeList.Gender}
                             positionID={0}
                             rowIndex={0}
-                            rowNumber={0}
                             allowNull={true}
-                            isEdit={false}
+                            isEdit={isEdit}
                             itemShowName={t("gender")}
-                            errInfo={{ isErr: false, msg: "" }}
+                            errInfo={errors.gender}
                             itemKey="gender"
-                            initValue={currentPerson.gender}
+                            initValue={currentUser.gender}
                             pickDone={handleGetValue}
-                            placeholder="请选择性别"
+                            placeholder=""
                             key="gender"
                             isBackendTest={false}
                             width="100%"
@@ -220,13 +179,12 @@ const Profile = () => {
                             dataType={ScDataTypeList.Text}
                             positionID={0}
                             rowIndex={0}
-                            rowNumber={0}
                             allowNull={false}
                             itemShowName={t("mobile")}
-                            errInfo={{ isErr: false, msg: "" }}
-                            isEdit={false}
+                            errInfo={errors.mobile}
+                            isEdit={isEdit}
                             itemKey="mobile"
-                            initValue={currentPerson.mobile}
+                            initValue={currentUser.mobile}
                             pickDone={handleGetValue}
                             isBackendTest={false}
                             key="mobile"
@@ -236,30 +194,45 @@ const Profile = () => {
                             dataType={ScDataTypeList.Email}
                             positionID={0}
                             rowIndex={0}
-                            rowNumber={0}
                             allowNull={false}
                             itemShowName={t("email")}
                             errInfo={errors.email}
-                            isEdit={true}
+                            isEdit={isEdit}
                             itemKey="email"
-                            initValue={currentPerson.email}
+                            initValue={currentUser.email}
                             pickDone={handleGetValue}
                             isBackendTest={false}
                             key="email"
                             width="100%"
                         />
+                        <ScInput
+                            dataType={ScDataTypeList.Text}
+                            positionID={0}
+                            rowIndex={0}
+                            allowNull={false}
+                            itemShowName={t("description")}
+                            errInfo={errors.description}
+                            isEdit={isEdit}
+                            itemKey="description"
+                            initValue={currentUser.description}
+                            pickDone={handleGetValue}
+                            isBackendTest={false}
+                            textLines={4}
+                            key="description"
+                            width="100%"
+                        />
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 16 }}>
-                        {/*    {isEdit
+                        {isEdit
                             ? <>
-                                <Button mode='text' loading={isLoading} onPress={() => setIsEdit(false)} sx={{ mr: 5 }} maxFontSizeMultiplier={1}>取消</Button>
-                                <Button mode='contained' loading={isLoading} disabled={checkError(errors) || isLoading} onPress={handleModifyUser} maxFontSizeMultiplier={1}>保存</Button>
+                                <Button mode='text' loading={isLoading} onPress={() => setIsEdit(false)} maxFontSizeMultiplier={1}>{t("cancel")}</Button>
+                                <Button mode='contained' loading={isLoading} disabled={checkError(errors) || isLoading} onPress={handleModifyUser} maxFontSizeMultiplier={1}>{t("save")}</Button>
                             </>
                             : <>
-                                <Button mode="text" onPress={() => props.navigation.goBack()} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1} >返回</Button>
-                                <Button mode="contained" onPress={() => setIsEdit(true)} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1}>修改</Button>
+                                <Button mode="text" onPress={() => navigation.goBack()} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1} >{t("back")}</Button>
+                                <Button mode="contained" onPress={() => setIsEdit(true)} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1}>{t("edit")}</Button>
                             </>
-                        } */}
+                        }
                     </View>
                 </ScrollView>
                 : <ActivityIndicator />

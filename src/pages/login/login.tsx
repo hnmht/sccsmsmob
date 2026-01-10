@@ -54,7 +54,6 @@ function Login() {
 
     const handleSetNetOnPress = () => {
         authNav.navigate("Setup");
-
     };
 
     // Actions after Login Failed

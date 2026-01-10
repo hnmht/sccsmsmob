@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { saveToken } from "../../db/crud/appInfo";
 import { UserInfo } from "../../dataType/types/user";
 import { getEmptyUser } from "../../dataType/dataZero/user";
 
@@ -20,7 +19,6 @@ export const userSlice = createSlice({
     initialState,
     reducers: {
         setUserToken: (state, action:PayloadAction<string>) => {
-            // Save Token into database
             state.token = action.payload;
         },
         setUserTokenFromDb: (state, action:PayloadAction<string>) => {

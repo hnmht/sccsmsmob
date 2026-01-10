@@ -112,7 +112,7 @@ export interface BaseScInputProps {
     isEdit: boolean;
     isBackendTest?: boolean;
     isMultiline?: boolean;
-    rowNumber?: number;
+    textLines?: number;
     itemShowName?: string;
     itemKey: string;
     width?: DimensionValue;

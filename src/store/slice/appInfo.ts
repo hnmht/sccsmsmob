@@ -14,7 +14,7 @@ export const appinfoSlice = createSlice({
         setGlobalPath: (state, action: PayloadAction<string>) => {
             state.globalPath = action.payload;
         },
-        setIsOffline: (state, action: PayloadAction<number>) => {
+        setIsOffline: (state, action: PayloadAction<0 | 1>) => {
             state.isOffline = action.payload;
         },
         setServerAddr: (state, action: PayloadAction<string>) => {

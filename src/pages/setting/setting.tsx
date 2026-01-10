@@ -38,7 +38,7 @@ const Setting = () => {
     const { t } = useTranslation();
     const [overlayStatus, setOverlayStatus] = useState({ visible: false, description: "" });
     const { toggleTheme, isThemeDark } = useContext(ThemeContext);
-    const person = useAppSelector(state => state.user.person);
+    const user = useAppSelector(state => state.user);
     const appInfo = useAppSelector(state => state.appInfo);
     const isOffLine = appInfo.isOffline === 1;
 
@@ -155,14 +155,13 @@ const Setting = () => {
             />          
             <Surface style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: 80 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", paddingLeft: 16 }}>
-                    <PersonAvatar url={person.avatar.fileUrl} isOffLine={appInfo.isOffline} name={person.name} />
+                    <PersonAvatar url={user.avatar.fileUrl} isOffLine={appInfo.isOffline} name={user.name} />
                     <View style={{ marginLeft: 8 }}>
-                        <Text variant="titleLarge" maxFontSizeMultiplier={1}>{person.name}</Text>
-                        {person.deptName !== ""
-                            ? <Text variant="titleSmall" maxFontSizeMultiplier={1}>{person.deptName}</Text>
+                        <Text variant="titleLarge" maxFontSizeMultiplier={1}>{user.name}</Text>
+                        {user.department.id !== 0
+                            ? <Text variant="titleSmall" maxFontSizeMultiplier={1}>{user.department.name}</Text>
                             : null
                         }
-
                     </View>
                 </View>
                 <Button disabled={isOffLine} style={{ paddingRight: 16 }} onPress={handleUserDetail}>{t("detail")}</Button>

@@ -22,14 +22,13 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
         errInfo = { isErr: false, msg: "" },
         width = "100%",
         height = 68,
-        rowNumber = 0
+        textLines = 1
     } = props;
     const [textValue, setTextValue] = useState(initValue);
     const [detailOpen, setDetailOpen] = useState(false);
     const { t } = useTranslation();
     const theme = useTheme();
     const label = allowNull ? itemShowName : "*" + itemShowName;
-
     // Button Position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
     useEffect(() => {
@@ -100,8 +99,8 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
                 }
                 onBlur={handleOnBlur}
                 style={{ width: "100%", textAlign: "left" }}
-                multiline={rowNumber !== 1}
-                numberOfLines={rowNumber}
+                multiline={textLines !== 1}
+                numberOfLines={textLines}
             />
             {isEdit
                 ? null
