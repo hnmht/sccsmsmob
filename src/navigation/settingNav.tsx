@@ -16,11 +16,11 @@ const SettingNav = () => {
     return (
         <SettingStack.Navigator initialRouteName="Setting">
             <SettingStack.Screen name="Setting" options={{ headerShown: false, title: t("MenuSettings"), }} component={Setting} />
-            <SettingStack.Screen name="Profile" options={{ headerShown: true, title: t("MenuProfile"), headerBackVisible: false }} component={Profile} />
-            <SettingStack.Screen name="About" options={{ headerShown: true, title: t("MenuAbout"), headerBackVisible: false }} component={About} />
-            <SettingStack.Screen name="Privacy" options={{ headerShown: true, title: t("privacyPolicy"), headerBackVisible: false }} component={PrivacyPolicy} />
-            <SettingStack.Screen name="ChangePassword" options={{ headerShown: true, title: t("changePassword"), headerBackVisible: false }} component={ChangePassword} />
-            <SettingStack.Screen name="FileClean" options={{ headerShown: true, title: t("fileCleanup"), headerBackVisible: false }} component={FileClean} />
+            <SettingStack.Screen name="Profile" options={{ headerShown: false, title: t("MenuProfile"), headerBackVisible: false }} component={Profile} />
+            <SettingStack.Screen name="About" options={{ headerShown: false, title: t("MenuAbout"), headerBackVisible: false }} component={About} />
+            <SettingStack.Screen name="Privacy" options={{ headerShown: false, title: t("privacyPolicy"), headerBackVisible: false }} component={PrivacyPolicy} />
+            <SettingStack.Screen name="ChangePassword" options={{ headerShown: false, title: t("changePassword"), headerBackVisible: false }} component={ChangePassword} />
+            <SettingStack.Screen name="FileClean" options={{ headerShown: false, title: t("fileCleanup"), headerBackVisible: false }} component={FileClean} />
         </SettingStack.Navigator>
     );
 };

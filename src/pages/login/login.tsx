@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View, KeyboardAvoidingView, Alert } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Alert, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
     IconButton,
@@ -172,7 +172,7 @@ function Login() {
             <View style={{ height: 60, width: "100%", display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
                 <IconButton icon="server-network" style={{ height: 60, width: 60 }} iconColor={theme.colors.primary} onPress={handleSetNetOnPress} />
             </View>
-            <KeyboardAvoidingView enabled style={styles.container}>
+            <KeyboardAvoidingView enabled behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container} >
                 <Text
                     variant="titleLarge"
                     allowFontScaling={false}

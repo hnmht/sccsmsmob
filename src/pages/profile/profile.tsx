@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button, ActivityIndicator } from "react-native-paper";
-import { Alert, ScrollView, View, KeyboardAvoidingView } from "react-native";
+import { Alert, ScrollView, View, KeyboardAvoidingView, Platform } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@react-navigation/elements";
 import { cloneDeep } from "lodash";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "../../store/hooks";
@@ -33,13 +35,15 @@ const Profile = () => {
     const dispatch = useAppDispatch();
     const navigation = useSettingNavigation();
     const { t } = useTranslation();
+    const headerHeight = useHeaderHeight();
+    console.log("headerHeight:", headerHeight)
 
     useEffect(() => {
         async function initialData() {
             let userRes = await reqUserInfo();
             let user: UserInfo = getEmptyUser();
             if (userRes.status) {
-                user = userRes.data;         
+                user = userRes.data;
                 dispatch(setUserInfo(user));
             } else {
                 Alert.alert(t("error"), userRes.msg);
@@ -75,7 +79,6 @@ const Profile = () => {
         }
         setIsLoading(true)
         let thisUser = cloneDeep(currentUser);
-        console.log("thisUser:", thisUser)
         const modifyRes = await reqModifyProfile(thisUser);
         if (modifyRes.status) {
             thisUser = modifyRes.data;
@@ -83,7 +86,6 @@ const Profile = () => {
         } else {
             Alert.alert(t("err"), modifyRes.msg);
         }
-        
         setCurrentUser(thisUser);
         setIsEdit(false);
         setIsLoading(false);
@@ -92,152 +94,177 @@ const Profile = () => {
     };
 
     return (
-        <KeyboardAvoidingView style={{ flex: 1 }}>
-            {currentUser !== undefined
-                ? <ScrollView>
-                    <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
-                        <ScInput
-                            dataType={ScDataTypeList.AvatarUpload}
-                            positionID={0}
-                            rowIndex={0}
-                            allowNull={true}
-                            itemShowName={t("avatar")}
-                            errInfo={{ isErr: false, msg: "" }}
-                            isEdit={isEdit}
-                            itemKey="avatar"
-                            width={"100%"}
-                            initValue={currentUser.avatar}
-                            pickDone={handleGetValue}
-                            isBackendTest={false}
-                            isOnSitePhoto={false}
-                            key="avatar"
-                            onCancel={() => navigation.goBack()}
-                        />
-                        <ScInput
-                            dataType={ScDataTypeList.Text}
-                            positionID={0}
-                            rowIndex={0}
-                            allowNull={false}
-                            itemShowName={t("code")}
-                            errInfo={{ isErr: false, msg: "" }}
-                            isEdit={false}
-                            itemKey="code"
-                            initValue={currentUser.code}
-                            pickDone={handleGetValue}
-                            isBackendTest={false}
-                            key="code"
-                            width="100%"
-                        />
-                        <ScInput
-                            dataType={ScDataTypeList.Text}
-                            positionID={0}
-                            rowIndex={0}
-                            allowNull={false}
-                            itemShowName={t("name")}
-                            errInfo={{ isErr: false, msg: "" }}
-                            isEdit={false}
-                            itemKey="name"
-                            initValue={currentUser.name}
-                            pickDone={handleGetValue}
-                            isBackendTest={false}
-                            key="name"
-                            width="100%"
-                        />
-                        <ScInput
-                            dataType={ScDataTypeList.SimpDept}
-                            positionID={0}
-                            rowIndex={0}
-                            allowNull={true}
-                            isEdit={false}
-                            itemShowName={t("subDept")}
-                            itemKey="deptName"
-                            initValue={currentUser.department}
-                            pickDone={handleGetValue}
-                            errInfo={{ isErr: false, msg: "" }}
-                            placeholder={t("deptPlaceholder")}
-                            key="deptName"
-                            isBackendTest={false}
-                            width="100%"
-                        />
-                        <ScInput
-                            dataType={ScDataTypeList.Gender}
-                            positionID={0}
-                            rowIndex={0}
-                            allowNull={true}
-                            isEdit={isEdit}
-                            itemShowName={t("gender")}
-                            errInfo={errors.gender}
-                            itemKey="gender"
-                            initValue={currentUser.gender}
-                            pickDone={handleGetValue}
-                            placeholder=""
-                            key="gender"
-                            isBackendTest={false}
-                            width="100%"
-                        />
-                        <ScInput
-                            dataType={ScDataTypeList.Text}
-                            positionID={0}
-                            rowIndex={0}
-                            allowNull={false}
-                            itemShowName={t("mobile")}
-                            errInfo={errors.mobile}
-                            isEdit={isEdit}
-                            itemKey="mobile"
-                            initValue={currentUser.mobile}
-                            pickDone={handleGetValue}
-                            isBackendTest={false}
-                            key="mobile"
-                            width="100%"
-                        />
-                        <ScInput
-                            dataType={ScDataTypeList.Email}
-                            positionID={0}
-                            rowIndex={0}
-                            allowNull={false}
-                            itemShowName={t("email")}
-                            errInfo={errors.email}
-                            isEdit={isEdit}
-                            itemKey="email"
-                            initValue={currentUser.email}
-                            pickDone={handleGetValue}
-                            isBackendTest={false}
-                            key="email"
-                            width="100%"
-                        />
-                        <ScInput
-                            dataType={ScDataTypeList.Text}
-                            positionID={0}
-                            rowIndex={0}
-                            allowNull={false}
-                            itemShowName={t("description")}
-                            errInfo={errors.description}
-                            isEdit={isEdit}
-                            itemKey="description"
-                            initValue={currentUser.description}
-                            pickDone={handleGetValue}
-                            isBackendTest={false}
-                            textLines={4}
-                            key="description"
-                            width="100%"
-                        />
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 16 }}>
-                        {isEdit
-                            ? <>
-                                <Button mode='text' loading={isLoading} onPress={() => setIsEdit(false)} maxFontSizeMultiplier={1}>{t("cancel")}</Button>
-                                <Button mode='contained' loading={isLoading} disabled={checkError(errors) || isLoading} onPress={handleModifyUser} maxFontSizeMultiplier={1}>{t("save")}</Button>
-                            </>
-                            : <>
-                                <Button mode="text" onPress={() => navigation.goBack()} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1} >{t("back")}</Button>
-                                <Button mode="contained" onPress={() => setIsEdit(true)} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1}>{t("edit")}</Button>
-                            </>
-                        }
-                    </View>
-                </ScrollView>
-                : <ActivityIndicator />
+        <SafeAreaView style={{ flex: 1 }} edges={['top']} >
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{ flex: 1 }}
+            >
+                {currentUser !== undefined
+                    ? <ScrollView style={{ flex: 1 }} >
+                        <View style={{ flex: 1, flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
+                            <ScInput
+                                dataType={ScDataTypeList.AvatarUpload}
+                                positionID={0}
+                                rowIndex={0}
+                                allowNull={true}
+                                itemShowName={t("avatar")}
+                                errInfo={{ isErr: false, msg: "" }}
+                                isEdit={isEdit}
+                                itemKey="avatar"
+                                width={"100%"}
+                                initValue={currentUser.avatar}
+                                pickDone={handleGetValue}
+                                isBackendTest={false}
+                                isOnSitePhoto={false}
+                                key="avatar"
+                                onCancel={() => navigation.goBack()}
+                            />
+                            <ScInput
+                                dataType={ScDataTypeList.Text}
+                                positionID={0}
+                                rowIndex={0}
+                                allowNull={false}
+                                itemShowName={t("code")}
+                                errInfo={{ isErr: false, msg: "" }}
+                                isEdit={false}
+                                itemKey="code"
+                                initValue={currentUser.code}
+                                pickDone={handleGetValue}
+                                isBackendTest={false}
+                                key="code"
+                                width="100%"
+                            />
+                            <ScInput
+                                dataType={ScDataTypeList.Text}
+                                positionID={0}
+                                rowIndex={0}
+                                allowNull={false}
+                                itemShowName={t("code")}
+                                errInfo={{ isErr: false, msg: "" }}
+                                isEdit={false}
+                                itemKey="code"
+                                initValue={currentUser.code}
+                                pickDone={handleGetValue}
+                                isBackendTest={false}
+                                key="code1"
+                                width="100%"
+                            />
+                            <ScInput
+                                dataType={ScDataTypeList.Text}
+                                positionID={0}
+                                rowIndex={0}
+                                allowNull={false}
+                                itemShowName={t("name")}
+                                errInfo={{ isErr: false, msg: "" }}
+                                isEdit={false}
+                                itemKey="name"
+                                initValue={currentUser.name}
+                                pickDone={handleGetValue}
+                                isBackendTest={false}
+                                key="name"
+                                width="100%"
+                            />
+                            <ScInput
+                                dataType={ScDataTypeList.SimpDept}
+                                positionID={0}
+                                rowIndex={0}
+                                allowNull={true}
+                                isEdit={false}
+                                itemShowName={t("subDept")}
+                                itemKey="deptName"
+                                initValue={currentUser.department}
+                                pickDone={handleGetValue}
+                                errInfo={{ isErr: false, msg: "" }}
+                                placeholder={t("deptPlaceholder")}
+                                key="deptName"
+                                isBackendTest={false}
+                                width="100%"
+                            />
+                            <ScInput
+                                dataType={ScDataTypeList.Gender}
+                                positionID={0}
+                                rowIndex={0}
+                                allowNull={true}
+                                isEdit={isEdit}
+                                itemShowName={t("gender")}
+                                errInfo={errors.gender}
+                                itemKey="gender"
+                                initValue={currentUser.gender}
+                                pickDone={handleGetValue}
+                                placeholder=""
+                                key="gender"
+                                isBackendTest={false}
+                                width="100%"
+                            />
+                            <ScInput
+                                dataType={ScDataTypeList.Text}
+                                positionID={0}
+                                rowIndex={0}
+                                allowNull={true}
+                                itemShowName={t("mobile")}
+                                errInfo={errors.mobile}
+                                isEdit={isEdit}
+                                itemKey="mobile"
+                                initValue={currentUser.mobile}
+                                pickDone={handleGetValue}
+                                isBackendTest={false}
+                                key="mobile"
+                                width="100%"
+                            />
+                            <ScInput
+                                dataType={ScDataTypeList.Email}
+                                positionID={0}
+                                rowIndex={0}
+                                allowNull={true}
+                                itemShowName={t("email")}
+                                errInfo={errors.email}
+                                isEdit={isEdit}
+                                itemKey="email"
+                                initValue={currentUser.email}
+                                pickDone={handleGetValue}
+                                isBackendTest={false}
+                                key="email"
+                                width="100%"
+                            />
+                            <ScInput
+                                dataType={ScDataTypeList.Text}
+                                positionID={0}
+                                rowIndex={0}
+                                allowNull={true}
+                                itemShowName={t("description")}
+                                errInfo={errors.description}
+                                isEdit={isEdit}
+                                itemKey="description"
+                                initValue={currentUser.description}
+                                pickDone={handleGetValue}
+                                isBackendTest={false}
+                                textLines={4}
+                                key="description"
+                                width="100%"
+                            />                           
+                        </View>
+                    </ScrollView>
+                    : <ActivityIndicator />
+                }
+           
+            {currentUser === undefined
+                ? null
+                : <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", padding: 16 }}>
+                    {isEdit
+                        ? <>
+                            <Button mode='text' loading={isLoading} onPress={() => setIsEdit(false)} maxFontSizeMultiplier={1}>{t("cancel")}</Button>
+                            <Button mode='contained' loading={isLoading} disabled={checkError(errors) || isLoading} onPress={handleModifyUser} maxFontSizeMultiplier={1}>{t("save")}</Button>
+                        </>
+                        : <>
+                            <Button mode="text" onPress={() => navigation.goBack()} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1} >{t("back")}</Button>
+                            <Button mode="contained" onPress={() => setIsEdit(true)} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1}>{t("edit")}</Button>
+                        </>
+                    }
+                </View>
+
             }
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 };
 

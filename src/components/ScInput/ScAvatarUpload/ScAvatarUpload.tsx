@@ -19,7 +19,6 @@ const ScAvatarUpload = ({
     width,
     onCancel = () => { console.log("exit") }
 }: ScInputProps<ScDataTypeList.AvatarUpload>) => {
-    console.log("initValue:",initValue);
     const [avatar, setAvatar] = useState(initValue);
     const [isLoading, setIsLoading] = useState(false);
     const theme = useTheme();

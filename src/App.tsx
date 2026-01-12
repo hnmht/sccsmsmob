@@ -5,6 +5,7 @@ import { StatusBar } from "react-native";
 import { NavigationBar } from "@zoontek/react-native-navigation-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { CombinedDefaultTheme, CombinedDarkTheme } from "./theme/theme";

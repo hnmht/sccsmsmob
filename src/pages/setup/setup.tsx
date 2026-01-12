@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Alert, StyleSheet, KeyboardAvoidingView, Clipboard } from "react-native";
+import { View, Alert, StyleSheet, KeyboardAvoidingView, Clipboard ,Platform} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Button, useTheme, IconButton, TextInput } from "react-native-paper";
 import { useTranslation } from "react-i18next";
@@ -110,7 +110,7 @@ function Setup() {
                     : null
                 }
             </View>
-            <KeyboardAvoidingView enabled style={styles.container}>
+            <KeyboardAvoidingView enabled behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
                 <Text variant="bodyMedium" style={{ width: "90%", marginBottom: 16 }}>
                     {t("tipInputAddress")}
                 </Text>

@@ -13,11 +13,11 @@ import { CustomRequestConfig } from "../dataType//types/request";
 
 const service: AxiosInstance = axios.create({
     timeout: 15000,
-    headers: {} as any, 
+    headers: {} as any,
 });
 
 service.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {        
+    (config: InternalAxiosRequestConfig) => {
         const c = config as InternalAxiosRequestConfig & { isLoading?: boolean };
         c.headers = (c.headers ?? ({} as AxiosRequestHeaders)) as AxiosRequestHeaders;
 
@@ -92,7 +92,6 @@ service.interceptors.response.use(
 export default function request<T = any>(config: CustomRequestConfig): Promise<APIResponse<T>> {
     // 在调用 service 之前，确保 config.headers 存在（以防用户在调用时传了 explicit undefined）
     config.headers = config.headers ?? ({} as AxiosRequestHeaders);
-
     // 将 config 断言为 InternalAxiosRequestConfig 传入 axios（axios 内部会做转换）
     return service(config as InternalAxiosRequestConfig).then((response: AxiosResponse<APIResponse<T>>) => response.data);
 }

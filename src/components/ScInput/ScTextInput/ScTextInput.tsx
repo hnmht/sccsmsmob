@@ -1,10 +1,11 @@
 import { useState, memo, useEffect } from "react";
-import { View, Alert } from "react-native";
+import { View, Alert,KeyboardAvoidingView } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../store/hooks";
 import { TextInput, useTheme } from "react-native-paper";
 import ScTextDetail from "./TextDetail";
 import { ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
+
 
 
 //301 Seacloud Text Input Component
@@ -58,7 +59,7 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
 
 
     return (
-        <View id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, padding: 2 }}>
+        <KeyboardAvoidingView id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, padding: 2 }}>
             <TextInput
                 mode="outlined"
                 keyboardType="default"
@@ -111,7 +112,7 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
                     t={t}
                 />
             }
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 

@@ -48,8 +48,12 @@ const ScSelectGender = (props: ScInputProps<ScDataTypeList.Gender>) => {
 
     return (
         <View id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
-            <Menu
-                key={`menu${itemKey}${positionID}${rowIndex}`}
+            <Menu               
+                // There is a bug in the React native Paper Menu component where
+                // the menu fails to pop up after second click. It requires a key change
+                // to force the menu to trigger correctly.
+                // https://github.com/callstack/react-native-paper/issues/4807
+                key={visible ? `menu${itemKey}${positionID}${rowIndex}visible` : `menu${itemKey}${positionID}${rowIndex}disible`}
                 visible={visible}
                 onDismiss={() => setVisible(false)}
                 anchorPosition="bottom"
