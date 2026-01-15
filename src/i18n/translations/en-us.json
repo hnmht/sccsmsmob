@@ -694,6 +694,7 @@
     "of": "Of",
     "all":"All",
     "recents":"Recents",
+    "mustBeNumber":"Must be a number",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

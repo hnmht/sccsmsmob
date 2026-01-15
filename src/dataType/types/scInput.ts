@@ -1,5 +1,4 @@
 import { DimensionValue } from "react-native";
-import { ComponentType } from "react";
 import { ConstructionSite } from "./csa";
 import { SimpCSC } from "./csc";
 import { SimpDC } from "./dc";
@@ -16,6 +15,7 @@ import { UserDefinedArchive } from "./uda";
 import { UserDefineCategory } from "./udc";
 import { ScFile } from "./file";
 import { VoucherFile } from "./voucherFile";
+import { ScDataTypeList } from "./scDataType";
 
 export interface MarkPosition {
     x: number;
@@ -31,40 +31,6 @@ export interface MarkText {
 export interface Location {
     latitude: number;
     longitude: number;
-}
-
-export enum ScDataTypeList {
-    Text = 301,
-    Number = 302,
-    Password = 303,
-    Mobile = 304,
-    Email = 305,
-    Date = 306,
-    DateTime = 307,
-
-    Gender = 401,
-    SwitchYesOrNo = 402,
-    CheckYesOrNo = 403,
-    SelectYesOrNo = 404,
-    VoucherStatus = 405,
-
-    Person = 510,
-    SimpDept = 520,
-    SimpCSC = 525,
-    UserDefineCategory = 530,
-    SimpEPC = 540,
-    UserDefinedArchive = 550,
-    ExecutionProject = 560,
-    ConstructionSite = 570,
-    EPT = 580,
-    RiskLevel = 590,
-    SimpDC = 600,
-    Position = 610,
-    TC = 620,
-    PPE = 630,
-
-    AvatarUpload = 901,
-    FileUpload = 902,
 }
 
 export interface ErrMsg {
@@ -85,6 +51,7 @@ export type InitialValueMap = {
     [ScDataTypeList.SwitchYesOrNo]: 0 | 1;
     [ScDataTypeList.CheckYesOrNo]: 0 | 1;
     [ScDataTypeList.SelectYesOrNo]: 0 | 1;
+    [ScDataTypeList.VoucherStatus]: 0 | 1 | 2 | 3 | 4 | 5;
 
     [ScDataTypeList.Person]: Person;
     [ScDataTypeList.SimpDept]: SimpDept;
@@ -143,7 +110,6 @@ export type ScInputProps<T extends keyof InitialValueMap> = BaseScInputProps & {
     pickDone: PickDone<T>,
     backendTest?: BackendTest<T>
 }
-
 export type ScInputUnionProps = {
     [K in keyof InitialValueMap]: ScInputProps<K>
 }[keyof InitialValueMap];

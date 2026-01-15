@@ -5,8 +5,7 @@ import { useTranslation } from "react-i18next";
 import { ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
 import { useAppSelector } from "../../../store/hooks";
 import ScEmailDetail from "./emailDetail";
-// Email regular expression
-const mailRegex = new RegExp(/^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/);
+import { mailRegex } from "../../../utils/regex";
 
 const zeroValue = "";
 //305 SeaCloud Email Input Component
