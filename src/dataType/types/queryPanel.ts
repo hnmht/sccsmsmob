@@ -32,7 +32,6 @@ export type Comparison =
     | LikeComparison
     | NullComparison<readonly ScComparableType[]>
  */
-
 export interface Comparison {
     id: string;
     label: string;

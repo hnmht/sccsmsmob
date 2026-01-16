@@ -2,7 +2,7 @@ import { SimpEPC } from "./epc";
 import { RiskLevel } from "./riskLevel";
 import { Person } from "./person";
 import { UserDefineCategory } from "./udc";
-import { ScDataTypeList } from "./scDataType";
+import { ScDataType, ScDataTypeList } from "./scDataType";
 
 // Execution Project
 export interface ExecutionProject {
@@ -12,7 +12,7 @@ export interface ExecutionProject {
     epc: SimpEPC;
     description: string;
     status: 0 | 1;
-    resultType: ScDataTypeList;
+    resultType: ScDataType;
     udc: UserDefineCategory;
     defaultValue: any;
     defaultValueDisp: string;

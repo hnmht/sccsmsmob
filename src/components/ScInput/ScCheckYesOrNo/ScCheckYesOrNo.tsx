@@ -1,14 +1,15 @@
 import { memo, useEffect, useState } from "react";
 import { View } from "react-native";
 import { Checkbox, useTheme } from "react-native-paper";
-import { ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
+import { ScInputProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
 // Convert Boolean to Number
-function boolTransInt(b: boolean) : 0 | 1 {
+function boolTransInt(b: boolean): 0 | 1 {
     return b ? 1 : 0;
 }
 // Convert Number to Boolean
-function intTransBool(i: number):boolean {
+function intTransBool(i: number): boolean {
     return i === 1;
 }
 

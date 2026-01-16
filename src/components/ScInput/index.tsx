@@ -33,7 +33,8 @@ import ScDeptSelect from "./ScDeptSelect/ScDeptSelect"; //520 部门单选
 
 import ScAvatarUpload from "./ScAvatarUpload/ScAvatarUpload"; //901 头像上传
 import ScFileUpload from "./ScFileUpload/ScFileUpload"; //902 文件上传
-import { ScDataTypeList,  ScInputUnionProps } from "../../dataType/types/scInput";
+import { ScInputUnionProps } from "../../dataType/types/scInput";
+import { ScDataTypeList } from "../../dataType/types/scDataType";
 
 const ScInput: React.FC<ScInputUnionProps> = (props) => {
     const { dataType } = props;

@@ -56,6 +56,17 @@ export const nullComparisonType: ScDataTypeList[] = [
     ScDataTypeList.FileUpload,
 ];
 
+export const equal:Comparison = {
+    id: "equal",
+    label: 'equal',
+    value: '=',
+    needInput: true,
+    addCharacter: false,
+    addStart: "",
+    addEnd: "",
+    applicable: allCompareType
+}
+
 export const Comparisons: Comparison[] = [
     {
         id: "equal",

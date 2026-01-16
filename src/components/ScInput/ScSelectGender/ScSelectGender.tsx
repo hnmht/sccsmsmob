@@ -3,7 +3,8 @@ import { View, Alert } from "react-native";
 import { Menu, TextInput, useTheme } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 
-import { ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
+import {  ScInputProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
 const genders = ["", "male", "female"];
 
@@ -53,7 +54,8 @@ const ScSelectGender = (props: ScInputProps<ScDataTypeList.Gender>) => {
                 // the menu fails to pop up after second click. It requires a key change
                 // to force the menu to trigger correctly.
                 // https://github.com/callstack/react-native-paper/issues/4807
-                key={visible ? `menu${itemKey}${positionID}${rowIndex}visible` : `menu${itemKey}${positionID}${rowIndex}disible`}
+                // 2026-01-16 add react-native-paper+5.14.5.patch
+                key={`menu${itemKey}${positionID}${rowIndex}`}
                 visible={visible}
                 onDismiss={() => setVisible(false)}
                 anchorPosition="bottom"

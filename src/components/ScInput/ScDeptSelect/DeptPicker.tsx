@@ -13,7 +13,6 @@ import DocList from "../../DocList/DocList";
 import { pubParams } from "../../pub/pubParams";
 import { SimpDept } from "../../../dataType/types/department";
 
-
 interface deptPickerProps {
     pressItemAction: (item: SimpDept) => void;
     cancelAction: () => void;

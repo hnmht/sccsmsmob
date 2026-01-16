@@ -2,17 +2,20 @@ import { memo, useState } from "react";
 import { View } from "react-native";
 import { Menu, TextInput, useTheme } from "react-native-paper";
 import { Comparisons } from "../../dataType/dataZero/queryPanel";
-import { InitialValueMap, ScDataTypeList } from "../../dataType/types/scInput";
+import { ErrMsg, InitialValueMap } from "../../dataType/types/scInput";
+import { ScDataTypeList } from "../../dataType/types/scDataType";
+import { Comparison } from "../../dataType/types/queryPanel";
+import { useTranslation } from "react-i18next";
 
 interface comparisonsSelectProps {
     positionID: 0 | 1 | 2;
     rowIndex: number;
     itemShowName: string;
     itemKey: string;
-    pickDone: () => void;
+    pickDone: (value: Comparison, itemKey: string, positionID: 0 | 1 | 2, rowIndex: number, errMsg: ErrMsg) => void;
     dataType: ScDataTypeList;
     isEdit: boolean;
-    selected: boolean;
+    selected: Comparison;
 }
 
 const ComparisonsSelect = (props: comparisonsSelectProps) => {
@@ -21,15 +24,16 @@ const ComparisonsSelect = (props: comparisonsSelectProps) => {
     const [fieldValue, setFieldValue] = useState(selected ? selected : currentComps[0]);
     const [visible, setVisible] = useState(false);
     const theme = useTheme();
-    const handleChange = (newValue) => {
+    const { t } = useTranslation();
+    const handleChange = (newValue: Comparison) => {
         setVisible(false);
         setFieldValue(newValue);
         handleTransfer(newValue);
     };
 
     //向父组件传递数据
-    const handleTransfer = (value) => {
-        let errMsg = { isErr: false, msg: "" };
+    const handleTransfer = (value: Comparison) => {
+        let errMsg: ErrMsg = { isErr: false, msg: "" };
         pickDone(value, itemKey, positionID, rowIndex, errMsg);
     };
 
@@ -48,7 +52,7 @@ const ComparisonsSelect = (props: comparisonsSelectProps) => {
                         label={"*" + itemShowName}
                         editable={false}
                         disabled={!isEdit}
-                        value={fieldValue.label}
+                        value={t(fieldValue.label)}
                         right={
                             <TextInput.Icon
                                 icon="arrow-down-drop-circle"
@@ -61,7 +65,7 @@ const ComparisonsSelect = (props: comparisonsSelectProps) => {
                     />
                 }
             >
-                {currentComps.map(c => <Menu.Item value={c.id} key={c.id} title={c.label} onPress={() => handleChange(c)} />)}
+                {currentComps.map(c => <Menu.Item key={c.id} title={t(c.label)} onPress={() => handleChange(c)} />)}
             </Menu>
         </View>
     );

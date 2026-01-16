@@ -33,3 +33,12 @@ export enum ScDataTypeList {
 }
 
 
+export interface ScDataType {
+    id: ScDataTypeList;
+    code: string;
+    name: string;
+    dataType: string;
+    frontDb: string;
+    inputMode: string;
+}
+

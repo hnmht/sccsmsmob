@@ -13,7 +13,8 @@ import { useSettingNavigation } from "../../navigation/config/screenParams";
 import ScInput from "../../components/ScInput";
 import { reqUserInfo, reqModifyProfile } from "../../api/user";
 import { getEmptyUser } from "../../dataType/dataZero/user";
-import { ScDataTypeList, InitialValueMap, ErrMsg } from "../../dataType/types/scInput";
+import { InitialValueMap, ErrMsg } from "../../dataType/types/scInput";
+import { ScDataTypeList } from "../../dataType/types/scDataType";
 import { getFieldErrMsg } from "../../dataType/dataZero/errors";
 import { ToErrorType } from "../../dataType/types/errors";
 
@@ -35,9 +36,7 @@ const Profile = () => {
     const dispatch = useAppDispatch();
     const navigation = useSettingNavigation();
     const { t } = useTranslation();
-    const headerHeight = useHeaderHeight();
-    console.log("headerHeight:", headerHeight)
-
+    
     useEffect(() => {
         async function initialData() {
             let userRes = await reqUserInfo();
@@ -241,28 +240,28 @@ const Profile = () => {
                                 textLines={4}
                                 key="description"
                                 width="100%"
-                            />                           
+                            />
                         </View>
                     </ScrollView>
                     : <ActivityIndicator />
                 }
-           
-            {currentUser === undefined
-                ? null
-                : <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", padding: 16 }}>
-                    {isEdit
-                        ? <>
-                            <Button mode='text' loading={isLoading} onPress={() => setIsEdit(false)} maxFontSizeMultiplier={1}>{t("cancel")}</Button>
-                            <Button mode='contained' loading={isLoading} disabled={checkError(errors) || isLoading} onPress={handleModifyUser} maxFontSizeMultiplier={1}>{t("save")}</Button>
-                        </>
-                        : <>
-                            <Button mode="text" onPress={() => navigation.goBack()} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1} >{t("back")}</Button>
-                            <Button mode="contained" onPress={() => setIsEdit(true)} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1}>{t("edit")}</Button>
-                        </>
-                    }
-                </View>
 
-            }
+                {currentUser === undefined
+                    ? null
+                    : <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", padding: 16 }}>
+                        {isEdit
+                            ? <>
+                                <Button mode='text' loading={isLoading} onPress={() => setIsEdit(false)} maxFontSizeMultiplier={1}>{t("cancel")}</Button>
+                                <Button mode='contained' loading={isLoading} disabled={checkError(errors) || isLoading} onPress={handleModifyUser} maxFontSizeMultiplier={1}>{t("save")}</Button>
+                            </>
+                            : <>
+                                <Button mode="text" onPress={() => navigation.goBack()} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1} >{t("back")}</Button>
+                                <Button mode="contained" onPress={() => setIsEdit(true)} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1}>{t("edit")}</Button>
+                            </>
+                        }
+                    </View>
+
+                }
             </KeyboardAvoidingView>
         </SafeAreaView>
     );

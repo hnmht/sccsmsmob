@@ -15,7 +15,7 @@ function ChangeLanguage() {
         // the menu fails to pop up after second click. It requires a key change
         // to force the menu to trigger correctly.
         // https://github.com/callstack/react-native-paper/issues/4807
-        key={visible ? "langMenuVisible" : "langMenuInvisible"}
+        key={"selectLanguage"}
         visible={visible}
         onDismiss={() => setVisible(false)}
         anchor={

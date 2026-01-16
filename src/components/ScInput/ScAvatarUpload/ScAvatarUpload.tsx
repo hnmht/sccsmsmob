@@ -6,7 +6,8 @@ import { useTranslation } from "react-i18next";
 import { reqGetFileByHash, reqUploadFiles } from "../../../api/file";
 import { readImageInfo } from "../../tools/file";
 import { requestPermissions } from "../../tools/permission";
-import { ErrMsg, ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
+import { ErrMsg, ScInputProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
 // 901 SeaCloud Avatar Upload Component
 const ScAvatarUpload = ({

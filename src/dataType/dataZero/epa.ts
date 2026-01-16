@@ -2,9 +2,9 @@ import { EpochTime } from "../../i18n/dayjs";
 import { ExecutionProject } from "../types/epa";
 import { getEmptySimpEPC } from "./epc";
 import { getEmptyPerson } from "./person";
-import { getDefaultDataType } from "./pubic";
 import { getEmptyRiskLevel } from "./riskLevel";
 import { getEmptyUDC } from "./udc";
+import { getDefaultDataType } from "./scDataType";
 
 export function getEmptyEP(): ExecutionProject {
     const ep: ExecutionProject = {

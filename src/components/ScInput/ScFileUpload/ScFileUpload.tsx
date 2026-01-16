@@ -6,7 +6,8 @@ import { useTranslation } from "react-i18next";
 
 import { useAppSelector } from "../../../store/hooks";
 import FilePicker from "./FilePicker";
-import { ScDataTypeList, ScInputProps } from "../../../dataType/types/scInput";
+import { ScInputProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 import { voucherFilesToFiles, filesToVoucherFiles } from "./constructions";
 import { ScFile } from "../../../dataType/types/file";
 import { VoucherFile } from "../../../dataType/types/voucherFile";
