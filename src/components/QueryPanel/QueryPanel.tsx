@@ -1,76 +1,116 @@
 import { useState, memo, useEffect, useCallback, useMemo } from "react";
 import { View, ScrollView } from "react-native";
 import { Text, Divider, useTheme, Surface, IconButton, Portal, Button } from "react-native-paper";
-import { useSelector } from "react-redux";
 import { cloneDeep } from "lodash";
+
+import { useAppSelector } from "../../store/hooks";
 import ScInput from "../ScInput";
 import LogicSelect from "./LogicSelect";
 import ComparisonsSelect from "./ComparisonsSelect";
 import FieldSelect from "./FieldSelect";
-import { GetDataTypeDefaultValue } from "../../db/dataTypes";
-import { Comparisons, checkConditionsErrors, checkErrors } from "./constructor";
+import { getEmptyByType } from "../../dataType/dataZero/pubic";
+import { checkConditionsErrors, checkErrors } from "./constructor";
+import { Comparisons, equal } from "../../dataType/dataZero/queryPanel";
+import { Condition, QueryField, Comparison } from "../../dataType/types/queryPanel";
+import { ErrMsg, InitialValueMap } from "../../dataType/types/scInput";
+import { ScDataTypeList } from "../../dataType/types/scDataType";
+import { useTranslation } from "react-i18next";
 
-//获取初始查询条件值
-const getDefaultCondition = (queryFields) => {
-    let condition = {
+interface QueryPanelProps {
+    title: string;
+    queryFields: QueryField[];
+    initalConditions: Condition[];
+    onOk: (conditions: Condition[]) => void;
+    onCancel: () => void;
+}
+
+// Get Initial search criteria
+const getDefaultCondition = (queryFields: QueryField[]) => {
+    let condition: Condition = {
         logic: "and",
         field: queryFields[0],
-        compare: { id: "equal", label: '等于', value: '=', addCharacter: false, needInput: true, applicable: ["object", "string", "int", "number"] },
-        value: GetDataTypeDefaultValue(queryFields[0].inputType),
+        compare: equal,
+        value: getEmptyByType(queryFields[0].inputType),
         isNecessary: false
     };
     return condition;
 };
 
-const QueryPanel = ({ title, queryFields, initalConditions, onOk, onCancel }) => {
-    const [conditons, setConditons] = useState([]);
+const QueryPanel = ({ title = "queryConditions", queryFields, initalConditions, onOk, onCancel }: QueryPanelProps) => {
+    const [conditons, setConditons] = useState<Condition[]>([]);
     const theme = useTheme();
     const errors = useMemo(() => checkConditionsErrors(conditons), [conditons]);
     const hasErr = useMemo(() => checkErrors(errors), [conditons]);
+    const { t } = useTranslation();
     useEffect(() => {
         setConditons(initalConditions);
     }, [initalConditions]);
 
-    //命令按钮位置
-    const { buttonPosition } = useSelector(state => state.swapposition);
-    //获取输入
-    const handleGetValue = useCallback((value, itemKey, positionID, rowIndex, errMsg) => {
-        //更新输入值        
+    // Button Position
+    const { buttonPosition } = useAppSelector(state => state.swapPosition);
+    // Actions after get ScInput 
+    const handleGetValue = useCallback((value: InitialValueMap[keyof InitialValueMap], itemKey: string, positionID: 0 | 1 | 2, rowIndex: number, errMsg: ErrMsg) => {
+        // Update conditions        
         setConditons((prevState) => {
             let newConditions = cloneDeep(prevState);
-            if (itemKey === "field") {//如果修改的是field字段          
-                let oldCompareId = newConditions[rowIndex].compare.id;
-                //判断返回值类型
-                const currentComps = Comparisons.filter((item) => item.applicable.includes(value.resultType));
-                const inComps = currentComps.some((item) => item.id === oldCompareId);
-                if (!inComps) {
-                    newConditions[rowIndex].compare = currentComps[0];
-                }
-                //修改value值
-                newConditions[rowIndex].value = GetDataTypeDefaultValue(value.inputType);
-            }
-            newConditions[rowIndex][itemKey] = value;
+            newConditions[rowIndex].value = value;
             return newConditions;
         });
     }, []);
-    //增加查询条件行
+
+    // Actions after Logic Component passed value
+    const handleGetLogic = useCallback((value: "and" | "or", rowIndex: number, errMsg: ErrMsg) => {
+        // Update Conditions
+        setConditons((prevState) => {
+            let newConditions = cloneDeep(prevState);
+            newConditions[rowIndex].logic = value;
+            return newConditions;
+        })
+    }, []);
+
+    // Actions after Field Component passed value
+    const handleGetField = useCallback((value: QueryField, rowIndex: number, errMsg: ErrMsg) => {
+        // Update Conditions
+        setConditons((prevState) => {
+            let newConditions = cloneDeep(prevState);
+            let oldCompareId = newConditions[rowIndex].compare.id;
+            // change Comprison
+            const currentComps = Comparisons.filter((item) => item.applicable.includes(value.inputType));
+            const inComps = currentComps.some((item) => item.id === oldCompareId);
+            if (!inComps) {
+                newConditions[rowIndex].compare = currentComps[0];
+            }
+            // Change value
+            newConditions[rowIndex].value = getEmptyByType(value.inputType);
+
+            newConditions[rowIndex].field = value;
+            return newConditions;
+        })
+    }, []);
+
+    // Actions after Compare Component passed value
+    const handleGetCompare = useCallback((value: Comparison, rowIndex: number, errMsg: ErrMsg) => {
+        // Update Conditions
+        setConditons((prevState) => {
+            let newConditions = cloneDeep(prevState);
+            newConditions[rowIndex].compare = value;
+            return newConditions;
+        })
+    }, []);
+    // Add Condition row
     const handleAddCondition = () => {
-        //增加条件行       
         const newConditions = cloneDeep(conditons);
         newConditions.push(getDefaultCondition(queryFields));
-        //更新 
         setConditons(newConditions);
     };
-    //删除查询条件
-    const handleDeleteCondition = (index) => {
-        //删除行
+    // Delete condition row
+    const handleDeleteCondition = (index: number) => {
         const newConditions = cloneDeep(conditons);
         newConditions.splice(index, 1);
-        //更新
         setConditons(newConditions);
 
     };
-    //点击确定按钮
+    // Actions after ok button
     const handleOk = () => {
         onOk(conditons);
     };
@@ -87,7 +127,7 @@ const QueryPanel = ({ title, queryFields, initalConditions, onOk, onCancel }) =>
                 backgroundColor: theme.colors.background
             }}>
                 <Surface style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <Text variant="titleMedium">{title}</Text>
+                    <Text variant="titleMedium">{t(title)}</Text>
                 </Surface>
             </View>
             <Divider />
@@ -101,10 +141,9 @@ const QueryPanel = ({ title, queryFields, initalConditions, onOk, onCancel }) =>
                             <View style={{ width: "40%", height: 64 }}>
                                 {index !== 0
                                     ? <LogicSelect
-                                        itemShowName="逻辑"
-                                        itemKey="logic"
+                                        itemShowName={t("logic")}
                                         rowIndex={index}
-                                        pickDone={handleGetValue}
+                                        pickDone={handleGetLogic}
                                         isEdit={!condition.isNecessary}
                                     />
                                     : null
@@ -112,10 +151,9 @@ const QueryPanel = ({ title, queryFields, initalConditions, onOk, onCancel }) =>
                             </View>
                             <View style={{ width: "60%", height: 64 }}>
                                 <FieldSelect
-                                    itemShowName="字段"
-                                    itemKey="field"
+                                    itemShowName={t("field")}
                                     rowIndex={index}
-                                    pickDone={handleGetValue}
+                                    pickDone={handleGetField}
                                     fields={queryFields}
                                     selected={condition.field}
                                     isEdit={!condition.isNecessary}
@@ -123,11 +161,10 @@ const QueryPanel = ({ title, queryFields, initalConditions, onOk, onCancel }) =>
                             </View>
                             <View style={{ width: "40%", height: 64, padding: 0, margin: 0 }}>
                                 <ComparisonsSelect
-                                    itemShowName="比较"
-                                    itemKey="compare"
+                                    itemShowName={t("compare")}
                                     rowIndex={index}
-                                    pickDone={handleGetValue}
-                                    dataType={condition.field.resultType}
+                                    pickDone={handleGetCompare}
+                                    dataType={condition.field.inputType}
                                     selected={condition.compare}
                                     isEdit={!condition.isNecessary}
                                 />
@@ -135,16 +172,17 @@ const QueryPanel = ({ title, queryFields, initalConditions, onOk, onCancel }) =>
                             <View style={{ width: "60%", height: 64 }}>
                                 {condition.compare.needInput
                                     ? <ScInput
-                                        dataType={condition.field.inputType}
+                                        positionID={0}
+                                        dataType={condition.field.inputType as any}
                                         errInfo={errors[index]}
-                                        itemShowName={condition.field.label}
+                                        itemShowName={t(condition.field.label)}
                                         pickDone={handleGetValue}
-                                        initValue={condition.value}
+                                        initValue={condition.value ?? getEmptyByType(condition.field.inputType)}
                                         rowIndex={index}
                                         itemKey="value"
                                         isEdit={true}
                                         allowNull={false}
-                                        udc={condition.field.inputType === 550 ? condition.field.udc : { id: 0, code: '', name: "" }}
+                                        udc={condition.field.inputType === ScDataTypeList.UserDefinedArchive ? (condition.value as any).udc : { id: 0, code: '', name: "" }}
                                     />
                                     : null
                                 }
@@ -162,9 +200,9 @@ const QueryPanel = ({ title, queryFields, initalConditions, onOk, onCancel }) =>
                 </ScrollView>
             </View>
             <Surface style={{ minHeight: 60, flexDirection: buttonPosition === "right" ? "row" : "row-reverse", justifyContent: "flex-end", alignItems: "center", padding: 2, backgroundColor: theme.colors.background }}>
-                <Button mode="text" onPress={onCancel} textColor={theme.colors.error} style={{ margin: 4 }}>取消</Button>
-                <Button icon="plus" onPress={handleAddCondition} style={{ margin: 4 }}>增加</Button>
-                <Button icon="check" mode="contained" disabled={hasErr} onPress={handleOk} style={{ margin: 4 }}>确定</Button>
+                <Button mode="text" onPress={onCancel} textColor={theme.colors.error} style={{ margin: 4 }}>{t("cancel")}</Button>
+                <Button icon="plus" onPress={handleAddCondition} style={{ margin: 4 }}>{t("add")}</Button>
+                <Button icon="check" mode="contained" disabled={hasErr} onPress={handleOk} style={{ margin: 4 }}>{t("ok")}</Button>
             </Surface>
         </Portal.Host>
     );

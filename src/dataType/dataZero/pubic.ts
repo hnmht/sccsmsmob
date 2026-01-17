@@ -1,8 +1,11 @@
+import { ScDataType, ScDataTypeList } from "../types/scDataType";
+import { dayjs } from "../../i18n/i18n";
+import { InitialValueMap } from "../types/scInput";
 import { getEmptyCSA } from "./csa";
 import { getEmptyCSC } from "./csc";
 import { getEmptyCSO } from "./cso";
 import { getEmptySimpDC } from "./dc";
-import { getEmptyDepartment } from "./department";
+import { getEmptyDepartment, getEmptySimpDept } from "./department";
 import { getEmptyEP } from "./epa";
 import { getEmptySimpEPC } from "./epc";
 import { getEmptyEPT } from "./ept";
@@ -12,6 +15,7 @@ import { getEmptyPPE } from "./ppe";
 import { getEmptyRiskLevel } from "./riskLevel";
 import { getEmptyTC } from "./tc";
 import { getEmptyUDC } from "./udc";
+import { getEmptyFile } from "./file";
 
 export function getEmptyQueryParams<T>(ts: string): T {
     const emptyParam = {
@@ -25,39 +29,60 @@ export function getEmptyQueryParams<T>(ts: string): T {
     return emptyParam;
 }
 
-
-export function getEmptyByType(dataType: string): any {
+export function getEmptyByType(dataType: ScDataTypeList): InitialValueMap[keyof InitialValueMap] {
     switch (dataType) {
-        case "department":
-            return getEmptyDepartment();
-        case "epa":
+        case ScDataTypeList.Text:
+            return "";
+        case ScDataTypeList.Number:
+            return 0;
+        case ScDataTypeList.Password:
+            return "";
+        case ScDataTypeList.Mobile:
+            return "";
+        case ScDataTypeList.Email:
+            return "";
+        case ScDataTypeList.Date:            
+        case ScDataTypeList.DateTime:
+            return new Date(); 
+        case ScDataTypeList.Gender:
+            return 0;
+        case ScDataTypeList.SwitchYesOrNo:
+            return 0;
+        case ScDataTypeList.CheckYesOrNo:
+            return 0;
+        case ScDataTypeList.SelectYesOrNo:
+            return 0;
+        case ScDataTypeList.VoucherStatus:
+            return 0;
+    
+        case ScDataTypeList.SimpDept:
+            return getEmptySimpDept();
+        case ScDataTypeList.ExecutionProject:
             return getEmptyEP();
-        case "epc":
+        case ScDataTypeList.SimpEPC:
             return getEmptySimpEPC();
-        case "ept":
+        case ScDataTypeList.EPT:
             return getEmptyEPT();
-        case "person":
+        case ScDataTypeList.Person:
             return getEmptyPerson();
-        case "csa":
+        case ScDataTypeList.ConstructionSite:
             return getEmptyCSA();
-        case "csc":
+        case ScDataTypeList.SimpCSC:
             return getEmptyCSC();
-        case "cso":
-            return getEmptyCSO();
-        case "udc":
+        case ScDataTypeList.UserDefineCategory:
             return getEmptyUDC();
-        case "risklevel":
+        case ScDataTypeList.RiskLevel:
             return getEmptyRiskLevel();
-        case "dc":
+        case ScDataTypeList.SimpDC:
             return getEmptySimpDC();
-        case "position":
+        case ScDataTypeList.Position:
             return getEmptyPosition();
-        case "tc":
+        case ScDataTypeList.TC:
             return getEmptyTC();
-        case "ppe":
-            return getEmptyPPE();
-        case "udc":
-            return getEmptyUDC();
+        case ScDataTypeList.PPE:
+            return getEmptyPPE();            
+        case ScDataTypeList.AvatarUpload:
+            return getEmptyFile();
         default:
             throw new Error("Failed ScDataType");
     }

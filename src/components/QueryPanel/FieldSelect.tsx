@@ -1,44 +1,56 @@
 import { memo, useState } from "react";
 import { View } from "react-native";
 import { Menu, TextInput, useTheme } from "react-native-paper";
+import { QueryField } from "../../dataType/types/queryPanel";
+import { ErrMsg } from "../../dataType/types/scInput";
+import { useTranslation } from "react-i18next";
 
-const FieldSelect = (props) => {
-    const { positionID, rowIndex, itemShowName, itemKey, pickDone, fields, isEdit, selected } = props;
+interface FieldSelectProps {
+    rowIndex: number;
+    itemShowName: string;
+    pickDone: (value: QueryField, rowIndex: number, errMsg: ErrMsg) => void;
+    fields: QueryField[];
+    isEdit: boolean;
+    selected: QueryField;
+}
+
+const FieldSelect = (props: FieldSelectProps) => {
+    const { rowIndex, itemShowName, pickDone, fields, isEdit, selected } = props;
     const [fieldValue, setFieldValue] = useState(selected ? selected : fields[0]);
     const [visible, setVisible] = useState(false);
     const theme = useTheme();
-    //选择项目变动
-    const handleChange = (newValue) => {
+    const { t } = useTranslation();
+    // Actions after Field Changes
+    const handleChange = (newValue: QueryField) => {
         setVisible(false);
         setFieldValue(newValue);
         handleTransfer(newValue);
     };
-    //向父组件传递数据
-    const handleTransfer = (value) => {
+    // Pass Data to parent Component
+    const handleTransfer = (value: QueryField) => {
         let errMsg = { isErr: false, msg: "" };
-        pickDone(value, itemKey, positionID, rowIndex, errMsg);
+        pickDone(value, rowIndex, errMsg);
     }
 
     return (
-        <View id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: "100%", padding: 2 }}>
+        <View id={`FieldView${rowIndex}`} style={{ width: "100%", padding: 2 }}>
             <Menu
-                id={`menu${itemKey}${positionID}${rowIndex}`}
+                key={`fieldMenu${rowIndex}`}
                 visible={visible}
                 onDismiss={() => setVisible(false)}
                 anchorPosition="bottom"
                 anchor={
-                    <TextInput
-                        id={itemKey}
+                    <TextInput                 
                         mode="outlined"
                         keyboardType="default"
-                        label={"*" + itemShowName}
+                        label={"*" + t(itemShowName)}
                         editable={false}
                         disabled={!isEdit}
-                        value={fieldValue.label}
+                        value={t(fieldValue.label)}
                         right={
                             <TextInput.Icon
                                 icon="arrow-down-drop-circle"
-                                iconColor={isEdit ? theme.colors.primary : theme.colors.onBackground}
+                                color={isEdit ? theme.colors.primary : theme.colors.onBackground}
                                 onPress={() => setVisible(true)}
                                 disabled={!isEdit}
                             />
@@ -47,7 +59,7 @@ const FieldSelect = (props) => {
                     />
                 }
             >
-                {fields.map((field, index) => <Menu.Item value={field.id} key={index} title={field.label} onPress={() => handleChange(field)} />)}
+                {fields.map((field, index) => <Menu.Item key={index} title={t(field.label)} onPress={() => handleChange(field)} />)}
             </Menu>
         </View>
     );

@@ -1,7 +1,7 @@
 import { Comparison } from "../types/queryPanel";
 import { ScDataTypeList } from "../types/scDataType";
 
-export const allCompareType: ScDataTypeList[] = [
+export const allCompareTypes: ScDataTypeList[] = [
     ScDataTypeList.Text,
     ScDataTypeList.Number,
     ScDataTypeList.Password,
@@ -31,7 +31,11 @@ export const allCompareType: ScDataTypeList[] = [
     ScDataTypeList.FileUpload,
 ];
 
-export const nullComparisonType: ScDataTypeList[] = [
+export const containComparisonTypes: ScDataTypeList[] =[
+    ScDataTypeList.Text
+];
+
+export const nullComparisonTypes: ScDataTypeList[] = [
     ScDataTypeList.Text,
     ScDataTypeList.Number,
     ScDataTypeList.Password,
@@ -56,7 +60,7 @@ export const nullComparisonType: ScDataTypeList[] = [
     ScDataTypeList.FileUpload,
 ];
 
-export const equal:Comparison = {
+export const equal: Comparison = {
     id: "equal",
     label: 'equal',
     value: '=',
@@ -64,108 +68,111 @@ export const equal:Comparison = {
     addCharacter: false,
     addStart: "",
     addEnd: "",
-    applicable: allCompareType
-}
+    applicable: allCompareTypes
+};
 
+export const notEqual: Comparison = {
+    id: "notequal",
+    label: 'notEqual',
+    value: '!=',
+    addCharacter: false,
+    addStart: "",
+    addEnd: "",
+    needInput: true,
+    applicable: allCompareTypes
+};
+
+export const lessThan: Comparison = {
+    id: "lessthan",
+    label: 'lessThan',
+    value: '<',
+    addCharacter: false,
+    addStart: "",
+    addEnd: "",
+    needInput: true,
+    applicable: allCompareTypes
+};
+
+export const greaterThan: Comparison = {
+    id: "greaterthan",
+    label: 'greaterThan',
+    value: '>',
+    addCharacter: false,
+    addStart: "",
+    addEnd: "",
+    needInput: true,
+    applicable: allCompareTypes
+};
+
+export const lessThanEqual: Comparison = {
+    id: "lessthanequal",
+    label: 'lessThanEqual',
+    value: '<=',
+    addCharacter: false,
+    addStart: "",
+    addEnd: "",
+    needInput: true,
+    applicable: allCompareTypes
+};
+export const greaterThanEqual: Comparison = {
+    id: "greaterthanequal",
+    label: 'greaterThanEqual',
+    value: '>=',
+    addCharacter: false,
+    addStart: "",
+    addEnd: "",
+    needInput: true,
+    applicable: allCompareTypes
+};
+export const contain: Comparison = {
+    id: "contain",
+    label: 'contain',
+    value: 'ilike',
+    addCharacter: true,
+    addStart: "%",
+    addEnd: "%",
+    needInput: true,
+    applicable: containComparisonTypes
+};
+export const notContain: Comparison = {
+    id: "notcontain",
+    label: 'notContain',
+    value: 'not ilike',
+    addCharacter: true,
+    addStart: "%",
+    addEnd: "%",
+    needInput: true,
+    applicable: containComparisonTypes
+};
+export const cmpNull:Comparison = {
+    id: "null",
+    label: 'null',
+    value: 'is null',
+    addCharacter: false,
+    addStart: "",
+    addEnd: "",
+    needInput: false,
+    applicable: nullComparisonTypes
+};
+export const cmpNotNull:Comparison = {
+    id: "notnull",
+    label: 'notNull',
+    value: 'is not null',
+    addCharacter: false,
+    addStart: "",
+    addEnd: "",
+    needInput: false,
+    applicable: nullComparisonTypes
+};
 export const Comparisons: Comparison[] = [
-    {
-        id: "equal",
-        label: 'equal',
-        value: '=',
-        needInput: true,
-        addCharacter: false,
-        addStart: "",
-        addEnd: "",
-        applicable: allCompareType
-    },
-    {
-        id: "notequal",
-        label: 'notEqual',
-        value: '!=',
-        addCharacter: false,
-        addStart: "",
-        addEnd: "",
-        needInput: true,
-        applicable: allCompareType
-    },
-    {
-        id: "lessthan",
-        label: 'lessThan',
-        value: '<',
-        addCharacter: false,
-        addStart: "",
-        addEnd: "",
-        needInput: true,
-        applicable: allCompareType
-    },
-    {
-        id: "greaterthan",
-        label: 'greaterThan',
-        value: '>',
-        addCharacter: false,
-        addStart: "",
-        addEnd: "",
-        needInput: true,
-        applicable: allCompareType
-    },
-    {
-        id: "lessthanequal",
-        label: 'lessThanEqual',
-        value: '<=',
-        addCharacter: false,
-        addStart: "",
-        addEnd: "",
-        needInput: true,
-        applicable: allCompareType
-    },
-    {
-        id: "greaterthanequal",
-        label: 'greaterThanEqual',
-        value: '>=',
-        addCharacter: false,
-        addStart: "",
-        addEnd: "",
-        needInput: true,
-        applicable: allCompareType
-    },
-    {
-        id: "contain",
-        label: 'contain',
-        value: 'ilike',
-        addCharacter: true,
-        addStart: "%",
-        addEnd: "%",
-        needInput: true,
-        applicable: [ScDataTypeList.Text]
-    },
-    {
-        id: "notcontain",
-        label: 'notContain',
-        value: 'not ilike',
-        addCharacter: true,
-        addStart: "%",
-        addEnd: "%",
-        needInput: true,
-        applicable: [ScDataTypeList.Text]
-    },
-    {
-        id: "null",
-        label: 'null',
-        value: 'is null',
-        addCharacter: false,
-        addStart: "",
-        addEnd: "",
-        needInput: false,
-        applicable: nullComparisonType
-    },
-    {
-        id: "notnull",
-        label: 'notNull',
-        value: 'is not null',
-        addCharacter: false,
-        addStart: "",
-        addEnd: "",
-        needInput: false,
-        applicable: nullComparisonType
-    }
+    equal,
+    notEqual,
+    lessThan,
+    greaterThan,
+    lessThanEqual,
+    greaterThanEqual,
+    contain,
+    notContain,
+    cmpNull,
+    cmpNotNull
 ];

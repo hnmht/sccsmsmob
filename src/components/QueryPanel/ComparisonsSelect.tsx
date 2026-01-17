@@ -2,24 +2,22 @@ import { memo, useState } from "react";
 import { View } from "react-native";
 import { Menu, TextInput, useTheme } from "react-native-paper";
 import { Comparisons } from "../../dataType/dataZero/queryPanel";
-import { ErrMsg, InitialValueMap } from "../../dataType/types/scInput";
+import { ErrMsg } from "../../dataType/types/scInput";
 import { ScDataTypeList } from "../../dataType/types/scDataType";
 import { Comparison } from "../../dataType/types/queryPanel";
 import { useTranslation } from "react-i18next";
 
 interface comparisonsSelectProps {
-    positionID: 0 | 1 | 2;
     rowIndex: number;
     itemShowName: string;
-    itemKey: string;
-    pickDone: (value: Comparison, itemKey: string, positionID: 0 | 1 | 2, rowIndex: number, errMsg: ErrMsg) => void;
+    pickDone: (value: Comparison, rowIndex: number, errMsg: ErrMsg) => void;
     dataType: ScDataTypeList;
     isEdit: boolean;
     selected: Comparison;
 }
 
 const ComparisonsSelect = (props: comparisonsSelectProps) => {
-    const { positionID, rowIndex, itemShowName, itemKey, pickDone, dataType, isEdit, selected } = props;
+    const { rowIndex, itemShowName, pickDone, dataType, isEdit, selected } = props;
     const currentComps = Comparisons.filter((item) => item.applicable.includes(dataType));
     const [fieldValue, setFieldValue] = useState(selected ? selected : currentComps[0]);
     const [visible, setVisible] = useState(false);
@@ -31,22 +29,21 @@ const ComparisonsSelect = (props: comparisonsSelectProps) => {
         handleTransfer(newValue);
     };
 
-    //向父组件传递数据
+    // Pass Data to the parent component
     const handleTransfer = (value: Comparison) => {
         let errMsg: ErrMsg = { isErr: false, msg: "" };
-        pickDone(value, itemKey, positionID, rowIndex, errMsg);
+        pickDone(value, rowIndex, errMsg);
     };
 
     return (
-        <View id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: "100%", padding: 2 }}>
+        <View id={`comparisonsView${rowIndex}`} style={{ width: "100%", padding: 2 }}>
             <Menu
-                key={`menu${itemKey}${positionID}${rowIndex}`}
+                key={`comparisonsMenu${rowIndex}`}
                 visible={visible}
                 onDismiss={() => setVisible(false)}
                 anchorPosition="bottom"
                 anchor={
                     <TextInput
-                        id={itemKey}
                         mode="outlined"
                         keyboardType="default"
                         label={"*" + itemShowName}

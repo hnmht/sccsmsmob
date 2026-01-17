@@ -89,6 +89,7 @@ export interface BaseScInputProps {
     isOnSitePhoto?: boolean;
     markTexts?: MarkText[];
     color?:string;
+    udc?:UserDefineCategory;
     onCancel?: () => void;
 }
 

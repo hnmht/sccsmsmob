@@ -4,20 +4,22 @@ import { SegmentedButtons, Surface, Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import ReadMessage from "./readMessage";
 // import UnReadMessages from "./unReadMessages";
-import ComparisonsSelect from "../../components/QueryPanel/ComparisonsSelect";
-import { Comparison } from "../../dataType/types/queryPanel";
+
+import { Comparison, Condition, QueryField } from "../../dataType/types/queryPanel";
 import { ErrMsg } from "../../dataType/types/scInput";
 import { ScDataTypeList } from "../../dataType/types/scDataType";
+import QueryPanel from "../../components/QueryPanel/QueryPanel";
+
 import { equal } from "../../dataType/dataZero/queryPanel";
+import { getEmptySimpDept } from "../../dataType/dataZero/department";
+
 
 
 const Message = () => {
     const [content, setContent] = useState("unRead");
     const theme = useTheme();
 
-    const handleGetValue = (value: Comparison, itemkey: string, positionID: 0 | 1 | 2, rowIndex: number, errMsg: ErrMsg) => {
-        console.log(value)
-    }
+  
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -46,16 +48,7 @@ const Message = () => {
                     ? <UnReadMessages />
                     : <ReadMessage />
                 } */}
-                <ComparisonsSelect
-                    positionID={0}
-                    rowIndex={0}
-                    itemShowName="Comparison"
-                    itemKey="a"
-                    pickDone={handleGetValue}
-                    dataType={ScDataTypeList.Gender}
-                    isEdit={true}
-                    selected={equal}
-                />
+               
             </View>
         </SafeAreaView>
     );
