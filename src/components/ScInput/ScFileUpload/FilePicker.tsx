@@ -279,7 +279,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
             })
     };
 
-    return (<SafeAreaView style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+    return (<SafeAreaView style={{ backgroundColor: theme.colors.background, flex: 1 }}>        
         {displayList
             ? <ScrollView style={{ flex: 1 }}>
                 {files.map((file, index) => {

@@ -16,6 +16,8 @@ import { UserDefineCategory } from "./udc";
 import { ScFile } from "./file";
 import { VoucherFile } from "./voucherFile";
 import { ScDataTypeList } from "./scDataType";
+import type { Dayjs } from "dayjs";
+
 
 export interface MarkPosition {
     x: number;
@@ -44,8 +46,8 @@ export type InitialValueMap = {
     [ScDataTypeList.Password]: string;
     [ScDataTypeList.Mobile]: string;
     [ScDataTypeList.Email]: string;
-    [ScDataTypeList.Date]: string | Date;
-    [ScDataTypeList.DateTime]: string | Date;
+    [ScDataTypeList.Date]: string | Date ;
+    [ScDataTypeList.DateTime]: string | Date ;
 
     [ScDataTypeList.Gender]: 0 | 1 | 2;
     [ScDataTypeList.SwitchYesOrNo]: 0 | 1;
@@ -88,8 +90,8 @@ export interface BaseScInputProps {
     errInfo: ErrMsg;
     isOnSitePhoto?: boolean;
     markTexts?: MarkText[];
-    color?:string;
-    udc?:UserDefineCategory;
+    color?: string;
+    udc?: UserDefineCategory;
     onCancel?: () => void;
 }
 

@@ -1,15 +1,18 @@
 import { useState, useMemo } from "react";
 import { View, Alert, FlatList, Modal } from "react-native";
 import { Text, Card, useTheme, IconButton } from "react-native-paper";
-import { useSelector } from "react-redux";
-// import dayjs from "dayjs";
-import dayjs from "../../utils/myDayjs";
+import { useAppSelector } from "../../store/hooks";
 
+import { dayjs } from "../../i18n/i18n";
 import ScInput from "../../components/ScInput";
 import PersonAvatar from "../../components/PersonAvatar/PersonAvatar";
 import { QueryPanel, transConditionsToString } from "../../components/QueryPanel";
 import { generateMSGQueryFields, generateMsgDefaultCons } from "./constructor";
 import { reqReadComments } from "../../api/message";
+import { CommentMessage } from "../../dataType/types/message";
+import { ScDataTypeList } from "../../dataType/types/scDataType";
+import { Condition } from "../../dataType/types/queryPanel";
+
 
 const ReadMessage = () => {
     const [showDialog, setShowDialog] = useState(false);
@@ -18,7 +21,7 @@ const ReadMessage = () => {
     const [refreshing, setRefreshing] = useState(false);
     const queryFields = useMemo(generateMSGQueryFields, []);
     const theme = useTheme();
-    const isOffline = useSelector(state => state.appinfo.isoffline);
+    const isOffline = useAppSelector(state => state.appInfo.isOffline);
     const handleGetValue = (value, itemKey, positionID, rowIndex, err) => {
         setShowDialog(false);
         setConditions(value);
@@ -26,7 +29,7 @@ const ReadMessage = () => {
         handleReqReadMsgs(value);
     };
     //请求已读消息
-    const handleReqReadMsgs = async (cons = conditions) => {
+    const handleReqReadMsgs = async (cons :Condition[]= conditions) => {
         setRefreshing(true);
         let queryString = transConditionsToString(cons);
         let res = await reqReadComments({ queryString: queryString });
@@ -39,37 +42,38 @@ const ReadMessage = () => {
         setReadMsgs(newRows);
         setRefreshing(false);
     };
-    const renderItem = ({ item }) => {
+    const renderItem = ({ item }: { item: CommentMessage }) => {
         return (
             <Card style={{ margin: 4 }}>
                 <Card.Title
-                    title={item.createuser.name}
-                    subtitle={dayjs(item.createdate).format("YYYY-MM-DD HH:mm:ss")}
-                    left={() => <PersonAvatar url={item.createuser.avatar.fileurl} name={item.createuser.name} isOffLine={isOffline} />}
+                    title={item.creator.name}
+                    subtitle={dayjs(item.createDate).format("YYYY-MM-DD HH:mm:ss")}
+                    left={() => <PersonAvatar url={item.creator.avatar.fileUrl} name={item.creator.name} isOffLine={isOffline} />}
                     titleMaxFontSizeMultiplier={1.5}
                     subtitleMaxFontSizeMultiplier={1.5}
                 />
                 <Card.Content>
                     <Text variant="bodyLarge" style={{ width: "100%", color: theme.colors.primary }}>{item.content}</Text>
-                    <Text variant="bodyMedium" style={{ width: "100%" }}>现场: {item.siname}</Text>
-                    <Text variant="bodyMedium" style={{ width: "100%" }}>执行单号:{item.billnumber}</Text>
-                    <Text variant="bodyMedium" style={{ width: "100%" }}>行号: {item.rownumber}</Text>
-                    <Text variant="bodyMedium" style={{ width: "100%" }}>执行项目: {item.eidname}</Text>
-                    <Text variant="bodyMedium" style={{ width: "100%" }}>项目值:{item.exectivevaluedisp}</Text>
-                    <View style={{ height: 62, margin: 0, width: "100%" }}>
+                    <Text variant="bodyMedium" style={{ width: "100%" }}>现场: {item.csaName}</Text>
+                    <Text variant="bodyMedium" style={{ width: "100%" }}>执行单号:{item.billNumber}</Text>
+                    <Text variant="bodyMedium" style={{ width: "100%" }}>行号: {item.rowNumber}</Text>
+                    <Text variant="bodyMedium" style={{ width: "100%" }}>执行项目: {item.epaName}</Text>
+                    <Text variant="bodyMedium" style={{ width: "100%" }}>项目值:{item.executionValueDisp}</Text>
+                    <View style={{ height: 68, margin: 0, width: "100%" }}>
                         <ScInput
-                            dataType={902}
+                            dataType={ScDataTypeList.FileUpload}
                             isOnSitePhoto={false}
                             allowNull={true}
                             isEdit={false}
                             itemShowName="附件"
-                            itemKey="edfiles"
-                            initValue={item.edfiles}
+                            itemKey="eoFiles"
+                            initValue={item.eoFiles}
                             pickDone={() => { }}
                             isBackendTest={false}
-                            key="edfiles"
-                            positionID={1}
-                            rowIndex={-1}
+                            key="eoFiles"
+                            positionID={0}
+                            rowIndex={0}
+                            errInfo={{ isErr: false, msg: "" }}
                         />
                     </View>
                 </Card.Content>
@@ -81,13 +85,13 @@ const ReadMessage = () => {
         <View style={{ flex: 1 }}>
             <View style={{ minHeight: 40, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                 <Text variant="bodyLarge" maxFontSizeMultiplier={1}>共{readMsgs.length}条</Text>
-                <IconButton onPress={() => setShowDialog(true)} icon="filter-variant" maxFontSizeMultiplier={false} iconColor={theme.colors.primary} />
+                <IconButton onPress={() => setShowDialog(true)} icon="filter-variant" iconColor={theme.colors.primary} />
             </View>
             <View style={{ flex: 1 }}>
                 <FlatList
                     data={readMsgs}
                     renderItem={renderItem}
-                    keyExtractor={item => item.id}
+                    keyExtractor={item => String(item.id) }
                     refreshing={refreshing}
                     onRefresh={handleReqReadMsgs}
                 />

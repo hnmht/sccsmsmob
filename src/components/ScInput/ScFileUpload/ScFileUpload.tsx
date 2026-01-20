@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Modal, Alert } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Modal, Alert,View } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 
@@ -40,7 +39,7 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
         handleTransfer(items);
     };
     return (
-        <SafeAreaView id={`View${itemKey}-p${positionID}-r${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
+        <View id={`View${itemKey}-p${positionID}-r${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
             <TextInput
                 id={`TextInput${itemKey}-p${positionID}-r${rowIndex}`}
                 mode="outlined"
@@ -96,7 +95,7 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
                     markTexts={markTexts ? markTexts : []}
                 />
             </Modal>
-        </SafeAreaView>
+        </View>
     );
 };
 

@@ -3,6 +3,7 @@ import { ErrMsg } from "../../dataType/types/scInput";
 import { ScDataTypeList } from "../../dataType/types/scDataType";
 import { dayjs, i18n } from "../../i18n/i18n"
 import { mailRegex } from "../../utils/regex";
+import { ConvertToUnixSecond } from "../../i18n/dayjs";
 
 export const transConditionsToString = (conditions: Condition[]) => {
     let queryString = "";
@@ -28,13 +29,23 @@ export const transConditionsToString = (conditions: Condition[]) => {
                 case ScDataTypeList.Password:
                 case ScDataTypeList.Mobile:
                 case ScDataTypeList.Email:
-                case ScDataTypeList.Date:
-                case ScDataTypeList.DateTime:
                     if (con.compare.addCharacter) {
                         cs = cs + "'" + con.compare.addStart + con.value + con.compare.addEnd + "' ";
                     } else {
                         cs = cs + "'" + con.value + "' ";
                     }
+                    break;
+                case ScDataTypeList.Date:
+                case ScDataTypeList.DateTime:
+                    let unixTime = 0;
+                    // Guard against null/invalid types before converting
+                    if (con.value === null || con.value === undefined || con.value === "") {
+                        unixTime = 0;
+                    } else {
+                        // cast to any to satisfy TS for accepted input types of ConvertToUnixSecond
+                        unixTime = ConvertToUnixSecond(con.value as any);
+                    }
+                    cs = cs + "to_timestamp(" + unixTime + ") ";
                     break;
                 case ScDataTypeList.Person:
                 case ScDataTypeList.SimpDept:

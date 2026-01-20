@@ -5952,6 +5952,11 @@ react-is@^19.1.0, react-is@^19.1.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.0.tgz#ddc3b4a4e0f3336c3847f18b806506388d7b9973"
   integrity sha512-x3Ax3kNSMIIkyVYhWPyO09bu0uttcAIoecO/um/rKGQ4EltYWVYtyiGkS/3xMynrbVQdS69Jhlv8FXUEZehlzA==
 
+react-native-date-time-spinner@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-date-time-spinner/-/react-native-date-time-spinner-1.1.0.tgz#af1a9d060e713bfb736467ef545324d59df2116c"
+  integrity sha512-vCS0z0HjIGOSeTHwddfLbKueqJcAnB0P3SX28fN6bDfpB+pkN8AIEBmrj4sKXWzOVB9sD+wUUES69lskgP+03Q==
+
 react-native-fs@^2.20.0:
   version "2.20.0"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.20.0.tgz#05a9362b473bfc0910772c0acbb73a78dbc810f6"

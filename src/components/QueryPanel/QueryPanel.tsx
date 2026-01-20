@@ -15,6 +15,9 @@ import { Condition, QueryField, Comparison } from "../../dataType/types/queryPan
 import { ErrMsg, InitialValueMap } from "../../dataType/types/scInput";
 import { ScDataTypeList } from "../../dataType/types/scDataType";
 import { useTranslation } from "react-i18next";
+import { getEmptyUDC } from "../../dataType/dataZero/udc";
+import { UserDefinedArchive } from "../../dataType/types/uda";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface QueryPanelProps {
     title: string;
@@ -116,100 +119,101 @@ const QueryPanel = ({ title = "queryConditions", queryFields, initalConditions, 
     };
 
     return (
-        <Portal.Host>
-            <View style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: 40,
-                width: "100%",
-                backgroundColor: theme.colors.background
-            }}>
-                <Surface style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <Text variant="titleMedium">{t(title)}</Text>
-                </Surface>
-            </View>
-            <Divider />
-            <View style={{
-                flex: 1,
-                backgroundColor: theme.colors.background
-            }}>
-                <ScrollView>
-                    {conditons.map((condition, index) => {
-                        return <Surface key={index} style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", alignItems: "center", margin: 4, padding: 4 }}>
-                            <View style={{ width: "40%", height: 64 }}>
+        <SafeAreaView style={{ flex: 1 }}>
+            <Portal.Host>
+                <View style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    minHeight: 40,
+                    width: "100%",
+                    backgroundColor: theme.colors.background
+                }}>
+                    <Surface style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                        <Text variant="titleMedium">{t(title)}</Text>
+                    </Surface>
+                </View>
+                <Divider />
+                <View style={{
+                    flex: 1,
+                    backgroundColor: theme.colors.background
+                }}>
+                    <ScrollView>
+                        {conditons.map((condition, index) => {
+                            return <Surface key={index} style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", alignItems: "center", margin: 8, padding: 4 }}>
                                 {index !== 0
-                                    ? <LogicSelect
-                                        itemShowName={t("logic")}
+                                    ? <View style={{ width: "100%", height: 64 }}>
+                                        <LogicSelect
+                                            itemShowName={t("logic")}
+                                            rowIndex={index}
+                                            pickDone={handleGetLogic}
+                                            isEdit={!condition.isNecessary}
+                                        />
+                                    </View>
+                                    : null
+                                }
+
+                                <View style={{ width: "100%", height: 64 }}>
+                                    <FieldSelect
+                                        itemShowName={t("field")}
                                         rowIndex={index}
-                                        pickDone={handleGetLogic}
+                                        pickDone={handleGetField}
+                                        fields={queryFields}
+                                        selected={condition.field}
                                         isEdit={!condition.isNecessary}
                                     />
-                                    : null
-                                }
-                            </View>
-                            <View style={{ width: "60%", height: 64 }}>
-                                <FieldSelect
-                                    itemShowName={t("field")}
-                                    rowIndex={index}
-                                    pickDone={handleGetField}
-                                    fields={queryFields}
-                                    selected={condition.field}
-                                    isEdit={!condition.isNecessary}
-                                />
-                            </View>
-                            <View style={{ width: "40%", height: 64, padding: 0, margin: 0 }}>
-                                <ComparisonsSelect
-                                    itemShowName={t("compare")}
-                                    rowIndex={index}
-                                    pickDone={handleGetCompare}
-                                    dataType={condition.field.inputType}
-                                    selected={condition.compare}
-                                    isEdit={!condition.isNecessary}
-                                />
-                            </View>
-                            <View style={{ width: "60%", height: 64 }}>
-                                {condition.compare.needInput
-                                    ? <ScInput
-                                        positionID={0}
-                                        dataType={condition.field.inputType as any}
-                                        errInfo={errors[index]}
-                                        itemShowName={t(condition.field.label)}
-                                        pickDone={handleGetValue}
-                                        initValue={condition.value ?? getEmptyByType(condition.field.inputType)}
+                                </View>
+                                <View style={{ width: "100%", height: 64, padding: 0, margin: 0 }}>
+                                    <ComparisonsSelect
+                                        itemShowName={t("compare")}
                                         rowIndex={index}
-                                        itemKey="value"
-                                        isEdit={true}
-                                        allowNull={false}
-                                        udc={condition.field.inputType === ScDataTypeList.UserDefinedArchive ? (condition.value as any).udc : { id: 0, code: '', name: "" }}
+                                        pickDone={handleGetCompare}
+                                        dataType={condition.field.inputType}
+                                        selected={condition.compare}
+                                        isEdit={!condition.isNecessary}
                                     />
-                                    : null
-                                }
-                            </View>
-                            <View style={{ width: "100%", height: 40, flexDirection: "row", alignItems: "center", justifyContent: "flex-end", margin: 0, padding: 0 }}>
-                                <IconButton
-                                    icon="delete"
-                                    disabled={condition.isNecessary}
-                                    iconColor={theme.colors.primary}
-                                    onPress={() => handleDeleteCondition(index)}
-                                />
-                            </View>
-                        </Surface>
-                    })}
-                </ScrollView>
-            </View>
-            <Surface style={{ minHeight: 60, flexDirection: buttonPosition === "right" ? "row" : "row-reverse", justifyContent: "flex-end", alignItems: "center", padding: 2, backgroundColor: theme.colors.background }}>
-                <Button mode="text" onPress={onCancel} textColor={theme.colors.error} style={{ margin: 4 }}>{t("cancel")}</Button>
-                <Button icon="plus" onPress={handleAddCondition} style={{ margin: 4 }}>{t("add")}</Button>
-                <Button icon="check" mode="contained" disabled={hasErr} onPress={handleOk} style={{ margin: 4 }}>{t("ok")}</Button>
-            </Surface>
-        </Portal.Host>
+                                </View>
+                                <View style={{ width: "100%", height: 64 }}>
+                                    {condition.compare.needInput
+                                        ? <ScInput
+                                            dataType={condition.field.inputType as any}
+                                            positionID={0}
+                                            errInfo={errors[index]}
+                                            itemShowName={t(condition.field.label)}
+                                            pickDone={handleGetValue}
+                                            initValue={condition.value ?? getEmptyByType(condition.field.inputType)}
+                                            rowIndex={index}
+                                            itemKey="value"
+                                            isEdit={true}
+                                            allowNull={false}
+                                            udc={condition.field.inputType === ScDataTypeList.UserDefinedArchive ? (condition.value as UserDefinedArchive).udc : getEmptyUDC()}
+                                        />
+                                        : null
+                                    }
+                                </View>
+                                <View style={{ width: "100%", height: 40, flexDirection: "row", alignItems: "center", justifyContent: "flex-end", margin: 0, padding: 0 }}>
+                                    <IconButton
+                                        icon="delete"
+                                        disabled={condition.isNecessary}
+                                        iconColor={theme.colors.primary}
+                                        onPress={() => handleDeleteCondition(index)}
+                                    />
+                                </View>
+                            </Surface>
+                        })}
+                    </ScrollView>
+                </View>
+                <Surface style={{ minHeight: 60, flexDirection: buttonPosition === "right" ? "row" : "row-reverse", justifyContent: "flex-end", alignItems: "center", padding: 2, backgroundColor: theme.colors.background }}>
+                    <Button mode="text" onPress={onCancel} textColor={theme.colors.error} style={{ margin: 4 }}>{t("cancel")}</Button>
+                    <Button icon="plus" onPress={handleAddCondition} style={{ margin: 4 }}>{t("add")}</Button>
+                    <Button icon="check" mode="contained" disabled={hasErr} onPress={handleOk} style={{ margin: 4 }}>{t("ok")}</Button>
+                </Surface>
+            </Portal.Host>
+        </SafeAreaView>
     );
 };
 
-QueryPanel.defaultProps = {
-    title: "查询条件",
-};
+
 
 export default memo(QueryPanel);
