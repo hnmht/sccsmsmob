@@ -13,7 +13,8 @@ export const generateMSGQueryFields = (): QueryField[] => {
         { id: 3, value: "c.creatorid", label: "sender", inputType: 510, resultField: "id" },
         { id: 4, value: "h.csaid", label: "csa", inputType: 570, resultField: "id" },
         { id: 5, value: "b.epaid", label: "epa", inputType: 560, resultField: "id" },
-        { id: 6, value: "c.content", label: "content", inputType: 301, resultField: "" }
+        { id: 6, value: "c.content", label: "content", inputType: 301, resultField: "" },
+        { id: 7, value: "h.billdate", label: "billDate", inputType: ScDataTypeList.Date, resultField: "" }
     ];
     return edQueryFields;
 };

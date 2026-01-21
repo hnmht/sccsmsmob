@@ -1,19 +1,18 @@
 import { useEffect, memo, useState } from "react";
 import { View, Alert, Modal } from "react-native";
 import { useTranslation } from "react-i18next";
+import { DateTimeSpinner } from "react-native-date-time-spinner";
 import LinearGradient from "react-native-linear-gradient";
 import { dayjs, DateTimeFormat } from "../../../i18n/dayjs";
 import { TextInput, useTheme, Button } from "react-native-paper";
-import { DateTimeSpinner } from "react-native-date-time-spinner";
 import { useAppSelector } from "../../../store/hooks";
-import ScDateTimeDetail from "./ScDateTimeDetail";
 import { ScInputProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const zeroValue = dayjs(new Date()).toDate();
-//307 Seacloud Date Time Input Component
-const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.DateTime>) => {
+//306 Seacloud Date Input Component
+const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.Date>) => {
     const {
         positionID = 0,
         rowIndex = 0,
@@ -35,9 +34,10 @@ const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.DateTime>) => {
     const theme = useTheme();
     const { t } = useTranslation();
     const label = allowNull ? itemShowName : "*" + itemShowName;
+
     // Commands button position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
-    const dateDisplay = DateTimeFormat(dateValue, "LLL");
+    const dateDisplay = DateTimeFormat(dateValue, "LL");
 
     useEffect(() => {
         function updateInitvalue() {
@@ -112,10 +112,9 @@ const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.DateTime>) => {
                     backgroundColor: theme.colors.background
                 }}>
                     <DateTimeSpinner
-                        mode="datetime"
+                        mode="date"
                         initialValue={dateValue}
                         LinearGradient={LinearGradient}
-                        dateTimeOrder={["date", "hour", "minute"]}
                         formatDateLabel={(date) => DateTimeFormat(date, "LL")}
                         pickerGradientOverlayProps={{
                             locations: [0, 0.4, 0.6, 1],
@@ -132,17 +131,6 @@ const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.DateTime>) => {
                     </View>
                 </SafeAreaView>
             </Modal>
-            {
-                isEdit
-                    ? null
-                    : <ScDateTimeDetail
-                        currentItem={dateValue}
-                        visible={detailOpen}
-                        backAction={() => setDetailOpen(false)}
-                        t={t}
-                    />
-            }
-
         </View>
     );
 };
