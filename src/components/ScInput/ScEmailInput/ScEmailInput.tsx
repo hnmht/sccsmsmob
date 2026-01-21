@@ -29,7 +29,6 @@ const ScEmailInput = (props: ScInputProps<ScDataTypeList.Email>) => {
     } = props;
     const [textValue, setTextValue] = useState(initValue);
     const [detailOpen, setDetailOpen] = useState(false);
-    const [err, setErr] = useState(errInfo);
     const label = allowNull ? itemShowName : "*" + itemShowName;
     const theme = useTheme();
     const { t } = useTranslation();
