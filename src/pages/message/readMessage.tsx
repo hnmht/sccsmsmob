@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
-import { View, FlatList, Modal } from "react-native";
-import { Text, Card, useTheme, IconButton, Title } from "react-native-paper";
+import { useState, useMemo } from "react";
+import { View, FlatList } from "react-native";
+import { Text, Card, useTheme, IconButton } from "react-native-paper";
 import { useAppSelector } from "../../store/hooks";
 import { useTranslation } from "react-i18next";
 import { DateTimeFormat } from "../../i18n/dayjs";
@@ -12,6 +12,7 @@ import { reqReadComments } from "../../api/message";
 import { CommentMessage } from "../../dataType/types/message";
 import { ScDataTypeList } from "../../dataType/types/scDataType";
 import { Condition } from "../../dataType/types/queryPanel";
+import { ScComponentModal } from "../../components/ScComponentModal/ScComponentModal";
 
 const ReadMessage = () => {
     const [showDialog, setShowDialog] = useState(false);
@@ -93,9 +94,8 @@ const ReadMessage = () => {
                     onRefresh={handleReqReadMsgs}
                 />
             </View>
-            <Modal
+            <ScComponentModal
                 visible={showDialog}
-                onDismiss={() => setShowDialog(false)}
             >
                 <QueryPanel
                     onCancel={() => setShowDialog(false)}
@@ -104,7 +104,7 @@ const ReadMessage = () => {
                     initalConditions={conditions}
                     onOk={handleGetValue}
                 />
-            </Modal>
+            </ScComponentModal>
         </View>
     );
 };

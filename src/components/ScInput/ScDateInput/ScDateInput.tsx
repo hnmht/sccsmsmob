@@ -1,14 +1,16 @@
 import { useEffect, memo, useState } from "react";
-import { View, Alert, Modal } from "react-native";
+import { View, Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { DateTimeSpinner } from "react-native-date-time-spinner";
 import LinearGradient from "react-native-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { dayjs, DateTimeFormat } from "../../../i18n/dayjs";
 import { TextInput, useTheme, Button } from "react-native-paper";
 import { useAppSelector } from "../../../store/hooks";
 import { ScInputProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScComponentModal } from "../../ScComponentModal/ScComponentModal";
+
 
 const zeroValue = dayjs(new Date()).toDate();
 //306 Seacloud Date Input Component
@@ -101,7 +103,7 @@ const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.Date>) => {
                 }
                 style={{ width: "100%" }}
             />
-            <Modal
+            <ScComponentModal
                 visible={visible}
             >
                 <SafeAreaView style={{
@@ -130,7 +132,7 @@ const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.Date>) => {
                         <Button mode="contained" onPress={() => handleTransfer(dateValue)} style={{ margin: 8 }}>{t("ok")}</Button>
                     </View>
                 </SafeAreaView>
-            </Modal>
+            </ScComponentModal>
         </View>
     );
 };

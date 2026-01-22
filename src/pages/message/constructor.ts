@@ -5,7 +5,7 @@ import { greaterThanEqual, lessThanEqual } from "../../dataType/dataZero/queryPa
 import { ScDataTypeList } from "../../dataType/types/scDataType";
 
 
-//生成查询字段
+// Generate default query fields
 export const generateMSGQueryFields = (): QueryField[] => {
     const edQueryFields: QueryField[] = [
         { id: 1, value: "c.sendtime", label: "sendTime", inputType: ScDataTypeList.DateTime, resultField: "" },
@@ -19,7 +19,7 @@ export const generateMSGQueryFields = (): QueryField[] => {
     return edQueryFields;
 };
 
-//生成默认查询条件
+// Generate default query conditions
 export function generateMsgDefaultCons(): Condition[] {
     const conditions: Condition[] = [
         {

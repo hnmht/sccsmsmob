@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { ScrollView, View, TouchableOpacity, Alert } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, AnimatedFAB, useTheme, Text, Card, IconButton, Divider } from "react-native-paper";
 import Geolocation from "@react-native-community/geolocation";
 import ImageViewer from "react-native-image-zoom-viewer";
@@ -279,7 +278,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
             })
     };
 
-    return (<SafeAreaView style={{ backgroundColor: theme.colors.background, flex: 1 }}>        
+    return (<View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
         {displayList
             ? <ScrollView style={{ flex: 1 }}>
                 {files.map((file, index) => {
@@ -378,7 +377,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
             onPress={handleSwapPosition}
             style={{ bottom: 160, position: "absolute", ...swapPosition }}
         />
-    </SafeAreaView>
+    </View>
     );
 };
 

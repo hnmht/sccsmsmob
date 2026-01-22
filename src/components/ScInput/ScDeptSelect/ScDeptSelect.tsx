@@ -1,5 +1,5 @@
 import { memo, useState, useEffect } from "react";
-import { View, Modal, Alert } from "react-native";
+import { View, Alert } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -11,6 +11,7 @@ import { ScDataTypeList } from "../../../dataType/types/scDataType";
 import { getEmptySimpDept } from "../../../dataType/dataZero/department";
 import { SimpDept } from "../../../dataType/types/department";
 import { useTranslation } from "react-i18next";
+import { ScComponentModal } from "../../ScComponentModal/ScComponentModal";
 
 const zeroValue = getEmptySimpDept();
 // 520 Seacloud SimpDept Select Component
@@ -113,9 +114,8 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
                 }
                 style={{ width: "100%" }}
             />
-            <Modal
+            <ScComponentModal
                 visible={dialogOpen}
-                id={`modal${itemKey}${positionID}${rowIndex}`}
             >
                 <SafeAreaView style={{ backgroundColor: theme.colors.background, flex: 1 }}>
                     <DeptPicker
@@ -125,7 +125,7 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
                         t={t}
                     />
                 </SafeAreaView>
-            </Modal>
+            </ScComponentModal>
             {isEdit
                 ? null
                 : <DeptDetail

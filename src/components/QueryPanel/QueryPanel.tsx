@@ -17,7 +17,6 @@ import { ScDataTypeList } from "../../dataType/types/scDataType";
 import { useTranslation } from "react-i18next";
 import { getEmptyUDC } from "../../dataType/dataZero/udc";
 import { UserDefinedArchive } from "../../dataType/types/uda";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 interface QueryPanelProps {
     title: string;
@@ -119,7 +118,7 @@ const QueryPanel = ({ title = "queryConditions", queryFields, initalConditions, 
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
             <Portal.Host>
                 <View style={{
                     display: "flex",
@@ -210,7 +209,7 @@ const QueryPanel = ({ title = "queryConditions", queryFields, initalConditions, 
                     <Button icon="check" mode="contained" disabled={hasErr} onPress={handleOk} style={{ margin: 4 }}>{t("ok")}</Button>
                 </Surface>
             </Portal.Host>
-        </SafeAreaView>
+        </View>
     );
 };
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, Alert, View } from "react-native";
+import { Alert, View } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 
@@ -10,6 +10,7 @@ import { ScDataTypeList } from "../../../dataType/types/scDataType";
 import { voucherFilesToFiles, filesToVoucherFiles } from "./constructions";
 import { ScFile } from "../../../dataType/types/file";
 import { VoucherFile } from "../../../dataType/types/voucherFile";
+import { ScComponentModal } from "../../ScComponentModal/ScComponentModal";
 
 // 902 SeaCloud File Upload Component
 const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
@@ -81,7 +82,7 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
                 }
                 style={{ width: "100%" }}
             />
-            <Modal
+            <ScComponentModal
                 key={`modal${itemKey}-p${positionID}-r${rowIndex}`}
                 visible={dialogOpen}
             >
@@ -94,7 +95,7 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
                     onOk={handleSelectedOk}
                     markTexts={markTexts ? markTexts : []}
                 />
-            </Modal>
+            </ScComponentModal>
         </View>
     );
 };
