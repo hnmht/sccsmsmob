@@ -22,6 +22,7 @@ const PersonPicker = ({ t, cancelAction, pressItemAction }: personPickerProps) =
     const isOffline = useAppSelector(state => state.appInfo.isOffline);
     const [persons, setPersons] = useState<Person[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
+    const isOverSize = pubParams.screen.isOverSize;
 
     // Command button position
     const { buttonPosition, swapPosition, orderPosition } = useAppSelector(state => state.swapPosition);
@@ -73,23 +74,23 @@ const PersonPicker = ({ t, cancelAction, pressItemAction }: personPickerProps) =
 
     const PersonCard = ({ item }: { item: Person }) => {
         return (
-            <Card key={item.id} style={{ marginTop: 2, marginBottom: 2 }}>
+            <Card key={item.id} style={{ marginTop: 4, marginBottom: 4 }}>
                 <TouchableOpacity
                     style={{
                         display: "flex",
                         flexDirection: "row",
                         flexWrap: "wrap",
-                        margin: 4
+                        margin: 4,
                     }}
                     onPress={() => handlePersonPress(item)}
                     onLongPress={() => handleLongPress(item)}
                 >
-                    <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%", padding: 2, fontWeight: "bold", color: item.status === 1 ? "red" : theme.colors.onBackground }}>用户名:{item.name}</Text>
-                    <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%", padding: 2 }}>用户编码:{item.code}</Text>
-                    <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%", padding: 2 }}>部门:{item.deptName}</Text>
-                    <Text style={{ width: pubParams.screen.isOverSize ? "100%" : "50%", padding: 2 }}>电话:{item.mobile}</Text>
-                    <Text style={{ width: "50%", padding: 2 }}>性别:{item.gender === 0 ? "" : item.gender === 1 ? "男" : "女"}</Text>
-                    <Text style={{ width: "50%", padding: 2 }}>状态:{item.status === 0 ? "正常" : "停用"}</Text>
+                    <Text style={{ width: "100%", padding: 2, fontWeight: "bold", color: item.status === 1 ? "red" : theme.colors.onBackground }}>{t("name")} : {item.name}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("code")} : {item.code}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("subDept")} : {item.deptName}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("mobile")} : {item.mobile}</Text>
+                    <Text style={{ width: "50%", padding: 2 }}>{t("gender")} : {t(item.gender === 0 ? "" : item.gender === 1 ? "male" : "female")}</Text>
+                    <Text style={{ width: "50%", padding: 2 }}>{t("status")} : {t(item.status === 0 ? "normal" : "disable")}</Text>
                 </TouchableOpacity>
             </Card>
         );
@@ -107,7 +108,7 @@ const PersonPicker = ({ t, cancelAction, pressItemAction }: personPickerProps) =
                 backgroundColor: theme.colors.background
             }}>
                 <View style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <Text variant="titleMedium">选择人员</Text>
+                    <Text variant="titleMedium">{t("selectRecipients")}</Text>
                 </View>
                 <View style={{ width: "100%", minHeight: 42, padding: 2 }}>
                     <SegmentedButtons
@@ -116,11 +117,11 @@ const PersonPicker = ({ t, cancelAction, pressItemAction }: personPickerProps) =
                         buttons={[
                             {
                                 value: "recent",
-                                label: "最近"
+                                label: t("recents")
                             },
                             {
                                 value: "all",
-                                label: "全部"
+                                label: t("all")
                             }
                         ]}
                     />
@@ -137,7 +138,7 @@ const PersonPicker = ({ t, cancelAction, pressItemAction }: personPickerProps) =
             {isOffline === 0
                 ? <AnimatedFAB
                     icon="refresh"
-                    label="刷新"
+                    label={t("refresh")}
                     extended={false}
                     visible={true}
                     onPress={handlePersonRefresh}
@@ -148,7 +149,7 @@ const PersonPicker = ({ t, cancelAction, pressItemAction }: personPickerProps) =
             }
             <AnimatedFAB
                 icon="keyboard-return"
-                label="返回"
+                label={t("back")}
                 extended={false}
                 visible={true}
                 onPress={cancelAction}

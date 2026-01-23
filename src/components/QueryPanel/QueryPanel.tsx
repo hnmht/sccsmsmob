@@ -1,4 +1,4 @@
-import { useState, memo, useEffect, useCallback, useMemo } from "react";
+import { useState, memo, useEffect, useCallback, useMemo,useRef } from "react";
 import { View, ScrollView } from "react-native";
 import { Text, Divider, useTheme, Surface, IconButton, Portal, Button } from "react-native-paper";
 import { cloneDeep } from "lodash";
@@ -44,6 +44,7 @@ const QueryPanel = ({ title = "queryConditions", queryFields, initalConditions, 
     const errors = useMemo(() => checkConditionsErrors(conditons), [conditons]);
     const hasErr = useMemo(() => checkErrors(errors), [conditons]);
     const { t } = useTranslation();
+    const scrollViewRef = useRef<ScrollView>(null);
     useEffect(() => {
         setConditons(initalConditions);
     }, [initalConditions]);
@@ -138,7 +139,10 @@ const QueryPanel = ({ title = "queryConditions", queryFields, initalConditions, 
                     flex: 1,
                     backgroundColor: theme.colors.background
                 }}>
-                    <ScrollView>
+                    <ScrollView
+                        ref={scrollViewRef}
+                        onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+                    >
                         {conditons.map((condition, index) => {
                             return <Surface key={index} style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", alignItems: "center", margin: 8, padding: 4 }}>
                                 {index !== 0

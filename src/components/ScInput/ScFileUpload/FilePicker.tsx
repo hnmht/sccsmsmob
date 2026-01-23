@@ -5,7 +5,7 @@ import Geolocation from "@react-native-community/geolocation";
 import ImageViewer from "react-native-image-zoom-viewer";
 import ImageCropPicker from "react-native-image-crop-picker";
 import { pick, types, keepLocalCopy, FileToCopy } from "@react-native-documents/picker";
-import { downloadFile, getFSInfo, DownloadDirectoryPath, PicturesDirectoryPath, LibraryDirectoryPath, DocumentDirectoryPath, exists, hash, CachesDirectoryPath } from "react-native-fs";
+import { downloadFile, unlink, DocumentDirectoryPath, hash, CachesDirectoryPath } from "react-native-fs";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import { ScFile } from "../../../dataType/types/file";
 import { uniqBy, cloneDeep } from "lodash";
@@ -239,8 +239,8 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
         try {
             // Download
             await downloadFile({ fromUrl: item.fileUrl, toFile: path }).promise;
-            // Copy Image to photo album
             if (item.isImage === 1) {
+                // Copy Image to photo album
                 await CameraRoll.saveAsset(path, { type: 'photo' });
                 Alert.alert(
                     t("tip"),
@@ -251,6 +251,8 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                         }
                     ]
                 );
+                // Delete file in path
+                unlink(path);
             } else {
                 Alert.alert(
                     t("tip"),

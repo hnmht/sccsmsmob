@@ -695,6 +695,7 @@
     "all":"All",
     "recents":"Recents",
     "mustBeNumber":"Must be a number",
+    "photos":"Photos",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",
