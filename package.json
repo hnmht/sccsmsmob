@@ -11,6 +11,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@react-native-camera-roll/camera-roll": "^7.10.2",
     "@react-native-community/geolocation": "^3.4.0",
     "@react-native-documents/picker": "^11.0.3",
     "@react-native-vector-icons/material-design-icons": "^12.4.0",

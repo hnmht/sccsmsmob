@@ -5,7 +5,8 @@ import Geolocation from "@react-native-community/geolocation";
 import ImageViewer from "react-native-image-zoom-viewer";
 import ImageCropPicker from "react-native-image-crop-picker";
 import { pick, types, keepLocalCopy, FileToCopy } from "@react-native-documents/picker";
-import { downloadFile, getFSInfo, DownloadDirectoryPath, exists, hash } from "react-native-fs";
+import { downloadFile, getFSInfo, DownloadDirectoryPath, PicturesDirectoryPath, LibraryDirectoryPath, DocumentDirectoryPath, exists, hash, CachesDirectoryPath } from "react-native-fs";
+import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import { ScFile } from "../../../dataType/types/file";
 import { uniqBy, cloneDeep } from "lodash";
 
@@ -42,14 +43,12 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     const theme = useTheme();
     const dispatch = useAppDispatch();
     const imageUrls = filesToUrls(files);
-
     // Button Position
     const { buttonPosition, swapPosition, orderPosition } = useAppSelector(state => state.swapPosition);
     // Actions after 
     const handleSwapPosition = () => {
         dispatch(changeSwapPosition());
     };
-
     // Check Permissions
     useEffect(() => {
         const checkPermission = async () => {
@@ -232,9 +231,42 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
 
     // Save file to local devices
     const handleSaveFile = async (item: ScFile) => {
-        const path = `${DownloadDirectoryPath}/${item.originFileName}`;
-        const fileExist = await exists(path);
-        const resp = downloadFile({
+        let path = `${CachesDirectoryPath}/${item.originFileName}`;
+        if (item.isImage === 0) {
+            path = `${DocumentDirectoryPath}/${item.originFileName}`;
+        }
+
+        try {
+            // Download
+            await downloadFile({ fromUrl: item.fileUrl, toFile: path }).promise;
+            // Copy Image to photo album
+            if (item.isImage === 1) {
+                await CameraRoll.saveAsset(path, { type: 'photo' });
+                Alert.alert(
+                    t("tip"),
+                    t("fileDownloadComplete", { path: t("photos") }),
+                    [
+                        {
+                            text: t("ok")
+                        }
+                    ]
+                );
+            } else {
+                Alert.alert(
+                    t("tip"),
+                    t("fileDownloadComplete", { path: path }),
+                    [
+                        {
+                            text: t("ok")
+                        }
+                    ]
+                );
+            }
+        } catch (err) {
+            Alert.alert(t("error"), t("fileDownloadFailedError", { errMsg: err }), [{ text: t("ok") }]);
+        }
+        /*const fileExist = await exists(path);
+         const resp = downloadFile({
             fromUrl: item.fileUrl,
             toFile: path
         });
@@ -275,7 +307,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                 } else {
                     Alert.alert(t("error"), t("fileDownloadFailedError", { errMsg: err }), [{ text: t("ok") }]);
                 }
-            })
+            }) */
     };
 
     return (<View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
