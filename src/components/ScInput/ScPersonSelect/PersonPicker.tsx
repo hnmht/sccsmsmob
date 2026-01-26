@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Card, Text, useTheme, SegmentedButtons, AnimatedFAB, IconButton } from "react-native-paper";
+import { Card, Text, useTheme, SegmentedButtons } from "react-native-paper";
 import { TFunction } from "i18next";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { changeSwapPosition } from "../../../store/slice/swapPosition";
+
+import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 import DocList from "../../DocList/DocList";
-import { pubParams } from "../../pub/pubParams";
 import { Person } from "../../../dataType/types/person";
 import { personRepo } from "../../../db/crud/person";
 
@@ -18,18 +17,8 @@ interface personPickerProps {
 
 const PersonPicker = ({ t, cancelAction, pressItemAction }: personPickerProps) => {
     const theme = useTheme();
-    const dispatch = useAppDispatch();
-    const isOffline = useAppSelector(state => state.appInfo.isOffline);
     const [persons, setPersons] = useState<Person[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
-    const isOverSize = pubParams.screen.isOverSize;
-
-    // Command button position
-    const { buttonPosition, swapPosition, orderPosition } = useAppSelector(state => state.swapPosition);
-    // Switch command buttons position
-    const handleSwapPosition = () => {
-        dispatch(changeSwapPosition());
-    };
 
     const handleInitPersons = (allFlag = allOrRecent) => {
         let localPersons = [];
@@ -135,32 +124,9 @@ const PersonPicker = ({ t, cancelAction, pressItemAction }: personPickerProps) =
                 sortFunction={(a: Person, b: Person) => a.name.localeCompare(b.name)}
                 refreshing={false}
             />
-            {isOffline === 0
-                ? <AnimatedFAB
-                    icon="refresh"
-                    label={t("refresh")}
-                    extended={false}
-                    visible={true}
-                    onPress={handlePersonRefresh}
-                    animateFrom={buttonPosition}
-                    style={{ bottom: 128, position: "absolute", ...orderPosition }}
-                />
-                : null
-            }
-            <AnimatedFAB
-                icon="keyboard-return"
-                label={t("back")}
-                extended={false}
-                visible={true}
-                onPress={cancelAction}
-                animateFrom={buttonPosition}
-                style={{ bottom: 64, position: "absolute", ...orderPosition }}
-            />
-            <IconButton
-                icon="swap-horizontal"
-                iconColor={theme.colors.primary}
-                onPress={handleSwapPosition}
-                style={{ bottom: 160, position: "absolute", ...swapPosition }}
+            <ScHandSwitch
+                cancelAction={cancelAction}
+                docRefresh={handlePersonRefresh}
             />
         </View>
     );

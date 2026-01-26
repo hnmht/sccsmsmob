@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
-import { Text, useTheme, SegmentedButtons, AnimatedFAB, Card, IconButton } from "react-native-paper";
+import { Text, useTheme, SegmentedButtons, Card } from "react-native-paper";
 import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
-
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { changeSwapPosition } from "../../../store/slice/swapPosition";
 import ScPubTree from "../ScPubTree/ScPubTree";
-
+import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 import { simpDeptRepo } from "../../../db/crud/department";
 import DocList from "../../DocList/DocList";
 import { pubParams } from "../../pub/pubParams";
@@ -32,18 +29,9 @@ const transforDeptIDs = (dept: SimpDept) => {
 const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerProps) => {
     const [depts, setDepts] = useState<SimpDept[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
-    const isOffline = useAppSelector(state => state.appInfo.isOffline);
     const theme = useTheme();
-    const dispatch = useAppDispatch();
     const selectedDeptIds = transforDeptIDs(currentItem);
     const { t } = useTranslation();
-
-    // Command buttons position
-    const { buttonPosition, swapPosition, orderPosition } = useAppSelector(state => state.swapPosition);
-    // Switch command buttons postion
-    const handleSwapPosition = () => {
-        dispatch(changeSwapPosition());
-    };
 
     const handleInitDepts = (allFlag = allOrRecent) => {
         let localDepts: SimpDept[] = [];
@@ -162,32 +150,9 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
                     refreshing={false}
                 />
             }
-            {isOffline === 0
-                ? <AnimatedFAB
-                    icon="refresh"
-                    label={t("refresh")}
-                    extended={false}
-                    visible={true}
-                    onPress={handleDocRefresh}
-                    animateFrom={buttonPosition}
-                    style={{ bottom: 128, position: "absolute", ...orderPosition }}
-                />
-                : null
-            }
-            <AnimatedFAB
-                icon="keyboard-return"
-                label={t("back")}
-                extended={false}
-                visible={true}
-                onPress={cancelAction}
-                animateFrom={buttonPosition}
-                style={{ bottom: 64, position: "absolute", ...orderPosition }}
-            />
-            <IconButton
-                icon="swap-horizontal"
-                iconColor={theme.colors.primary}
-                onPress={handleSwapPosition}
-                style={{ bottom: 160, position: "absolute", ...swapPosition }}
+            <ScHandSwitch
+                docRefresh={handleDocRefresh}
+                cancelAction={cancelAction}
             />
         </View>
     )
