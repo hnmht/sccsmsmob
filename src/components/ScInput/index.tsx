@@ -1,7 +1,7 @@
 import React from "react";
 // // import ScDataTypeSelect from "./ScDataTypeSelect/ScDataTypeSelect"; //101 数据类型输入组件
 import ScTextInput from "./ScTextInput/ScTextInput"; //301 文本输入组件
-// import ScNumberInput from "./ScNumberInput/ScNumberInput"; //302 数字输入组件
+import ScNumberInput from "./ScNumberInput/ScNumberInput"; //302 数字输入组件
 // import ScPasswordInput from "./ScPasswordInput/ScPasswordInput"; //303 密码输入组件
 // import ScMobileInput from "./ScMobileInput/ScMobileInput"; //304 移动电话号码输入组件
 import ScEmailInput from "./ScEmailInput/ScEmailInput"; //305 电子邮件输入组件
@@ -12,7 +12,7 @@ import ScSelectGender from "./ScSelectGender/ScSelectGender"; //401 选择性别
 // import ScSwitchYesOrNo from "./ScSwitchYesOrNo/ScSwitchYesOrNo"; //402 switch选择是否
 import ScCheckYesOrNo from "./ScCheckYesOrNo/ScCheckYesOrNo"; //403 CheckBox选择是否
 // import ScSelectYesOrNo from "./ScSelectYesOrNo/ScSelectYesOrNo"; //404 Select是否选择
-// import ScVoucherStatus from "./ScVoucherStatus/ScVoucherStatus"; //405 单据状态显示
+import ScVoucherStatus from "./ScVoucherStatus/ScVoucherStatus"; //405 单据状态显示
 
 // // import ScRoleSelects from "./ScRoleSelects/ScRoleSelects"; //501 角色列表多选组件
 // // import ScPersonSelects from "./ScPersonSelects/ScPersonSelects"; // 502 人员多选组件
@@ -42,8 +42,8 @@ const ScInput: React.FC<ScInputUnionProps> = (props) => {
         case ScDataTypeList.Text:
             return <ScTextInput {...props} />;
 
-        // case ScDataTypeList.Number:
-        //     return <ScNumberInput {...props} />;
+        case ScDataTypeList.Number:
+            return <ScNumberInput {...props} />;
 
         // case ScDataTypeList.Password:
         //     return <ScPasswordInput {...props} />;
@@ -71,6 +71,9 @@ const ScInput: React.FC<ScInputUnionProps> = (props) => {
 
         // case ScDataTypeList.SelectYesNo:
         //     return <ScSelectYesOrNo {...props} />;
+
+        case ScDataTypeList.VoucherStatus:
+            return <ScVoucherStatus {...props} />;
 
         case ScDataTypeList.Person:
             return <ScPersonSelect {...props} />;
