@@ -59,7 +59,7 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
 
 
     return (
-        <KeyboardAvoidingView id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, padding: 2 }}>
+        <KeyboardAvoidingView id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width,height:height, padding: 2 }}>
             <TextInput
                 mode="outlined"
                 keyboardType="default"

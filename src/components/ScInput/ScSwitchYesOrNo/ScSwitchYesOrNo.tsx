@@ -1,20 +1,21 @@
 import { memo, useEffect, useState } from "react";
 import { View } from "react-native";
-import { Checkbox, useTheme } from "react-native-paper";
+import { Switch, Text } from "react-native-paper";
 import { ScInputProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
+import { useTranslation } from "react-i18next";
 
-// Convert Boolean to Number
-function boolTransInt(b: boolean): 0 | 1 {
+// Convert bool to int
+function boolTransInt(b: boolean): 1 | 0 {
     return b ? 1 : 0;
 }
-// Convert Number to Boolean
+// Convert int to bool
 function intTransBool(i: number): boolean {
     return i === 1;
 }
 
-//402 Seacloud Check Yes Or No Component
-const ScCheckYesOrNo = (props: ScInputProps<ScDataTypeList.CheckYesOrNo>) => {
+//403 Seacloud Yes/No Input Component in the form of a checkbox
+const ScCheckYesOrNo = (props: ScInputProps<ScDataTypeList.SwitchYesOrNo>) => {
     const {
         positionID = 0,
         rowIndex = 0,
@@ -30,7 +31,7 @@ const ScCheckYesOrNo = (props: ScInputProps<ScDataTypeList.CheckYesOrNo>) => {
         height = 68
     } = props;
     const [fieldValue, setFieldValue] = useState(intTransBool(initValue));
-    const theme = useTheme();
+    const { t } = useTranslation();
 
     useEffect(() => {
         function updateInitvalue() {
@@ -44,19 +45,20 @@ const ScCheckYesOrNo = (props: ScInputProps<ScDataTypeList.CheckYesOrNo>) => {
             return
         }
         let newValue = boolTransInt(!fieldValue);
+
         setFieldValue(!fieldValue);
+
         pickDone(newValue, itemKey, positionID, rowIndex, errInfo);
     };
 
     return (
-        <View id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
-            <Checkbox.Item
+        <View key={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, height: height, padding: 2, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <Text variant="bodyLarge">{t(itemShowName)}</Text>
+            <Switch
                 disabled={!isEdit}
-                status={fieldValue ? "checked" : "unchecked"}
-                key={`checkbox${itemKey}${positionID}${rowIndex}`}
-                onPress={handleOnBlur}
-                label={itemShowName ?? ""}
-                labelStyle={{ color: props.color ? props.color : theme.colors.onSurfaceDisabled }}
+                value={fieldValue}
+                key={`switch${itemKey}${positionID}${rowIndex}`}
+                onValueChange={handleOnBlur}
             />
         </View>
     );

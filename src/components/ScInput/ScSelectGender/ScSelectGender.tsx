@@ -64,7 +64,7 @@ const ScSelectGender = (props: ScInputProps<ScDataTypeList.Gender>) => {
                         id={itemKey}
                         mode="outlined"
                         keyboardType="default"
-                        label={label}
+                        label={t(label)}
                         placeholder={isEdit ? placeholder : ""}
                         editable={false}
                         disabled={!isEdit}
