@@ -26,7 +26,7 @@ const ScNumberInput = (props: ScInputProps<ScDataTypeList.Number>) => {
     const [textValue, setTextValue] = useState(initValue.toString());
     const theme = useTheme();
     const { t } = useTranslation();
-    const label = allowNull ? itemShowName : "*" + itemShowName;
+    const label = allowNull ? t(itemShowName) : "*" + t(itemShowName);
     useEffect(() => {
         function updateInitvalue() {
             setTextValue(initValue.toString());

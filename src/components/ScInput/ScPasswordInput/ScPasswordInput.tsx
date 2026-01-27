@@ -24,7 +24,7 @@ const ScPasswordInput = (props: ScInputProps<ScDataTypeList.Password>) => {
     const [textValue, setTextValue] = useState(initValue);
     const theme = useTheme();
     const { t } = useTranslation();
-    const label = allowNull ? itemShowName : "*" + itemShowName;
+    const label = allowNull ? t(itemShowName) : "*" + t(itemShowName);
     useEffect(() => {
         function updateInitvalue() {
             setTextValue(initValue);
@@ -57,7 +57,7 @@ const ScPasswordInput = (props: ScInputProps<ScDataTypeList.Password>) => {
                 secureTextEntry={true}
                 keyboardType="default"
                 onChangeText={(text) => handleOnChangeText(text)}
-                label={t(label)}
+                label={label}
                 key={`password${itemKey}${positionID}${rowIndex}`}
                 disabled={!isEdit}
                 placeholder={placeholder}

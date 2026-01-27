@@ -14,7 +14,7 @@ function intTransBool(i: number): boolean {
     return i === 1;
 }
 
-//403 Seacloud Yes/No Input Component in the form of a checkbox
+//403 Seacloud Yes/No Input Component in the form of a Switch
 const ScCheckYesOrNo = (props: ScInputProps<ScDataTypeList.SwitchYesOrNo>) => {
     const {
         positionID = 0,

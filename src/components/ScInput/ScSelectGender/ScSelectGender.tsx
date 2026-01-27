@@ -28,7 +28,7 @@ const ScSelectGender = (props: ScInputProps<ScDataTypeList.Gender>) => {
     const [visible, setVisible] = useState(false);
     const { t } = useTranslation();
     const theme = useTheme();
-    const label = allowNull ? itemShowName : "*" + itemShowName;
+    const label = allowNull ? t(itemShowName) : "*" + t(itemShowName);
     useEffect(() => {
         function updateInitvalue() {
             setFieldValue(initValue);
@@ -64,7 +64,7 @@ const ScSelectGender = (props: ScInputProps<ScDataTypeList.Gender>) => {
                         id={itemKey}
                         mode="outlined"
                         keyboardType="default"
-                        label={t(label)}
+                        label={label}
                         placeholder={isEdit ? placeholder : ""}
                         editable={false}
                         disabled={!isEdit}

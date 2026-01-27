@@ -34,8 +34,9 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [detailOpen, setDetailOpen] = useState(false);
     const theme = useTheme();
-    const label = allowNull ? itemShowName : "*" + itemShowName;
     const { t } = useTranslation();
+    const label = allowNull ? t(itemShowName) : "*" + t(itemShowName);
+
     // Commands button position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
     useEffect(() => {

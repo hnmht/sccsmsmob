@@ -52,7 +52,7 @@ export type InitialValueMap = {
     [ScDataTypeList.Gender]: 0 | 1 | 2;
     [ScDataTypeList.SwitchYesOrNo]: 0 | 1;
     [ScDataTypeList.CheckYesOrNo]: 0 | 1;
-    [ScDataTypeList.SelectYesOrNo]: 0 | 1;
+    [ScDataTypeList.SelectYesOrNo]: 0 | 1 | 2;
     [ScDataTypeList.VoucherStatus]: 0 | 1 | 2 | 3 | 4 | 5;
 
     [ScDataTypeList.Person]: Person;

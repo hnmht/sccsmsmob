@@ -35,7 +35,7 @@ const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.Date>) => {
     const [detailOpen, setDetailOpen] = useState(false);
     const theme = useTheme();
     const { t } = useTranslation();
-    const label = allowNull ? itemShowName : "*" + itemShowName;
+    const label = allowNull ? t(itemShowName) : "*" + t(itemShowName);
 
     // Commands button position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);

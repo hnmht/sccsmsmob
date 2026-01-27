@@ -29,7 +29,7 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
     const [detailOpen, setDetailOpen] = useState(false);
     const { t } = useTranslation();
     const theme = useTheme();
-    const label = allowNull ? itemShowName : "*" + itemShowName;
+    const label = allowNull ? t(itemShowName) : "*" + t(itemShowName);
     // Button Position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
     useEffect(() => {
@@ -59,12 +59,12 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
 
 
     return (
-        <KeyboardAvoidingView id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width,height:height, padding: 2 }}>
+        <KeyboardAvoidingView id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
             <TextInput
                 mode="outlined"
                 keyboardType="default"
                 onChangeText={(text) => handleOnChangeText(text)}
-                label={t(label)}
+                label={label}
                 id={`${itemKey}${positionID}${rowIndex}`}
                 disabled={!isEdit}
                 placeholder={isEdit ? placeholder : ""}
@@ -115,7 +115,6 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
         </KeyboardAvoidingView>
     );
 };
-
 
 export default memo(ScTextInput);
 

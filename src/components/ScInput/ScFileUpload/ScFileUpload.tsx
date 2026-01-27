@@ -14,12 +14,28 @@ import { ScComponentModal } from "../../ScComponentModal/ScComponentModal";
 
 // 902 SeaCloud File Upload Component
 const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
-    const { positionID, rowIndex, allowNull, isEdit, itemShowName, itemKey, initValue, pickDone, placeholder, errInfo, isOnSitePhoto, width, height, markTexts } = props;
+    const {
+        positionID = 0,
+        rowIndex = 0,
+        allowNull = false,
+        isEdit = false,
+        itemShowName = "",
+        itemKey,
+        initValue = [],
+        pickDone,
+        placeholder = "",
+        errInfo = { isErr: false, msg: "" },
+        isOnSitePhoto = false,
+        width = "100%",
+        height = 68,
+        markTexts = [],
+    } = props;
     const { t } = useTranslation();
+    const theme = useTheme();
     const [files, setFiles] = useState(voucherFilesToFiles(initValue));
     const [dialogOpen, setDialogOpen] = useState(false);
-    const theme = useTheme();
-    const label = allowNull ? itemShowName : "*" + itemShowName;
+
+    const label = allowNull ? t(itemShowName) : "*" + t(itemShowName);
     // Button position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
     // Pass value to the parent component 

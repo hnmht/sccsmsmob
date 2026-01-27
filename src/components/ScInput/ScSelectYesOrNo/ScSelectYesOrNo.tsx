@@ -1,14 +1,15 @@
 import { memo, useEffect, useState } from "react";
 import { View, Alert } from "react-native";
 import { Menu, TextInput, useTheme } from "react-native-paper";
-import { useTranslation } from "react-i18next";
+
 import { useAppSelector } from "../../../store/hooks";
 import { ScInputProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
+import { useTranslation } from "react-i18next";
 
-const VoucherStatus = ["free", "confirmed", "executing", "completed"];
-// 405 Seacloud Voucher Status Component
-const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
+const valuesList = ["N", "Y", ""];
+//401 Seacloud Yes/No Input Component in the form of a Select
+const ScSelectYesOrNo = (props: ScInputProps<ScDataTypeList.SelectYesOrNo>) => {
     const {
         positionID = 0,
         rowIndex = 0,
@@ -28,7 +29,7 @@ const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
     const theme = useTheme();
     const { t } = useTranslation();
     const label = allowNull ? t(itemShowName) : "*" + t(itemShowName);
-    // Command buttons Position
+    // Commands button position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
     useEffect(() => {
         function updateInitvalue() {
@@ -37,7 +38,7 @@ const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
         updateInitvalue();
     }, [initValue]);
 
-    // Pass data to parent component
+    // Pass Data to the parents component
     const handleTransfer = async (value = fieldValue) => {
         if (!isEdit) {
             return
@@ -49,7 +50,7 @@ const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
     };
 
     return (
-        <View id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
+        <View key={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, padding: 2, height: height }}>
             <Menu
                 key={`menu${itemKey}${positionID}${rowIndex}`}
                 visible={visible}
@@ -64,7 +65,7 @@ const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
                         placeholder={isEdit ? placeholder : ""}
                         editable={false}
                         disabled={!isEdit}
-                        value={VoucherStatus[fieldValue]}
+                        value={t(valuesList[fieldValue])}
                         error={errInfo.isErr}
                         left={buttonPosition === "right"
                             ? errInfo.isErr
@@ -76,7 +77,7 @@ const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
                                 />
                                 : null
                             : <TextInput.Icon
-                                icon="format-list-bulleted-type"
+                                icon="list-status"
                                 color={isEdit ? theme.colors.primary : theme.colors.onBackground}
                                 onPress={() => setVisible(true)}
                                 disabled={!isEdit}
@@ -92,22 +93,23 @@ const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
                                 />
                                 : null
                             : <TextInput.Icon
-                                icon="format-list-bulleted-type"
+                                icon="list-status"
                                 color={isEdit ? theme.colors.primary : theme.colors.onBackground}
                                 onPress={() => setVisible(true)}
                                 disabled={!isEdit}
                             />
+
                         }
                         style={{ width: "100%" }}
                     />
                 }
             >
-                <Menu.Item onPress={() => handleTransfer(0)} title={t(VoucherStatus[0])} />
-                <Menu.Item onPress={() => handleTransfer(1)} title={t(VoucherStatus[1])} />
-                <Menu.Item onPress={() => handleTransfer(2)} title={t(VoucherStatus[2])} />
-                <Menu.Item onPress={() => handleTransfer(3)} title={t(VoucherStatus[3])} />
+                <Menu.Item onPress={() => handleTransfer(2)} title={t(valuesList[2])} />
+                <Menu.Item onPress={() => handleTransfer(0)} title={t(valuesList[0])} />
+                <Menu.Item onPress={() => handleTransfer(1)} title={t(valuesList[1])} />
             </Menu>
         </View>
     );
 }
-export default memo(ScVoucherStatus);
+
+export default memo(ScSelectYesOrNo);

@@ -27,11 +27,12 @@ const ScEmailInput = (props: ScInputProps<ScDataTypeList.Email>) => {
         width = "100%",
         height = 68
     } = props;
-    const [textValue, setTextValue] = useState(initValue);
-    const [detailOpen, setDetailOpen] = useState(false);
-    const label = allowNull ? itemShowName : "*" + itemShowName;
     const theme = useTheme();
     const { t } = useTranslation();
+    const [textValue, setTextValue] = useState(initValue);
+    const [detailOpen, setDetailOpen] = useState(false);
+    const label = allowNull ? t(itemShowName) : "*" + t(itemShowName);
+   
     //Button Position
     const { buttonPosition } = useAppSelector(state => state.swapPosition)
 

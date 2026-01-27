@@ -34,7 +34,7 @@ const ScPersonSelect = (props: ScInputProps<ScDataTypeList.Person>) => {
     const [detailOpen, setDetailOpen] = useState(false);
     const theme = useTheme();
     const { t } = useTranslation();
-    const label = allowNull ? itemShowName : "*" + itemShowName;
+    const label = allowNull ? t(itemShowName) : "*" + (itemShowName);
     // Commands button postion
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
     useEffect(() => {
