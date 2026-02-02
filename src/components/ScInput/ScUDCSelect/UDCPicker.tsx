@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Card, Text, useTheme, SegmentedButtons } from "react-native-paper";
+import { Card, Text, useTheme } from "react-native-paper";
 import { TFunction } from "i18next";
 import DocList from "../../DocList/DocList";
 import { UserDefineCategory } from "../../../dataType/types/udc";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
+import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
 import { UDCRepo } from "../../../db/crud/udc";
 
 interface UDCPickerProps {
@@ -82,36 +83,12 @@ const UDCPicker = ({ cancelAction, pressItemAction, t }: UDCPickerProps) => {
     };
 
     return (
-        <View style={{ flex: 1 }}>
-            <View style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: 40,
-                width: "100%",
-                backgroundColor: theme.colors.background
-            }}>
-                <View style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <Text variant="titleMedium">{t("chooseCategory")}</Text>
-                </View>
-                <View style={{ width: "100%", minHeight: 42, padding: 2 }}>
-                    <SegmentedButtons
-                        value={allOrRecent}
-                        onValueChange={(value) => handleChangeSeg(value)}
-                        buttons={[
-                            {
-                                value: "recent",
-                                label: t("recents")
-                            },
-                            {
-                                value: "all",
-                                label: t("all")
-                            }
-                        ]}
-                    />
-                </View>
-            </View>
+        <View style={{ flex: 1 }}>          
+            <ScSegmentAllOrRecent
+                title="selectRecipients"
+                allOrRecent={allOrRecent}
+                setAllOrRecent={handleChangeSeg}
+            />
             <DocList
                 rows={docs}
                 ItemElement={UDCCard}

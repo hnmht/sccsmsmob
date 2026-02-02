@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
-import { Text, useTheme, SegmentedButtons, Card } from "react-native-paper";
+import { Text, useTheme,Card } from "react-native-paper";
 import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import ScPubTree from "../ScPubTree/ScPubTree";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
+import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
 import { simpDeptRepo } from "../../../db/crud/department";
 import DocList from "../../DocList/DocList";
 import { pubParams } from "../../pub/pubParams";
@@ -16,6 +17,7 @@ interface deptPickerProps {
     currentItem: SimpDept;
     t: TFunction
 }
+
 interface deptCardProps {
     item: SimpDept
 }
@@ -99,36 +101,12 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
     };
 
     return (
-        <View style={{ flex: 1 }}>
-            <View style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: 40,
-                width: "100%",
-                backgroundColor: theme.colors.background
-            }}>
-                <View style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <Text variant="titleMedium">{t("chooseDept")}</Text>
-                </View>
-                <View style={{ width: "100%", minHeight: 42, padding: 2 }}>
-                    <SegmentedButtons
-                        value={allOrRecent}
-                        onValueChange={(value: "recent" | "all") => handleChangeSeg(value)}
-                        buttons={[
-                            {
-                                value: "recent",
-                                label: t("recents")
-                            },
-                            {
-                                value: "all",
-                                label: t("all")
-                            }
-                        ]}
-                    />
-                </View>
-            </View>
+        <View style={{ flex: 1 }}>           
+            <ScSegmentAllOrRecent
+                title="selectRecipients"
+                allOrRecent={allOrRecent}
+                setAllOrRecent={handleChangeSeg}
+            />
             {allOrRecent === "all"
                 ? <ScrollView>
                     <ScPubTree
