@@ -1,19 +1,18 @@
 import { memo, useState, useEffect } from "react";
 import { View, Modal, Alert } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
-
-import CSCDetail from "./CSCDetail";
-import CSCPicker from "./CSCPicker";
+import { useTranslation } from "react-i18next";
+import { useAppSelector } from "../../../store/hooks";
+import EPCDetail from "./EPCDetail";
+import EPCPIcker from "./EPCPicker";
+import { getEmptySimpEPC } from "../../../dataType/dataZero/epc";
 import { ScInputProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
-import { useAppSelector } from "../../../store/hooks";
-import { getEmptyCSC } from "../../../dataType/dataZero/csc";
-import { useTranslation } from "react-i18next";
-import { SimpCSC } from "../../../dataType/types/csc";
+import { SimpEPC } from "../../../dataType/types/epc";
 
-const zeroValue = getEmptyCSC();
-// 525 Seacloud Construction Site Category Select Input
-const SCCSCSelect = (props: ScInputProps<ScDataTypeList.SimpCSC>) => {
+const zeroValue = getEmptySimpEPC();
+// 540 Seacloud Execution Project Category Select Input
+const ScEPCSelect = (props: ScInputProps<ScDataTypeList.SimpEPC>) => {
     const {
         positionID = 0,
         rowIndex = 0,
@@ -40,7 +39,7 @@ const SCCSCSelect = (props: ScInputProps<ScDataTypeList.SimpCSC>) => {
         setCurrentDoc(initValue);
     }, [initValue]);
 
-    // Check Value and pass data to the parents component
+    // Check value and pass data to the parents component
     const handleTransfer = async (doc = currentDoc) => {
         if (!isEdit) {
             return
@@ -48,12 +47,12 @@ const SCCSCSelect = (props: ScInputProps<ScDataTypeList.SimpCSC>) => {
         pickDone(doc, itemKey, positionID, rowIndex, errInfo);
     };
 
-    // Actions after press cancel button in CSCPicker modal
+    // Actions after press cancel button in EPCPicker modal
     const handleCancelAction = () => {
         setDialogOpen(false);
     };
-    // Actions after press item in CscPicker modal
-    const handlePressItemAction = (item: SimpCSC) => {
+    // Actions after press item in EPCPicker model
+    const handlePressItemAction = (item: SimpEPC) => {
         setCurrentDoc(item);
         handleTransfer(item);
         setDialogOpen(false);
@@ -70,7 +69,7 @@ const SCCSCSelect = (props: ScInputProps<ScDataTypeList.SimpCSC>) => {
     return (
         <View id={`view${itemKey}${positionID}${rowIndex}`} style={{ width: width, height: height, padding: 2 }}>
             <TextInput
-                id={`textinput${itemKey}${positionID}${rowIndex}`}
+                key={`textinput${itemKey}${positionID}${rowIndex}`}
                 mode="outlined"
                 keyboardType="default"
                 label={label}
@@ -88,7 +87,7 @@ const SCCSCSelect = (props: ScInputProps<ScDataTypeList.SimpCSC>) => {
                         />
                         : null
                     : <TextInput.Icon
-                        icon="home-city"
+                        icon="creation"
                         color={isEdit ? theme.colors.primary : theme.colors.secondary}
                         onPress={isEdit ? () => setDialogOpen(true) : () => setDetailOpen(true)}
                         onLongPress={isEdit ? () => handleClear() : undefined}
@@ -103,7 +102,7 @@ const SCCSCSelect = (props: ScInputProps<ScDataTypeList.SimpCSC>) => {
                         />
                         : null
                     : <TextInput.Icon
-                        icon="home-city"
+                        icon="creation"
                         color={isEdit ? theme.colors.primary : theme.colors.secondary}
                         onPress={isEdit ? () => setDialogOpen(true) : () => setDetailOpen(true)}
                         onLongPress={isEdit ? () => handleClear() : undefined}
@@ -117,7 +116,7 @@ const SCCSCSelect = (props: ScInputProps<ScDataTypeList.SimpCSC>) => {
                 id={`modal${itemKey}${positionID}${rowIndex}`}
             >
                 <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
-                    <CSCPicker
+                    <EPCPIcker
                         cancelAction={handleCancelAction}
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDoc}
@@ -127,7 +126,7 @@ const SCCSCSelect = (props: ScInputProps<ScDataTypeList.SimpCSC>) => {
             </Modal>
             {isEdit
                 ? null
-                : <CSCDetail
+                : <EPCDetail
                     currentItem={currentDoc}
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
@@ -137,5 +136,5 @@ const SCCSCSelect = (props: ScInputProps<ScDataTypeList.SimpCSC>) => {
         </View>
     );
 };
-export default memo(SCCSCSelect);
 
+export default memo(ScEPCSelect);

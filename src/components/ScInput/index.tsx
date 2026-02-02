@@ -19,8 +19,8 @@ import ScVoucherStatus from "./ScVoucherStatus/ScVoucherStatus"; //405 单据状
 import ScPersonSelect from "./ScPersonSelect/ScPersonSelect"; // 510 人员单选组件
 import ScDeptSelect from "./ScDeptSelect/ScDeptSelect"; //520 部门单选
 import ScCSCSelect from "./ScCSCSelect/ScCSCSelect"; //525 现场档案分类单选
-// import ScUDCSelect from "./ScUDCSelect/ScUDCSelect"; //530 自定义档案类别单选组件
-// import ScEICSelect from "./ScEICSelect/ScEICSelect"; //540 执行项目类别单选组件
+import ScUDCSelect from "./ScUDCSelect/ScUDCSelect"; //530 自定义档案类别单选组件
+import ScEPCSelect from "./ScEPCSelect/ScEPCSelect"; //540 执行项目类别单选组件
 // import ScUDDSelect from "./ScUDDSelect/ScUDDSelect"; //550 自定义档案单选组件
 // import ScEIDSelect from "./ScEIDSelect/ScEIDSelect"; //560 执行项目档案单选组件
 // import ScSISelect from "./ScSISelect/ScSISelect"; // 570 现场档案单选组件
@@ -84,6 +84,12 @@ const ScInput: React.FC<ScInputUnionProps> = (props) => {
         case ScDataTypeList.SimpCSC:
             return <ScCSCSelect {...props} />;
 
+        case ScDataTypeList.UserDefineCategory:
+            return <ScUDCSelect {...props} />;
+
+        case ScDataTypeList.SimpEPC:
+            return <ScEPCSelect {...props} />;
+            
         case ScDataTypeList.AvatarUpload:
             return <ScAvatarUpload {...props} />;
 

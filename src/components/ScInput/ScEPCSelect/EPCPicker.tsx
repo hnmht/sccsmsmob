@@ -1,40 +1,39 @@
 import { useState, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
-import { Text, useTheme, SegmentedButtons, Card } from "react-native-paper";
+import { Text, useTheme, SegmentedButtons, AnimatedFAB, Card, IconButton } from "react-native-paper";
 import { TFunction } from "i18next";
-
 import ScPubTree from "../ScPubTree/ScPubTree";
 import DocList from "../../DocList/DocList";
-import { SimpCSC } from "../../../dataType/types/csc";
+import { SimpEPC } from "../../../dataType/types/epc";
+import { simpEPCRepo } from "../../../db/crud/epc";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
-import { simpCSCRepo } from "../../../db/crud/csc";
 
-interface CSCPickerProps {
-    pressItemAction: (item: SimpCSC) => void;
+interface EPCPickerProps {
+    pressItemAction: (item: SimpEPC) => void;
     cancelAction: () => void;
-    currentItem: SimpCSC;
+    currentItem: SimpEPC;
     t: TFunction
 }
 
-// Convert an Array of SimpCSC object into an array of SimpCSC IDs
-const convertCSCsToIDs = (csc: SimpCSC) => {
-    let selectDocIds: number[] = [];
-    selectDocIds.push(csc.id);
+// Convert an Array of SimpEPC object into an array of SimpEPC IDs
+const convertSimpEPCToIDs = (doc: SimpEPC) => {
+    let selectDocIds = [];
+    selectDocIds.push(doc.id);
     return selectDocIds;
 };
 
-const SICPicker = ({ pressItemAction, cancelAction, currentItem, t }: CSCPickerProps) => {
-    const [docs, setDocs] = useState<SimpCSC[]>([]);
+const EPCPIcker = ({ pressItemAction, cancelAction, currentItem, t }: EPCPickerProps) => {
+    const [docs, setDocs] = useState<SimpEPC[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
     const theme = useTheme();
-    const selectedDocIds = convertCSCsToIDs(currentItem);
+    const selectedDocIds = convertSimpEPCToIDs(currentItem);
 
     const handleInitDocs = (allFlag = allOrRecent) => {
-        let localDocs: SimpCSC[] = [];
+        let localDocs: SimpEPC[] = [];
         if (allFlag === "all") {
-            localDocs = simpCSCRepo.getAllData()
+            localDocs = simpEPCRepo.getAllData();
         } else {
-            localDocs = simpCSCRepo.getRecent();
+            localDocs = simpEPCRepo.getRecent();
         }
         setDocs(localDocs);
     };
@@ -49,17 +48,17 @@ const SICPicker = ({ pressItemAction, cancelAction, currentItem, t }: CSCPickerP
         handleInitDocs(value);
     };
 
-    // Actions after press SimpCSC item
-    const handlePress = (item: SimpCSC) => {
+    // Actions after Press SimpEPC item
+    const handlePress = (item: SimpEPC) => {
         if (allOrRecent === "all") {
-            simpCSCRepo.addRecent(item);
+            simpEPCRepo.addRecent(item);
         }
         pressItemAction(item);
     };
-    // Actions after long press SimpCSC item
-    const handleLongPress = (item: SimpCSC) => {
+    // Actions after long press SimpEPC item
+    const handleLongPress = (item: SimpEPC) => {
         if (allOrRecent === "recent") {
-            simpCSCRepo.deleteRecent(item);
+            simpEPCRepo.deleteRecent(item);
             handleInitDocs();
         }
         return
@@ -67,11 +66,11 @@ const SICPicker = ({ pressItemAction, cancelAction, currentItem, t }: CSCPickerP
 
     // Refresh
     const handleDocRefresh = async () => {
-        await simpCSCRepo.initCache();
+        await simpEPCRepo.initCache();
         handleInitDocs(allOrRecent);
     };
 
-    const SICCard = ({ item }: { item: SimpCSC }) => {
+    const EPCCard = ({ item }: { item: SimpEPC }) => {
         return (
             <Card key={item.id} style={{ marginTop: 2, marginBottom: 2 }}>
                 <TouchableOpacity
@@ -109,7 +108,7 @@ const SICPicker = ({ pressItemAction, cancelAction, currentItem, t }: CSCPickerP
                 <View style={{ width: "100%", minHeight: 42, padding: 2 }}>
                     <SegmentedButtons
                         value={allOrRecent}
-                        onValueChange={(value: "recent" | "all") => handleChangeSeg(value)}
+                        onValueChange={(value) => handleChangeSeg(value)}
                         buttons={[
                             {
                                 value: "recent",
@@ -137,7 +136,7 @@ const SICPicker = ({ pressItemAction, cancelAction, currentItem, t }: CSCPickerP
                 </ScrollView>
                 : <DocList
                     rows={docs}
-                    ItemElement={SICCard}
+                    ItemElement={EPCCard}
                     rowsPerPage={10}
                     searchFields={["name", "description"]}
                     sortFunction={(a, b) => a.id - b.id}
@@ -148,9 +147,8 @@ const SICPicker = ({ pressItemAction, cancelAction, currentItem, t }: CSCPickerP
                 docRefresh={handleDocRefresh}
                 cancelAction={cancelAction}
             />
-
         </View>
     )
 };
 
-export default SICPicker;
+export default EPCPIcker;
