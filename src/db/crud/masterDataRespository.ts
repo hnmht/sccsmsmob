@@ -187,6 +187,14 @@ export class MasterDataRepository<T, TCache extends {
         if (!rows || rows.length === 0) return [];
         return rows._array.map((i: any) => JSON.parse(i[valueField]));
     }
+    // Query Data
+    queryData(criteria: string): T[] {
+        const { table, valueField } = this.cfg;
+        const sql = `select ${valueField} from ${table} where ${criteria}`;
+        const { rows } = executeSQL(sql);
+        if (!rows || rows.length === 0) return [];
+        return rows._array.map((i: any) => JSON.parse(i[valueField]));
+    }
 
     // Get recent used
     getRecent(): T[] {
@@ -199,6 +207,19 @@ export class MasterDataRepository<T, TCache extends {
         if (!rows || rows.length === 0) return [];
         return rows._array.map((i: any) => JSON.parse(i[valueField]));
     }
+
+    // Query recent used 
+    queryRecent(criteria: string): T[] {
+        const { recentTable, valueField } = this.cfg;
+        if (recentTable === "") {
+            return [];
+        }
+        const sql = `SELECT ${valueField} FROM ${recentTable} where ${criteria} ORDER BY autoid DESC`;
+        const { rows } = executeSQL(sql);
+        if (!rows || rows.length === 0) return [];
+        return rows._array.map((i: any) => JSON.parse(i[valueField]));
+    }
+
 
     // Add Ts
     addTs(ts: string) {
@@ -228,6 +249,8 @@ export class MasterDataRepository<T, TCache extends {
         }
         return ts;
     }
+
+
 }
 
 

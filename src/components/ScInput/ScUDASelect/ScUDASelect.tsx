@@ -1,18 +1,20 @@
 import { memo, useState, useEffect } from "react";
 import { View, Modal, Alert } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
+import { useAppSelector } from "../../../store/hooks";
+import UDADetail from "./UDADetail";
+import UDAPicker from "./UDAPicker";
 import { useTranslation } from "react-i18next";
-import UDCDetail from "./UDCDetail";
-import UDCPicker from "./UDCPicker";
-import { getEmptyUDC } from "../../../dataType/dataZero/udc";
 import { ScInputProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
-import { useAppSelector } from "../../../store/hooks";
-import { UserDefineCategory } from "../../../dataType/types/udc";
+import { getEmptyUDA } from "../../../dataType/dataZero/uda";
+import { UserDefinedArchive } from "../../../dataType/types/uda";
+import { getEmptyUDC } from "../../../dataType/dataZero/udc";
 
-const zeroValue = getEmptyUDC();
-// 530 Seacloud UserDefineCateory Select Input Component
-const ScUDCSelect = (props: ScInputProps<ScDataTypeList.UserDefineCategory>) => {
+const zeroValue = getEmptyUDA();
+const zeroUDC = getEmptyUDC();
+//550 Seacloud UserDefineArchive select Input Component
+const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => {
     const {
         positionID = 0,
         rowIndex = 0,
@@ -25,7 +27,8 @@ const ScUDCSelect = (props: ScInputProps<ScDataTypeList.UserDefineCategory>) => 
         placeholder = "",
         errInfo = { isErr: false, msg: "" },
         width = "100%",
-        height = 68
+        height = 68,
+        udc = zeroUDC
     } = props;
     const [currentDoc, setCurrentDoc] = useState(initValue);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -39,7 +42,7 @@ const ScUDCSelect = (props: ScInputProps<ScDataTypeList.UserDefineCategory>) => 
         setCurrentDoc(initValue);
     }, [initValue]);
 
-    // Check value and pass data to the parents component
+    // Chcek value and pass data to the parents component
     const handleTransfer = async (doc = currentDoc) => {
         if (!isEdit) {
             return
@@ -47,12 +50,12 @@ const ScUDCSelect = (props: ScInputProps<ScDataTypeList.UserDefineCategory>) => 
         pickDone(doc, itemKey, positionID, rowIndex, errInfo);
     };
 
-    // Actions after press cancel button in the UDCPicker Modal
+    // Actions after press cancel button in the UDAPicker modal
     const handleCancelAction = () => {
         setDialogOpen(false);
     };
-    // Actions after press item in the UDCPicker Modal
-    const handlePressItemAction = (item: UserDefineCategory) => {
+    // Actions after press item in the UDAPicker Modal
+    const handlePressItemAction = (item: UserDefinedArchive) => {
         setCurrentDoc(item);
         handleTransfer(item);
         setDialogOpen(false);
@@ -74,7 +77,7 @@ const ScUDCSelect = (props: ScInputProps<ScDataTypeList.UserDefineCategory>) => 
                 keyboardType="default"
                 label={label}
                 placeholder={isEdit ? placeholder : ""}
-                editable={false}
+                editable={true}
                 disabled={!isEdit}
                 value={currentDoc.name}
                 error={errInfo.isErr}
@@ -87,7 +90,7 @@ const ScUDCSelect = (props: ScInputProps<ScDataTypeList.UserDefineCategory>) => 
                         />
                         : null
                     : <TextInput.Icon
-                        icon="home-city"
+                        icon="folder-table"
                         color={isEdit ? theme.colors.primary : theme.colors.secondary}
                         onPress={isEdit ? () => setDialogOpen(true) : () => setDetailOpen(true)}
                         onLongPress={isEdit ? () => handleClear() : undefined}
@@ -102,7 +105,7 @@ const ScUDCSelect = (props: ScInputProps<ScDataTypeList.UserDefineCategory>) => 
                         />
                         : null
                     : <TextInput.Icon
-                        icon="home-city"
+                        icon="folder-table"
                         color={isEdit ? theme.colors.primary : theme.colors.secondary}
                         onPress={isEdit ? () => setDialogOpen(true) : () => setDetailOpen(true)}
                         onLongPress={isEdit ? () => handleClear() : undefined}
@@ -116,17 +119,18 @@ const ScUDCSelect = (props: ScInputProps<ScDataTypeList.UserDefineCategory>) => 
                 id={`modal${itemKey}${positionID}${rowIndex}`}
             >
                 <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
-                    <UDCPicker
+                    <UDAPicker
+                        udc={zeroUDC}
                         cancelAction={handleCancelAction}
                         pressItemAction={handlePressItemAction}
+                        currentItem={currentDoc}
                         t={t}
-
                     />
                 </View>
             </Modal>
             {isEdit
                 ? null
-                : <UDCDetail
+                : <UDADetail
                     currentItem={currentDoc}
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
@@ -137,4 +141,5 @@ const ScUDCSelect = (props: ScInputProps<ScDataTypeList.UserDefineCategory>) => 
     );
 };
 
-export default memo(ScUDCSelect);
+export default memo(ScUDASelect);
+
