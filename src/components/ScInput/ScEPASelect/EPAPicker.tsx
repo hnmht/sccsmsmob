@@ -3,32 +3,29 @@ import { View, TouchableOpacity } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
 import { TFunction } from "i18next";
 import DocList from "../../DocList/DocList";
-import { UserDefinedArchive } from "../../../dataType/types/uda";
-import { UserDefineCategory } from "../../../dataType/types/udc";
-import { UDARepo } from "../../../db/crud/uda";
-import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
+import { ExecutionProject } from "../../../dataType/types/epa";
+import { EPARepo } from "../../../db/crud/epa";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
+import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 
-interface UDAPickerProps {
-    udc: UserDefineCategory;
-    pressItemAction: (item: UserDefinedArchive) => void;
+interface EPAPickerProps {
+    pressItemAction: (item: ExecutionProject) => void;
     cancelAction: () => void;
-    currentItem: UserDefinedArchive;
+    currentItem: ExecutionProject;
     t: TFunction
 }
 
-const UDAPicker = ({ udc, pressItemAction, cancelAction, currentItem, t }: UDAPickerProps) => {
+const EPAPicker = ({ cancelAction, pressItemAction, currentItem, t }: EPAPickerProps) => {
     const theme = useTheme();
-    const [docs, setDocs] = useState<UserDefinedArchive[]>([]);
+    const [docs, setDocs] = useState<ExecutionProject[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
-    const criteria = `udcid=${udc.id}`;
 
     const handleInitDocs = (allFlag = allOrRecent) => {
-        let localDocs: UserDefinedArchive[] = [];
+        let localDocs: ExecutionProject[] = [];
         if (allFlag === "all") {
-            localDocs = UDARepo.queryData(criteria);
+            localDocs = EPARepo.getAllData();
         } else {
-            localDocs = UDARepo.queryRecent(criteria);
+            localDocs = EPARepo.getRecent();
         }
         setDocs(localDocs);
     };
@@ -43,31 +40,29 @@ const UDAPicker = ({ udc, pressItemAction, cancelAction, currentItem, t }: UDAPi
         handleInitDocs(value);
     };
 
-    // Actions after press UserDefineArchive item
-    const handlePress = (item: UserDefinedArchive) => {
+    // Actions after press Execution Project item
+    const handlePress = (item: ExecutionProject) => {
         if (allOrRecent === "all") {
-            UDARepo.addRecent(item);
+            EPARepo.addRecent(item);
         }
         pressItemAction(item);
     };
+    // Refresh
+    const handleRefresh = async () => {
+        await EPARepo.initCache();
+        handleInitDocs(allOrRecent);
+    };
 
-    // Actions after long press UserDefineArchive item
-    const handleLongPress = (item: UserDefinedArchive) => {
+    // Actions after long press Execution Project item
+    const handleLongPress = (item: ExecutionProject) => {
         if (allOrRecent === "recent") {
-            UDARepo.deleteRecent(item);
+            EPARepo.deleteRecent(item);
             handleInitDocs();
         }
         return
     };
 
-    // Refresh
-    const handleDocRefresh = async () => {
-        await UDARepo.initCache();
-        handleInitDocs(allOrRecent);
-    };
-
-
-    const UDACard = ({ item }: { item: UserDefinedArchive }) => {
+    const EPACard = ({ item }: { item: ExecutionProject }) => {
         return (
             <Card key={item.id} style={{ marginTop: 2, marginBottom: 4 }}>
                 <TouchableOpacity
@@ -83,38 +78,39 @@ const UDAPicker = ({ udc, pressItemAction, cancelAction, currentItem, t }: UDAPi
                     <Text style={{ width: "100%", padding: 2, fontWeight: "bold", color: item.status === 1 ? "red" : theme.colors.onBackground }}>{t("name")} : {item.name}</Text>
                     <Text style={{ width: "100%", padding: 2 }}>{t("code")} : {item.code}</Text>
                     <Text style={{ width: "100%", padding: 2 }}>{t("status")} : {t(item.status === 0 ? "normal" : "disable")}</Text>
-                    <Text style={{ width: "100%", padding: 2 }}>{t("udc")} : {item.udc.name}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("resultType")} : {item.resultType.name}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("category")} : {item.epc.name}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("isCheckError")} : {item.isCheckError === 0 ? "N" : "Y"}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("errorValue")} : {item.errorValueDisp}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("isOnSitePhoto")} : {item.isOnSitePhoto === 0 ? "N" : "Y"}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("isRequireFile")} : {item.isRequireFile === 0 ? "N" : "Y"}</Text>
                     <Text style={{ width: "100%", padding: 2 }}>{t("description")} : {item.description}</Text>
                 </TouchableOpacity>
             </Card>
         );
     };
 
-
-
     return (
         <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
-                title={t("chooseUDA", { udcName: udc.name })}
+                title={t("chooseEPA")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
             />
             <DocList
                 rows={docs}
-                ItemElement={UDACard}
+                ItemElement={EPACard}
                 rowsPerPage={10}
                 searchFields={["code", "name", "description"]}
                 sortFunction={(a, b) => a.id - b.id}
                 refreshing={false}
             />
-
             <ScHandSwitch
-                docRefresh={handleDocRefresh}
+                docRefresh={handleRefresh}
                 cancelAction={cancelAction}
             />
-
         </View>
     );
 };
 
-export default UDAPicker;
+export default EPAPicker;

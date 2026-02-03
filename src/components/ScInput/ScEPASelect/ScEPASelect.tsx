@@ -1,20 +1,18 @@
 import { memo, useState, useEffect } from "react";
 import { View, Modal, Alert } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
-import { useAppSelector } from "../../../store/hooks";
-import UDADetail from "./UDADetail";
-import UDAPicker from "./UDAPicker";
 import { useTranslation } from "react-i18next";
+import EPADetail from "./EPADetail";
+import EPAPicker from "./EPAPicker";
+import { getEmptyEP } from "../../../dataType/dataZero/epa";
 import { ScInputProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
-import { getEmptyUDA } from "../../../dataType/dataZero/uda";
-import { UserDefinedArchive } from "../../../dataType/types/uda";
-import { getEmptyUDC } from "../../../dataType/dataZero/udc";
+import { useAppSelector } from "../../../store/hooks";
+import { ExecutionProject } from "../../../dataType/types/epa";
 
-const zeroValue = getEmptyUDA();
-const zeroUDC = getEmptyUDC();
-//550 Seacloud UserDefineArchive select Input Component
-const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => {
+const zeroValue = getEmptyEP();
+//560 
+const ScEPASelect = (props: ScInputProps<ScDataTypeList.ExecutionProject>) => {
     const {
         positionID = 0,
         rowIndex = 0,
@@ -28,7 +26,6 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
         errInfo = { isErr: false, msg: "" },
         width = "100%",
         height = 68,
-        udc = zeroUDC
     } = props;
     const [currentDoc, setCurrentDoc] = useState(initValue);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -42,7 +39,7 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
         setCurrentDoc(initValue);
     }, [initValue]);
 
-    // Chcek value and pass data to the parents component
+    // Check value and pass data to the parents component
     const handleTransfer = async (doc = currentDoc) => {
         if (!isEdit) {
             return
@@ -50,12 +47,12 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
         pickDone(doc, itemKey, positionID, rowIndex, errInfo);
     };
 
-    // Actions after press cancel button in the UDAPicker modal
+    // Actions after press cancel button in the EPAPicker modal
     const handleCancelAction = () => {
         setDialogOpen(false);
     };
-    // Actions after press item in the UDAPicker modal
-    const handlePressItemAction = (item: UserDefinedArchive) => {
+    // Actions after press item in the EPAPicker modal
+    const handlePressItemAction = (item: ExecutionProject) => {
         setCurrentDoc(item);
         handleTransfer(item);
         setDialogOpen(false);
@@ -90,7 +87,7 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
                         />
                         : null
                     : <TextInput.Icon
-                        icon="folder-table"
+                        icon="calendar-text"
                         color={isEdit ? theme.colors.primary : theme.colors.secondary}
                         onPress={isEdit ? () => setDialogOpen(true) : () => setDetailOpen(true)}
                         onLongPress={isEdit ? () => handleClear() : undefined}
@@ -105,12 +102,11 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
                         />
                         : null
                     : <TextInput.Icon
-                        icon="folder-table"
+                        icon="calendar-text"
                         color={isEdit ? theme.colors.primary : theme.colors.secondary}
                         onPress={isEdit ? () => setDialogOpen(true) : () => setDetailOpen(true)}
                         onLongPress={isEdit ? () => handleClear() : undefined}
                     />
-
                 }
                 style={{ width: "100%" }}
             />
@@ -119,8 +115,7 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
                 id={`modal${itemKey}${positionID}${rowIndex}`}
             >
                 <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
-                    <UDAPicker
-                        udc={zeroUDC}
+                    <EPAPicker
                         cancelAction={handleCancelAction}
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDoc}
@@ -130,7 +125,7 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
             </Modal>
             {isEdit
                 ? null
-                : <UDADetail
+                : <EPADetail
                     currentItem={currentDoc}
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
@@ -141,5 +136,5 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
     );
 };
 
-export default memo(ScUDASelect);
+export default memo(ScEPASelect);
 
