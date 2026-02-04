@@ -24,8 +24,8 @@ import ScEPCSelect from "./ScEPCSelect/ScEPCSelect"; //540 执行项目类别单
 import ScUDASelect from "./ScUDASelect/ScUDASelect"; //550 自定义档案单选组件
 import ScEPASelect from "./ScEPASelect/ScEPASelect"; //560 执行项目档案单选组件
 import ScCSASelect from "./ScCSASelect/ScCSASelect"; // 570 现场档案单选组件
-// import ScEITSelect from "./ScEITSelect/ScEITSelect"; //580 执行模板档案
-// import ScRLSelect from "./ScRiskLevelSelect/ScRiskLevelSelect"; //590 风险等级
+import ScEPTSelect from "./ScEPTSelect/ScEPTSelect"; //580 执行模板档案
+import ScRLSelect from "./ScRiskLevelSelect/ScRiskLevelSelect"; //590 风险等级
 // import ScDCSelect from "./ScDCSelect/ScDCSelect"; //600 文档类别单选组件
 // import ScOpSelect from "./ScOpSelect/ScOpSelect"; //610 岗位档案单选组件
 // import ScTcSelect from "./ScTcSelect/ScTcSelect"; //620 课程单选组件
@@ -98,6 +98,12 @@ const ScInput: React.FC<ScInputUnionProps> = (props) => {
 
         case ScDataTypeList.ConstructionSite:
             return <ScCSASelect {...props} />;
+
+        case ScDataTypeList.EPT:
+            return <ScEPTSelect {...props} />;
+
+        case ScDataTypeList.RiskLevel:
+            return <ScRLSelect {...props} />;
 
         case ScDataTypeList.AvatarUpload:
             return <ScAvatarUpload {...props} />;
