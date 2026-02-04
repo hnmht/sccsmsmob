@@ -24,8 +24,8 @@ const UDADetail = ({ visible, currentItem, backAction, t }: UDADetailProps) => {
                         : <ScrollView style={{ maxHeight: "100%" }}>
                             <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("code")} : {currentItem.code}</Text>
                             <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("name")} : {currentItem.name}</Text>
-                            <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("description")}: {currentItem.description}</Text>
-                            <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("category")}: {currentItem.udc.name}</Text>
+                            <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("description")} : {currentItem.description}</Text>
+                            <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("category")} : {currentItem.udc.name}</Text>
                         </ScrollView>
                     }
                 </Dialog.ScrollArea>
