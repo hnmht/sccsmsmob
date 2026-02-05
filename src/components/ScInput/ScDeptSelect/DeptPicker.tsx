@@ -49,7 +49,7 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem }: deptPickerPr
         handleInitDepts();
     }, []);
 
-    // Switch  SegmentedButtons
+    // Switch SegmentedButtons
     const handleChangeSeg = (value: "recent" | "all") => {
         setAllOrRecent(value);
         handleInitDepts(value);

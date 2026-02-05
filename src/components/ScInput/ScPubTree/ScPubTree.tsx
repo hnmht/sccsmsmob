@@ -5,7 +5,6 @@ import { List, ListItem, ListItemButton } from "./leaf";
 import ScCollapse from "../../ScCollapse/ScCollapse";
 import { toTree } from "../../tools/tree";
 
-
 interface ScPubTreeProps<T> {
     docName: string;
     isDisplayAll: boolean;

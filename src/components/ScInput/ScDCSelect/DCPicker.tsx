@@ -1,78 +1,77 @@
 import { useState, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
-import { Text, useTheme, Card } from "react-native-paper";
-import { TFunction } from "i18next";
-
+import { Text, useTheme,  Card } from "react-native-paper";
 import ScPubTree from "../ScPubTree/ScPubTree";
 import DocList from "../../DocList/DocList";
-import { SimpCSC } from "../../../dataType/types/csc";
+import { TFunction } from "i18next";
+import { SimpDC } from "../../../dataType/types/dc";
+import { simpDCRepo } from "../../../db/crud/dc";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
-import { simpCSCRepo } from "../../../db/crud/csc";
 
-interface CSCPickerProps {
-    pressItemAction: (item: SimpCSC) => void;
+interface DcPickerProps {
+    pressItemAction: (item: SimpDC) => void;
     cancelAction: () => void;
-    currentItem: SimpCSC;
+    currentItem: SimpDC;
     t: TFunction
 }
 
-// Convert an Array of SimpCSC object into an array of SimpCSC IDs
-const convertCSCsToIDs = (csc: SimpCSC) => {
-    let selectDocIds: number[] = [];
-    selectDocIds.push(csc.id);
-    return selectDocIds;
+// Convert an Array of department objects into an array of Document Category IDs
+const transforDCIDs = (dc: SimpDC) => {
+    let selectDCIds = [];
+    selectDCIds.push(dc.id);
+    return selectDCIds;
 };
 
-const SICPicker = ({ pressItemAction, cancelAction, currentItem, t }: CSCPickerProps) => {
-    const [docs, setDocs] = useState<SimpCSC[]>([]);
+const DcPicker = ({ pressItemAction, cancelAction, currentItem, t }: DcPickerProps) => {
+    const [dcs, setDcs] = useState<SimpDC[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
     const theme = useTheme();
-    const selectedDocIds = convertCSCsToIDs(currentItem);
+    const selectDCIds = transforDCIDs(currentItem);
 
-    const handleInitDocs = (allFlag = allOrRecent) => {
-        let localDocs: SimpCSC[] = [];
+    const handleInitDcs = (allFlag = allOrRecent) => {
+        let localDcs = [];
         if (allFlag === "all") {
-            localDocs = simpCSCRepo.getAllData()
+            localDcs = simpDCRepo.getAllData();
         } else {
-            localDocs = simpCSCRepo.getRecent();
+            localDcs = simpDCRepo.getRecent();
         }
-        setDocs(localDocs);
+        setDcs(localDcs);
     };
 
     useEffect(() => {
-        handleInitDocs();
+        handleInitDcs();
     }, []);
 
-    // Switch SegmentedButtons
+    // Switch SeqmentedButton
     const handleChangeSeg = (value: "recent" | "all") => {
         setAllOrRecent(value);
-        handleInitDocs(value);
+        handleInitDcs(value);
     };
 
-    // Actions after press SimpCSC item
-    const handlePress = (item: SimpCSC) => {
+    // Actions after press Document Category item
+    const handlePress = (item: SimpDC) => {
         if (allOrRecent === "all") {
-            simpCSCRepo.addRecent(item);
+            simpDCRepo.addRecent(item);
         }
         pressItemAction(item);
     };
-    // Actions after long press SimpCSC item
-    const handleLongPress = (item: SimpCSC) => {
+    // Actions after long press Document Category item
+    const handleLongPress = (item: SimpDC) => {
         if (allOrRecent === "recent") {
-            simpCSCRepo.deleteRecent(item);
-            handleInitDocs();
+            simpDCRepo.deleteRecent(item);
+            handleInitDcs();
         }
         return
     };
 
     // Refresh
     const handleDocRefresh = async () => {
-        await simpCSCRepo.initCache();
-        handleInitDocs(allOrRecent);
+        await simpDCRepo.initCache();
+        handleInitDcs(allOrRecent);
     };
 
-    const SICCard = ({ item }: { item: SimpCSC }) => {
+    const DcCard = ({ item }: { item: SimpDC }) => {
         return (
             <Card key={item.id} style={{ marginTop: 2, marginBottom: 2 }}>
                 <TouchableOpacity
@@ -85,38 +84,38 @@ const SICPicker = ({ pressItemAction, cancelAction, currentItem, t }: CSCPickerP
                     onPress={() => pressItemAction(item)}
                     onLongPress={() => handleLongPress(item)}
                 >
-                    <Text style={{ width: "100%", padding: 2, fontWeight: "bold", color: item.status === 1 ? "red" : theme.colors.onBackground }}>{t("name")} : {item.name}</Text>
-                    <Text style={{ width: "100%", padding: 2 }}>{t("description")} : {item.description}</Text>
-                    <Text style={{ width: "100%", padding: 2 }}>{t("status")}: {t(item.status === 0 ? "normal" : "disable")}</Text>
+                    <Text style={{ width: "100%", padding: 2, fontWeight: "bold", color: item.status === 1 ? "red" : theme.colors.onBackground }}>{t("dcName")}:{item.name}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("category")}:{item.description}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("status")}:{item.status === 0 ? "normal" : "disable"}</Text>
                 </TouchableOpacity>
             </Card>
         );
     };
 
     return (
-        <View style={{ flex: 1 }}>           
+        <View style={{ flex: 1 }}>            
             <ScSegmentAllOrRecent
-                title="csc"
+                title="dc"
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
             />
             {allOrRecent === "all"
                 ? <ScrollView>
                     <ScPubTree
-                        docName={t("category")}
+                        docName={t("dc")}
                         isDisplayAll={false}
-                        oriDocs={docs}
+                        oriDocs={dcs}
                         onDocPress={handlePress}
-                        selectDocIDs={selectedDocIds}
+                        selectDocIDs={selectDCIds}
                         onDocLongPress={handleLongPress}
                         isEdit={true}
                     />
                 </ScrollView>
                 : <DocList
-                    rows={docs}
-                    ItemElement={SICCard}
+                    rows={dcs}
+                    ItemElement={DcCard}
                     rowsPerPage={10}
-                    searchFields={["name", "description"]}
+                    searchFields={["code", "name", "description", "leader"]}
                     sortFunction={(a, b) => a.id - b.id}
                     refreshing={false}
                 />
@@ -125,9 +124,8 @@ const SICPicker = ({ pressItemAction, cancelAction, currentItem, t }: CSCPickerP
                 docRefresh={handleDocRefresh}
                 cancelAction={cancelAction}
             />
-
         </View>
     )
 };
 
-export default SICPicker;
+export default DcPicker;

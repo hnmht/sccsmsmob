@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Button, ActivityIndicator } from "react-native-paper";
 import { Alert, ScrollView, View, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { cloneDeep } from "lodash";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "../../store/hooks";
@@ -248,7 +247,7 @@ const Profile = () => {
 
                 {currentUser === undefined
                     ? null
-                    : <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", padding: 16 }}>
+                    : <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 8 }}>
                         {isEdit
                             ? <>
                                 <Button mode='text' loading={isLoading} onPress={() => setIsEdit(false)} maxFontSizeMultiplier={1}>{t("cancel")}</Button>
@@ -260,7 +259,6 @@ const Profile = () => {
                             </>
                         }
                     </View>
-
                 }
             </KeyboardAvoidingView>
         </SafeAreaView>

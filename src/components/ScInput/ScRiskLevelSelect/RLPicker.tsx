@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Card, Text, useTheme} from "react-native-paper";
+import { Card, Text, useTheme } from "react-native-paper";
 import { TFunction } from "i18next";
 import DocList from "../../DocList/DocList";
 import { RiskLevel } from "../../../dataType/types/riskLevel";
@@ -107,7 +107,7 @@ const RLPicker = ({ cancelAction, pressItemAction, currentItem, t }: RLPickerPro
             <ScHandSwitch
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
-            />  
+            />
         </View>
     );
 };
