@@ -2,23 +2,24 @@ import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Card, Text } from "react-native-paper";
 import DocList from "../../DocList/DocList";
-import { RiskLevel } from "../../../dataType/types/riskLevel";
-import { riskLevelRepo } from "../../../db/crud/risklevel";
-import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
-import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 import { ScPickerProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
+import { TC } from "../../../dataType/types/tc";
+import { TCRepo } from "../../../db/crud/tc";
+import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
+import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 
-const RLPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPickerProps<ScDataTypeList.RiskLevel>) => {
-    const [docs, setDocs] = useState<RiskLevel[]>([]);
+// Traning Course Picker
+const TCPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPickerProps<ScDataTypeList.TC>) => {
+    const [docs, setDocs] = useState<TC[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
 
     const handleInitDocs = (allFlag = allOrRecent) => {
-        let localDocs:RiskLevel[] = [];
+        let localDocs: TC[] = [];
         if (allFlag === "all") {
-            localDocs = riskLevelRepo.getAllData();
+            localDocs = TCRepo.getAllData();
         } else {
-            localDocs = riskLevelRepo.getRecent();
+            localDocs = TCRepo.getRecent();
         }
         setDocs(localDocs);
     };
@@ -33,29 +34,29 @@ const RLPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPi
         handleInitDocs(value);
     };
 
-    // Actions after press Risk Level item
-    const handlePress = (item: RiskLevel) => {
+    // Actions after press Traning Course item
+    const handlePress = (item: TC) => {
         if (allOrRecent === "all") {
-            riskLevelRepo.addRecent(item);
+            TCRepo.addRecent(item);
         }
         pressItemAction(item);
     };
     // Refresh
     const handleRefresh = async () => {
-        await riskLevelRepo.initCache();
+        await TCRepo.initCache();
         handleInitDocs(allOrRecent);
     };
 
-    // Actions after long press Risk Level item
-    const handleLongPress = (item: RiskLevel) => {
+    // Actions after long press Training Course item
+    const handleLongPress = (item: TC) => {
         if (allOrRecent === "recent") {
-            riskLevelRepo.deleteRecent(item);
+            TCRepo.deleteRecent(item);
             handleInitDocs();
         }
         return
     };
 
-    const RLCard = ({ item }: { item: RiskLevel }) => {
+    const TCCard = ({ item }: { item: TC }) => {
         return (
             <Card key={item.id} style={{ marginTop: 2, marginBottom: 2 }}>
                 <TouchableOpacity
@@ -69,14 +70,11 @@ const RLPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPi
                     onLongPress={() => handleLongPress(item)}
                 >
                     <Text style={{ width: "100%", padding: 2, fontWeight: "bold", color: item.status === 1 ? "red" : theme.colors.onBackground }}>
-                        {t("name")} : {item.name}
+                        {t("tcName")} : {item.name}
                     </Text>
-                    <Text style={{ width: "100%", padding: 2 }}>{t("status")} : {t(item.status === 0 ? "normal" : "disable")}</Text>
-                    <View style={{ height: 24, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-start" }}>
-                        <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("color")} : </Text>
-                        <View style={{ height: "100%", width: 48, backgroundColor: item.color, borderRadius: 8 }}></View>
-                    </View>
-                    <Text style={{ width: "100%", padding: 2 }}>{t("description")}:{item.description}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("tcClassHour")} : {currentItem.classHour}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("isExam")} : {currentItem.isExamine === 0 ? "N" : "Y"}</Text>
+                    <Text style={{ width: "100%", padding: 2 }}>{t("description")} : {item.description}</Text>
                 </TouchableOpacity>
             </Card>
         );
@@ -85,13 +83,13 @@ const RLPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPi
     return (
         <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
-                title={t("riskLevel")}
+                title="chooseTC"
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
             />
             <DocList
                 rows={docs}
-                ItemElement={RLCard}
+                ItemElement={TCCard}
                 rowsPerPage={10}
                 searchFields={["name", "description"]}
                 sortFunction={(a, b) => a.id - b.id}
@@ -105,4 +103,4 @@ const RLPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPi
     );
 };
 
-export default RLPicker;
+export default TCPicker;
