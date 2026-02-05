@@ -26,8 +26,8 @@ import ScEPASelect from "./ScEPASelect/ScEPASelect"; //560 执行项目档案单
 import ScCSASelect from "./ScCSASelect/ScCSASelect"; // 570 现场档案单选组件
 import ScEPTSelect from "./ScEPTSelect/ScEPTSelect"; //580 执行模板档案
 import ScRLSelect from "./ScRiskLevelSelect/ScRiskLevelSelect"; //590 风险等级
-// import ScDCSelect from "./ScDCSelect/ScDCSelect"; //600 文档类别单选组件
-// import ScOpSelect from "./ScOpSelect/ScOpSelect"; //610 岗位档案单选组件
+import ScDCSelect from "./ScDCSelect/ScDCSelect"; //600 文档类别单选组件
+import ScPositionSelect from "./ScPositionSelect/ScPositionSelect"; //610 岗位档案单选组件
 // import ScTcSelect from "./ScTcSelect/ScTcSelect"; //620 课程单选组件
 // import ScLpSelect from "./ScLpSelect/ScLpSelect"; //630 劳保用品选择
 
@@ -104,6 +104,12 @@ const ScInput: React.FC<ScInputUnionProps> = (props) => {
 
         case ScDataTypeList.RiskLevel:
             return <ScRLSelect {...props} />;
+
+        case ScDataTypeList.SimpDC:
+            return <ScDCSelect {...props} />;
+
+        case ScDataTypeList.Position:
+            return <ScPositionSelect {...props} />;
 
         case ScDataTypeList.AvatarUpload:
             return <ScAvatarUpload {...props} />;

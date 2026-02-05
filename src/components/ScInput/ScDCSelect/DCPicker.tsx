@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
-import { Text, useTheme,  Card } from "react-native-paper";
+import { Text, useTheme, Card } from "react-native-paper";
 import ScPubTree from "../ScPubTree/ScPubTree";
 import DocList from "../../DocList/DocList";
 import { TFunction } from "i18next";
@@ -93,7 +93,7 @@ const DcPicker = ({ pressItemAction, cancelAction, currentItem, t }: DcPickerPro
     };
 
     return (
-        <View style={{ flex: 1 }}>            
+        <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
                 title="dc"
                 allOrRecent={allOrRecent}
