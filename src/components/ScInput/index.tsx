@@ -28,8 +28,8 @@ import ScEPTSelect from "./ScEPTSelect/ScEPTSelect"; //580 执行模板档案
 import ScRLSelect from "./ScRiskLevelSelect/ScRiskLevelSelect"; //590 风险等级
 import ScDCSelect from "./ScDCSelect/ScDCSelect"; //600 文档类别单选组件
 import ScPositionSelect from "./ScPositionSelect/ScPositionSelect"; //610 岗位档案单选组件
-// import ScTcSelect from "./ScTcSelect/ScTcSelect"; //620 课程单选组件
-// import ScLpSelect from "./ScLpSelect/ScLpSelect"; //630 劳保用品选择
+import ScTCSelect from "./ScTCSelect/ScTCSelect"; //620 课程单选组件
+import ScPPESelect from "./ScPPESelect/ScPPESelect"; //630 劳保用品选择
 
 import ScAvatarUpload from "./ScAvatarUpload/ScAvatarUpload"; //901 头像上传
 import ScFileUpload from "./ScFileUpload/ScFileUpload"; //902 文件上传
@@ -111,6 +111,12 @@ const ScInput: React.FC<ScInputUnionProps> = (props) => {
         case ScDataTypeList.Position:
             return <ScPositionSelect {...props} />;
 
+        case ScDataTypeList.TC:
+            return <ScTCSelect {...props} />;
+
+        case ScDataTypeList.PPE:
+            return <ScPPESelect {...props} />;
+            
         case ScDataTypeList.AvatarUpload:
             return <ScAvatarUpload {...props} />;
 
