@@ -1,17 +1,9 @@
-import { Portal, Dialog, Text, Button, MD3Theme } from "react-native-paper";
+import { Portal, Dialog, Text, Button } from "react-native-paper";
 import { ScrollView, View } from "react-native";
-import { TFunction } from "i18next";
-import { Position } from "../../../dataType/types/postion";
+import { ScDetailProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-interface PositionDetailProps {
-    visible: boolean;
-    currentItem: Position;
-    backAction: () => void;
-    t: TFunction;
-    theme: MD3Theme
-}
-
-const PositionDetail = ({ visible, currentItem, backAction, t, theme }: PositionDetailProps) => {
+const PositionDetail = ({ visible, currentItem, backAction, t, theme }: ScDetailProps<ScDataTypeList.Position>) => {
     return (
         <Portal>
             <Dialog visible={visible} onDismiss={backAction}>

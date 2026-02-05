@@ -1,24 +1,17 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Card, Text, useTheme } from "react-native-paper";
-import { TFunction } from "i18next";
+import { Card, Text } from "react-native-paper";
 import DocList from "../../DocList/DocList";
 import { UserDefineCategory } from "../../../dataType/types/udc";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
 import { UDCRepo } from "../../../db/crud/udc";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
+import { ScPickerProps } from "../../../dataType/types/scInput";
 
-interface UDCPickerProps {
-    pressItemAction: (item: UserDefineCategory) => void;
-    cancelAction: () => void;
-    t: TFunction
-}
-
-const UDCPicker = ({ cancelAction, pressItemAction, t }: UDCPickerProps) => {
-    const theme = useTheme();
+const UDCPicker = ({ cancelAction, currentItem, pressItemAction, t, theme }: ScPickerProps<ScDataTypeList.UserDefineCategory>) => {
     const [docs, setDocs] = useState<UserDefineCategory[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
-
     const handleInitDocs = (allFlag = allOrRecent) => {
         let localDocs = [];
         if (allFlag === "all") {
@@ -83,7 +76,7 @@ const UDCPicker = ({ cancelAction, pressItemAction, t }: UDCPickerProps) => {
     };
 
     return (
-        <View style={{ flex: 1 }}>          
+        <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
                 title="selectRecipients"
                 allOrRecent={allOrRecent}

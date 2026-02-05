@@ -120,6 +120,8 @@ const ScEPASelect = (props: ScInputProps<ScDataTypeList.ExecutionProject>) => {
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDoc}
                         t={t}
+                        theme={theme}
+
                     />
                 </View>
             </Modal>
@@ -130,6 +132,7 @@ const ScEPASelect = (props: ScInputProps<ScDataTypeList.ExecutionProject>) => {
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
                     t={t}
+                    theme={theme}
                 />
             }
         </View>

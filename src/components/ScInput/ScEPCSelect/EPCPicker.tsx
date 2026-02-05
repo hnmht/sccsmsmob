@@ -1,20 +1,14 @@
 import { useState, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
-import { Text, useTheme, Card } from "react-native-paper";
-import { TFunction } from "i18next";
+import { Text, Card } from "react-native-paper";
 import ScPubTree from "../ScPubTree/ScPubTree";
 import DocList from "../../DocList/DocList";
 import { SimpEPC } from "../../../dataType/types/epc";
 import { simpEPCRepo } from "../../../db/crud/epc";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
-
-interface EPCPickerProps {
-    pressItemAction: (item: SimpEPC) => void;
-    cancelAction: () => void;
-    currentItem: SimpEPC;
-    t: TFunction
-}
+import { ScPickerProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
 // Convert an Array of SimpEPC object into an array of SimpEPC IDs
 const convertSimpEPCToIDs = (doc: SimpEPC) => {
@@ -23,10 +17,9 @@ const convertSimpEPCToIDs = (doc: SimpEPC) => {
     return selectDocIds;
 };
 
-const EPCPIcker = ({ pressItemAction, cancelAction, currentItem, t }: EPCPickerProps) => {
+const EPCPIcker = ({ pressItemAction, cancelAction, currentItem, t, theme }: ScPickerProps<ScDataTypeList.SimpEPC>) => {
     const [docs, setDocs] = useState<SimpEPC[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
-    const theme = useTheme();
     const selectedDocIds = convertSimpEPCToIDs(currentItem);
 
     const handleInitDocs = (allFlag = allOrRecent) => {

@@ -1,7 +1,6 @@
 import { memo, useState, useEffect } from "react";
 import { View, Modal, Alert } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
-
 import CSCDetail from "./CSCDetail";
 import CSCPicker from "./CSCPicker";
 import { ScInputProps } from "../../../dataType/types/scInput";
@@ -122,6 +121,7 @@ const SCCSCSelect = (props: ScInputProps<ScDataTypeList.SimpCSC>) => {
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDoc}
                         t={t}
+                        theme={theme}
                     />
                 </View>
             </Modal>
@@ -132,6 +132,7 @@ const SCCSCSelect = (props: ScInputProps<ScDataTypeList.SimpCSC>) => {
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
                     t={t}
+                    theme={theme}
                 />
             }
         </View>

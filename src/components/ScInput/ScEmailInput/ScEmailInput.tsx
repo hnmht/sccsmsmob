@@ -113,6 +113,7 @@ const ScEmailInput = (props: ScInputProps<ScDataTypeList.Email>) => {
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
                     t={t}
+                    theme={theme}
                 />
             }
         </View>

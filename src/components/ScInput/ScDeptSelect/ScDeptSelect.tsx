@@ -2,7 +2,6 @@ import { memo, useState, useEffect } from "react";
 import { View, Alert } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import { useAppSelector } from "../../../store/hooks";
 import DeptPicker from "./DeptPicker";
 import DeptDetail from "./DeptDetail";
@@ -124,6 +123,7 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDept}
                         t={t}
+                        theme={theme}
                     />
                 </SafeAreaView>
             </ScComponentModal>
@@ -134,6 +134,7 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
                     t={t}
+                    theme={theme}
                 />
             }
         </View>

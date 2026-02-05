@@ -17,6 +17,8 @@ import { ScFile } from "./file";
 import { VoucherFile } from "./voucherFile";
 import { ScDataTypeList } from "./scDataType";
 import type { Dayjs } from "dayjs";
+import { TFunction } from "i18next";
+import { MD3Theme } from "react-native-paper";
 
 
 export interface MarkPosition {
@@ -46,7 +48,7 @@ export type InitialValueMap = {
     [ScDataTypeList.Password]: string;
     [ScDataTypeList.Mobile]: string;
     [ScDataTypeList.Email]: string;
-    [ScDataTypeList.Date]: string;
+    [ScDataTypeList.Date]: string ;
     [ScDataTypeList.DateTime]: string;
 
     [ScDataTypeList.Gender]: 0 | 1 | 2;
@@ -113,7 +115,24 @@ export type ScInputProps<T extends keyof InitialValueMap> = BaseScInputProps & {
     pickDone: PickDone<T>,
     backendTest?: BackendTest<T>
 }
+
 export type ScInputUnionProps = {
     [K in keyof InitialValueMap]: ScInputProps<K>
 }[keyof InitialValueMap];
+
+export type ScDetailProps<T extends keyof InitialValueMap> = {
+    visible: boolean;
+    currentItem: InitialValueMap[T];
+    backAction: () => void;
+    t: TFunction;
+    theme: MD3Theme;
+}
+
+export type ScPickerProps<T extends keyof InitialValueMap> = {
+    pressItemAction: (item: InitialValueMap[T]) => void;
+    cancelAction: () => void;
+    currentItem: InitialValueMap[T];
+    t: TFunction;
+    theme: MD3Theme;
+}
 

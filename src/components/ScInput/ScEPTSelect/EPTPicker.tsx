@@ -1,22 +1,15 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Card, Text, useTheme } from "react-native-paper";
-import { TFunction } from "i18next";
+import { Card, Text } from "react-native-paper";
 import DocList from "../../DocList/DocList";
 import { EPT } from "../../../dataType/types/ept";
 import { EPTRepo } from "../../../db/crud/ept";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
+import { ScPickerProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-interface EPTPickerProps {
-    pressItemAction: (item: EPT) => void;
-    cancelAction: () => void;
-    currentItem: EPT;
-    t: TFunction
-}
-
-const EPTPicker = ({ cancelAction, pressItemAction, currentItem, t }: EPTPickerProps) => {
-    const theme = useTheme();
+const EPTPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPickerProps<ScDataTypeList.EPT>) => {
     const [docs, setDocs] = useState<EPT[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
 

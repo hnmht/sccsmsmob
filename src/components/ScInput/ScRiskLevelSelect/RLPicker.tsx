@@ -1,22 +1,15 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Card, Text, useTheme } from "react-native-paper";
-import { TFunction } from "i18next";
+import { Card, Text } from "react-native-paper";
 import DocList from "../../DocList/DocList";
 import { RiskLevel } from "../../../dataType/types/riskLevel";
 import { riskLevelRepo } from "../../../db/crud/risklevel";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
+import { ScPickerProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-interface RLPickerProps {
-    cancelAction: () => void;
-    pressItemAction: (item: RiskLevel) => void;
-    currentItem: RiskLevel;
-    t: TFunction
-}
-
-const RLPicker = ({ cancelAction, pressItemAction, currentItem, t }: RLPickerProps) => {
-    const theme = useTheme();
+const RLPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPickerProps<ScDataTypeList.RiskLevel>) => {
     const [docs, setDocs] = useState<RiskLevel[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
 

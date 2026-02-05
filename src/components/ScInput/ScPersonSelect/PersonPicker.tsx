@@ -1,22 +1,15 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Card, Text, useTheme } from "react-native-paper";
-import { TFunction } from "i18next";
-
+import { Card, Text } from "react-native-paper";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 import DocList from "../../DocList/DocList";
 import { Person } from "../../../dataType/types/person";
 import { personRepo } from "../../../db/crud/person";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
+import { ScPickerProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-interface personPickerProps {
-    t: TFunction;
-    cancelAction: () => void;
-    pressItemAction: (item: Person) => void;
-}
-
-const PersonPicker = ({ t, cancelAction, pressItemAction }: personPickerProps) => {
-    const theme = useTheme();
+const PersonPicker = ({ t, cancelAction, pressItemAction, currentItem, theme }: ScPickerProps<ScDataTypeList.Person>) => {
     const [persons, setPersons] = useState<Person[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
 
@@ -86,7 +79,7 @@ const PersonPicker = ({ t, cancelAction, pressItemAction }: personPickerProps) =
     };
 
     return (
-        <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>           
+        <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
             <ScSegmentAllOrRecent
                 title="selectRecipients"
                 allOrRecent={allOrRecent}

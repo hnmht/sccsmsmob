@@ -1,12 +1,11 @@
 import { useState, memo, useEffect } from "react";
-import { View, Alert, KeyboardAvoidingView } from "react-native";
+import { Alert, KeyboardAvoidingView } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../store/hooks";
 import { TextInput, useTheme } from "react-native-paper";
 import ScTextDetail from "./TextDetail";
 import { ScInputProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
-
 
 //301 Seacloud Text Input Component
 const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
@@ -110,6 +109,7 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
                     t={t}
+                    theme={theme}
                 />
             }
         </KeyboardAvoidingView>

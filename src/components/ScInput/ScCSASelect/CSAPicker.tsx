@@ -1,23 +1,16 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Card, Text, useTheme } from "react-native-paper";
-import { TFunction } from "i18next";
+import { Card, Text } from "react-native-paper";
 import { useAppSelector } from "../../../store/hooks";
 import DocList from "../../DocList/DocList";
 import { ConstructionSite } from "../../../dataType/types/csa";
 import { CSRepo } from "../../../db/crud/csa";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
+import { ScPickerProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-interface CSAPickerProps {
-    cancelAction: () => void;
-    pressItemAction: (item: ConstructionSite) => void;
-    currentItem: ConstructionSite;
-    t: TFunction
-}
-
-const CSAPicker = ({ cancelAction, pressItemAction, currentItem, t }: CSAPickerProps) => {
-    const theme = useTheme();
+const CSAPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPickerProps<ScDataTypeList.ConstructionSite>) => {
     const csos = useAppSelector(state => state.dynamicData.csos);
     const [docs, setDocs] = useState<ConstructionSite[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");

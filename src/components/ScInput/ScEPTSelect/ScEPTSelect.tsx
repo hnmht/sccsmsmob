@@ -121,6 +121,7 @@ const ScEPTSelect = (props: ScInputProps<ScDataTypeList.EPT>) => {
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDoc}
                         t={t}
+                        theme={theme}
                     />
                 </View>
             </Modal>
@@ -131,6 +132,7 @@ const ScEPTSelect = (props: ScInputProps<ScDataTypeList.EPT>) => {
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
                     t={t}
+                    theme={theme}
                 />
             }
         </View>

@@ -1,16 +1,9 @@
-import { Portal, Dialog, Text, Button, useTheme } from "react-native-paper";
+import { Portal, Dialog, Text, Button } from "react-native-paper";
 import { ScrollView, View } from "react-native";
-import { TFunction } from "i18next";
-import { RiskLevel } from "../../../dataType/types/riskLevel";
+import { ScDetailProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-interface RLDetailProps {
-    visible: boolean;
-    currentItem: RiskLevel;
-    backAction: () => void;
-    t: TFunction;
-}
-const RLDetail = ({ visible, currentItem, backAction, t }: RLDetailProps) => {
-    const theme = useTheme();
+const RLDetail = ({ visible, currentItem, backAction, t ,theme}: ScDetailProps<ScDataTypeList.RiskLevel>) => {
     return (
         <Portal>
             <Dialog visible={visible} onDismiss={backAction}>

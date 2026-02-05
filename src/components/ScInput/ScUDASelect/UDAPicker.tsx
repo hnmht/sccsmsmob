@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Card, Text, useTheme } from "react-native-paper";
+import { Card, MD3Theme, Text, useTheme } from "react-native-paper";
 import { TFunction } from "i18next";
 import DocList from "../../DocList/DocList";
 import { UserDefinedArchive } from "../../../dataType/types/uda";
@@ -14,7 +14,8 @@ interface UDAPickerProps {
     pressItemAction: (item: UserDefinedArchive) => void;
     cancelAction: () => void;
     currentItem: UserDefinedArchive;
-    t: TFunction
+    t: TFunction;
+    theme: MD3Theme;
 }
 
 const UDAPicker = ({ udc, pressItemAction, cancelAction, currentItem, t }: UDAPickerProps) => {

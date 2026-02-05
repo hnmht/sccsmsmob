@@ -1,20 +1,14 @@
 import { useState, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
-import { Text, useTheme, Card } from "react-native-paper";
+import { Text, Card } from "react-native-paper";
 import ScPubTree from "../ScPubTree/ScPubTree";
 import DocList from "../../DocList/DocList";
-import { TFunction } from "i18next";
 import { SimpDC } from "../../../dataType/types/dc";
 import { simpDCRepo } from "../../../db/crud/dc";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
-
-interface DcPickerProps {
-    pressItemAction: (item: SimpDC) => void;
-    cancelAction: () => void;
-    currentItem: SimpDC;
-    t: TFunction
-}
+import { ScPickerProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
 // Convert an Array of department objects into an array of Document Category IDs
 const transforDCIDs = (dc: SimpDC) => {
@@ -23,10 +17,9 @@ const transforDCIDs = (dc: SimpDC) => {
     return selectDCIds;
 };
 
-const DcPicker = ({ pressItemAction, cancelAction, currentItem, t }: DcPickerProps) => {
+const DcPicker = ({ pressItemAction, cancelAction, currentItem, t, theme }: ScPickerProps<ScDataTypeList.SimpDC>) => {
     const [dcs, setDcs] = useState<SimpDC[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
-    const theme = useTheme();
     const selectDCIds = transforDCIDs(currentItem);
 
     const handleInitDcs = (allFlag = allOrRecent) => {

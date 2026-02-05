@@ -1,17 +1,9 @@
-import { Portal, Dialog, Text, Button, useTheme } from "react-native-paper";
+import { Portal, Dialog, Text, Button } from "react-native-paper";
 import { ScrollView, View } from "react-native";
-import { TFunction } from "i18next";
-import { Person } from "../../../dataType/types/person";
+import { ScDetailProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-interface personDetailProps {
-    t: TFunction;
-    visible: boolean;
-    currentItem: Person;
-    backAction: () => void;
-}
-
-const PersonDetail = ({t, visible, currentItem, backAction }:personDetailProps) => {
-    const theme = useTheme();
+const PersonDetail = ({ visible, currentItem, backAction, t, theme }: ScDetailProps<ScDataTypeList.Person>) => {
     return (
         <Portal>
             <Dialog visible={visible} onDismiss={backAction}>
@@ -22,7 +14,7 @@ const PersonDetail = ({t, visible, currentItem, backAction }:personDetailProps) 
                             <Text variant="bodyMedium" maxFontSizeMultiplier={1.4}>{t("noData")}</Text>
                         </View>
                         : <ScrollView style={{ maxHeight: "100%" }}>
-                            <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable style={{ padding: 2}}>{t("code")} : {currentItem.code}</Text>
+                            <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable style={{ padding: 2 }}>{t("code")} : {currentItem.code}</Text>
                             <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable style={{ padding: 2 }}>{t("name")} : {currentItem.name}</Text>
                             <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable style={{ padding: 2 }}>{t("description")} : {currentItem.description}</Text>
                             <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable style={{ padding: 2 }}>{t("gender")}: {t(currentItem.gender === 0 ? "" : currentItem.gender === 1 ? "male" : "female")}</Text>

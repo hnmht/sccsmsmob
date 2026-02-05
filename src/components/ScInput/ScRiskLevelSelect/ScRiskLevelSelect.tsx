@@ -53,7 +53,7 @@ const ScRLSelect = (props: ScInputProps<ScDataTypeList.RiskLevel>) => {
         setDialogOpen(false);
     };
     // Actions after press Risk Level item in the RLPicker modal
-    const handlePressItemAction = (item:RiskLevel) => {
+    const handlePressItemAction = (item: RiskLevel) => {
         setCurrentDoc(item);
         handleTransfer(item);
         setDialogOpen(false);
@@ -141,6 +141,7 @@ const ScRLSelect = (props: ScInputProps<ScDataTypeList.RiskLevel>) => {
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDoc}
                         t={t}
+                        theme={theme}
                     />
                 </View>
             </Modal>
@@ -151,6 +152,7 @@ const ScRLSelect = (props: ScInputProps<ScDataTypeList.RiskLevel>) => {
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
                     t={t}
+                    theme={theme}
                 />
             }
         </View>

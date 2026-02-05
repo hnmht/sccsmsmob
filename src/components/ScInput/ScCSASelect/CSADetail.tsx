@@ -1,18 +1,10 @@
-import { Portal, Dialog, Text, Button, useTheme } from "react-native-paper";
+import { Portal, Dialog, Text, Button } from "react-native-paper";
 import { ScrollView, View } from "react-native";
-import { ConstructionSite } from "../../../dataType/types/csa";
-import { TFunction } from "i18next";
 import { useAppSelector } from "../../../store/hooks";
+import { ScDetailProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-interface CSADetailProps {
-    visible: boolean;
-    currentItem: ConstructionSite;
-    backAction: () => void;
-    t: TFunction;
-}
-
-const CSADetail = ({ visible, currentItem, backAction, t }: CSADetailProps) => {
-    const theme = useTheme();
+const CSADetail = ({ visible, currentItem, backAction, t,theme }: ScDetailProps<ScDataTypeList.ConstructionSite>) => {
     const csos = useAppSelector(state => state.dynamicData.csos);
     return (
         <Portal>

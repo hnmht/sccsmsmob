@@ -1,17 +1,9 @@
-import { Portal, Dialog, Text, Button, useTheme } from "react-native-paper";
+import { Portal, Dialog, Text, Button } from "react-native-paper";
 import { ScrollView, View } from "react-native";
-import { TFunction } from "i18next";
+import { ScDetailProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-import { SimpDept } from "../../../dataType/types/department";
-
-interface deptDetailProps {
-    visible: boolean;
-    currentItem: SimpDept;
-    backAction: () => void;
-    t: TFunction
-}
-const DeptDetail = ({ visible, currentItem, backAction, t }: deptDetailProps) => {
-    const theme = useTheme();
+const DeptDetail = ({ visible, currentItem, backAction, t ,theme}: ScDetailProps<ScDataTypeList.SimpDept>) => {
     const color = currentItem.status === 1 ? "red" : theme.colors.primary;
     return (
         <Portal>

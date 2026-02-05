@@ -125,6 +125,7 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDoc}
                         t={t}
+                        theme={theme}
                     />
                 </View>
             </Modal>
@@ -135,6 +136,7 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
                     t={t}
+                    theme={theme}
                 />
             }
         </View>

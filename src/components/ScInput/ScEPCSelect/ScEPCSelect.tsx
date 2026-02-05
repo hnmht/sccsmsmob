@@ -121,6 +121,7 @@ const ScEPCSelect = (props: ScInputProps<ScDataTypeList.SimpEPC>) => {
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDoc}
                         t={t}
+                        theme={theme}
                     />
                 </View>
             </Modal>
@@ -130,7 +131,8 @@ const ScEPCSelect = (props: ScInputProps<ScDataTypeList.SimpEPC>) => {
                     currentItem={currentDoc}
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
-                    t={t}
+                    t={t} 
+                    theme={theme}
                 />
             }
         </View>

@@ -118,9 +118,10 @@ const ScUDCSelect = (props: ScInputProps<ScDataTypeList.UserDefineCategory>) => 
                 <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
                     <UDCPicker
                         cancelAction={handleCancelAction}
+                        currentItem={currentDoc}
                         pressItemAction={handlePressItemAction}
                         t={t}
-
+                        theme={theme}
                     />
                 </View>
             </Modal>
@@ -131,6 +132,7 @@ const ScUDCSelect = (props: ScInputProps<ScDataTypeList.UserDefineCategory>) => 
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
                     t={t}
+                    theme={theme}
                 />
             }
         </View>

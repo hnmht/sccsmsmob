@@ -121,6 +121,7 @@ const ScCSASelect = (props: ScInputProps<ScDataTypeList.ConstructionSite>) => {
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDoc}
                         t={t}
+                        theme={theme}
                     />
                 </View>
             </Modal>
@@ -130,6 +131,7 @@ const ScCSASelect = (props: ScInputProps<ScDataTypeList.ConstructionSite>) => {
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
                     t={t}
+                    theme={theme}
                 />
                 : null
             }

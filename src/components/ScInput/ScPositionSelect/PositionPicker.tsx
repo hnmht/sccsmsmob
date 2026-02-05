@@ -1,23 +1,15 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Card, Text, SegmentedButtons, MD3Theme } from "react-native-paper";
-
+import { Card, Text, SegmentedButtons } from "react-native-paper";
 import DocList from "../../DocList/DocList";
-import { TFunction } from "i18next";
 import { Position } from "../../../dataType/types/postion";
 import { positionRepo } from "../../../db/crud/position";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
+import { ScPickerProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-interface PositionPickerProps {
-    pressItemAction: (item: Position) => void;
-    cancelAction: () => void;
-    currentItem: Position;
-    t: TFunction,
-    theme: MD3Theme
-}
-
-const PositionPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: PositionPickerProps) => {
+const PositionPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPickerProps<ScDataTypeList.Position>) => {
     const [docs, setDocs] = useState<Position[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
 
@@ -120,7 +112,7 @@ const PositionPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }
             <ScSegmentAllOrRecent
                 title={t("position")}
                 allOrRecent={allOrRecent}
-                setAllOrRecent={handleChangeSeg} 
+                setAllOrRecent={handleChangeSeg}
             />
             <DocList
                 rows={docs}

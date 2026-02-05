@@ -121,6 +121,7 @@ const ScDcSelect = (props: ScInputProps<ScDataTypeList.SimpDC>) => {
                         pressItemAction={handlePressItemAction}
                         currentItem={currentDc}
                         t={t}
+                        theme={theme}
                     />
                 </View>
             </Modal>
@@ -131,6 +132,7 @@ const ScDcSelect = (props: ScInputProps<ScDataTypeList.SimpDC>) => {
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
                     t={t}
+                    theme={theme}
                 />
             }
         </View>

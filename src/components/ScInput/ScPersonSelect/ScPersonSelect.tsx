@@ -1,7 +1,6 @@
 import { memo, useState, useEffect } from "react";
 import { View, Alert } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
-
 import { ScComponentModal } from "../../ScComponentModal/ScComponentModal";
 import PersonPicker from "./PersonPicker";
 import { useAppSelector } from "../../../store/hooks";
@@ -118,19 +117,22 @@ const ScPersonSelect = (props: ScInputProps<ScDataTypeList.Person>) => {
                 visible={dialogOpen}
                 key={`modal${itemKey}${positionID}${rowIndex}`}
             >
-                <PersonPicker
-                    t={t}
+                <PersonPicker                  
                     cancelAction={handleCancelAction}
-                    pressItemAction={handlePressItemAction}                    
+                    pressItemAction={handlePressItemAction}  
+                    currentItem={person} 
+                    t={t} 
+                    theme={theme}                
                 />
             </ScComponentModal>
             {isEdit
                 ? null
-                : <PersonDetail
-                    t={t}
+                : <PersonDetail                    
                     currentItem={person}
                     visible={detailOpen}
                     backAction={() => setDetailOpen(false)}
+                    t={t}
+                    theme={theme}
                 />
             }
         </View>

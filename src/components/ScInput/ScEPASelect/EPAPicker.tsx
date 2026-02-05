@@ -1,22 +1,15 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Card, Text, useTheme } from "react-native-paper";
-import { TFunction } from "i18next";
+import { Card, Text } from "react-native-paper";
 import DocList from "../../DocList/DocList";
 import { ExecutionProject } from "../../../dataType/types/epa";
 import { EPARepo } from "../../../db/crud/epa";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
+import { ScPickerProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-interface EPAPickerProps {
-    pressItemAction: (item: ExecutionProject) => void;
-    cancelAction: () => void;
-    currentItem: ExecutionProject;
-    t: TFunction
-}
-
-const EPAPicker = ({ cancelAction, pressItemAction, currentItem, t }: EPAPickerProps) => {
-    const theme = useTheme();
+const EPAPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPickerProps<ScDataTypeList.ExecutionProject>) => {
     const [docs, setDocs] = useState<ExecutionProject[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
 

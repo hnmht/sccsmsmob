@@ -9,13 +9,8 @@ import { SimpCSC } from "../../../dataType/types/csc";
 import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 import ScSegmentAllOrRecent from "../../ScSegmentAllOrRecent/ScSegmentAllOrRecent";
 import { simpCSCRepo } from "../../../db/crud/csc";
-
-interface CSCPickerProps {
-    pressItemAction: (item: SimpCSC) => void;
-    cancelAction: () => void;
-    currentItem: SimpCSC;
-    t: TFunction
-}
+import { ScPickerProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
 // Convert an Array of SimpCSC object into an array of SimpCSC IDs
 const convertCSCsToIDs = (csc: SimpCSC) => {
@@ -24,12 +19,10 @@ const convertCSCsToIDs = (csc: SimpCSC) => {
     return selectDocIds;
 };
 
-const SICPicker = ({ pressItemAction, cancelAction, currentItem, t }: CSCPickerProps) => {
+const SICPicker = ({ pressItemAction, cancelAction, currentItem, t,theme }: ScPickerProps<ScDataTypeList.SimpCSC>) => {
     const [docs, setDocs] = useState<SimpCSC[]>([]);
     const [allOrRecent, setAllOrRecent] = useState<"recent" | "all">("recent");
-    const theme = useTheme();
     const selectedDocIds = convertCSCsToIDs(currentItem);
-
     const handleInitDocs = (allFlag = allOrRecent) => {
         let localDocs: SimpCSC[] = [];
         if (allFlag === "all") {

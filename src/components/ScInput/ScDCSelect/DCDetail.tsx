@@ -1,17 +1,9 @@
-import { Portal, Dialog, Text, Button, useTheme } from "react-native-paper";
+import { Portal, Dialog, Text, Button } from "react-native-paper";
 import { ScrollView, View } from "react-native";
-import { TFunction } from "i18next";
-import { DC } from "../../../dataType/types/dc";
+import { ScDetailProps } from "../../../dataType/types/scInput";
+import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-interface DCDetailProps {
-    visible: boolean;
-    currentItem: DC;
-    backAction: () => void;
-    t: TFunction;
-}
-
-const DCDetail = ({ visible, currentItem, backAction, t }: DCDetailProps) => {
-    const theme = useTheme();
+const DCDetail = ({ visible, currentItem, backAction, t, theme }: ScDetailProps<ScDataTypeList.SimpDC>) => {
     return (
         <Portal>
             <Dialog visible={visible} onDismiss={backAction}>
