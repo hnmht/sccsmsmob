@@ -24,7 +24,7 @@ const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.Date>) => {
         itemKey,
         initValue = zeroValue,
         pickDone,
-        placeholder,
+        placeholder = "",
         errInfo = { isErr: false, msg: "" },
         width = "100%",
         height = 68
@@ -68,7 +68,7 @@ const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.Date>) => {
                 label={label}
                 id={`${itemKey}${positionID}${rowIndex}`}
                 disabled={!isEdit}
-                placeholder={placeholder}
+                placeholder={isEdit ? t(placeholder) : ""}
                 value={dateDisplay}
                 editable={false}
                 error={errInfo.isErr}

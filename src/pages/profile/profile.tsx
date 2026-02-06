@@ -15,17 +15,8 @@ import { getEmptyUser } from "../../dataType/dataZero/user";
 import { InitialValueMap, ErrMsg } from "../../dataType/types/scInput";
 import { ScDataTypeList } from "../../dataType/types/scDataType";
 import { getFieldErrMsg } from "../../dataType/dataZero/errors";
-import { ToErrorType } from "../../dataType/types/errors";
+import { checkObjectError } from "../pub/pubFunctions";
 
-function checkError<T extends object>(errors: ToErrorType<T>): boolean {
-    let number = 0;
-    for (let key of Object.keys(errors) as Array<keyof T>) {
-        if (errors[key].isErr) {
-            number = number + 1;
-        }
-    }
-    return number > 0;
-};
 // Update user avatar, gender, mobile, email, and description.
 const Profile = () => {
     const [currentUser, setCurrentUser] = useState<UserInfo | undefined>(undefined);
@@ -251,7 +242,7 @@ const Profile = () => {
                         {isEdit
                             ? <>
                                 <Button mode='text' loading={isLoading} onPress={() => setIsEdit(false)} maxFontSizeMultiplier={1}>{t("cancel")}</Button>
-                                <Button mode='contained' loading={isLoading} disabled={checkError(errors) || isLoading} onPress={handleModifyUser} maxFontSizeMultiplier={1}>{t("save")}</Button>
+                                <Button mode='contained' loading={isLoading} disabled={checkObjectError(errors) || isLoading} onPress={handleModifyUser} maxFontSizeMultiplier={1}>{t("save")}</Button>
                             </>
                             : <>
                                 <Button mode="text" onPress={() => navigation.goBack()} style={{ marginHorizontal: 4 }} maxFontSizeMultiplier={1} >{t("back")}</Button>

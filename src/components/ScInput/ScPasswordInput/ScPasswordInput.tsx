@@ -60,14 +60,14 @@ const ScPasswordInput = (props: ScInputProps<ScDataTypeList.Password>) => {
                 label={label}
                 key={`password${itemKey}${positionID}${rowIndex}`}
                 disabled={!isEdit}
-                placeholder={placeholder}
+                placeholder={isEdit ? t(placeholder) : ""}
                 value={textValue}
                 error={errInfo.isErr}
                 left={errInfo.isErr
                     ? <TextInput.Icon
                         icon="alert"
                         color={theme.colors.error}
-                        onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                        onPress={() => Alert.alert(t("error"), t(errInfo.msg))}
                         disabled={!isEdit}
                     />
                     : null}

@@ -23,7 +23,7 @@ const ScPersonSelect = (props: ScInputProps<ScDataTypeList.Person>) => {
         itemKey,
         initValue = zeroValue,
         pickDone,
-        placeholder,
+        placeholder="",
         errInfo = { isErr: false, msg: "" },
         width = "100%",
         height = 68
@@ -74,7 +74,7 @@ const ScPersonSelect = (props: ScInputProps<ScDataTypeList.Person>) => {
                 mode="outlined"
                 keyboardType="default"
                 label={label}
-                placeholder={isEdit ? placeholder : " "}
+                placeholder={isEdit ? t(placeholder) : ""}
                 editable={false}
                 disabled={!isEdit}
                 value={person.name}
@@ -85,7 +85,7 @@ const ScPersonSelect = (props: ScInputProps<ScDataTypeList.Person>) => {
                             ? <TextInput.Icon
                                 icon="alert"
                                 color={theme.colors.error}
-                                onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                                onPress={() => Alert.alert(t("error"), errInfo.msg)}
                             />
                             : null
                         : <TextInput.Icon
@@ -101,7 +101,7 @@ const ScPersonSelect = (props: ScInputProps<ScDataTypeList.Person>) => {
                             ? <TextInput.Icon
                                 icon="alert"
                                 color={theme.colors.error}
-                                onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                                onPress={() => Alert.alert(t("error"), errInfo.msg)}
                             />
                             : null
                         : <TextInput.Icon

@@ -16,10 +16,8 @@ import { UserDefineCategory } from "./udc";
 import { ScFile } from "./file";
 import { VoucherFile } from "./voucherFile";
 import { ScDataTypeList } from "./scDataType";
-import type { Dayjs } from "dayjs";
 import { TFunction } from "i18next";
 import { MD3Theme } from "react-native-paper";
-
 
 export interface MarkPosition {
     x: number;

@@ -22,7 +22,7 @@ const ScEmailInput = (props: ScInputProps<ScDataTypeList.Email>) => {
         isBackendTest = false,
         backendTest,
         pickDone,
-        placeholder,
+        placeholder="",
         errInfo = { isErr: false, msg: "" },
         width = "100%",
         height = 68
@@ -71,7 +71,7 @@ const ScEmailInput = (props: ScInputProps<ScDataTypeList.Email>) => {
                 label={label}
                 id={`${itemKey}${positionID}${rowIndex}`}
                 disabled={!isEdit}
-                placeholder={placeholder}
+                placeholder={isEdit ? t(placeholder) : ""}
                 onChangeText={(text) => handleOnChangeText(text)}
                 value={textValue}
                 error={errInfo.isErr}

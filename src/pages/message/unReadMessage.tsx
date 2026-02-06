@@ -15,7 +15,6 @@ const UnReadMessages = () => {
     const [refreshing, setRefreshing] = useState(false);
     const theme = useTheme();
     const unReadMessages = useAppSelector(state => state.dynamicData.messages);
-    const isOffline = useAppSelector(state => state.appInfo.isOffline);
     const { t } = useTranslation();
     // Actions after Press read button
     const handleToReadMessage = async (msg: CommentMessage) => {
@@ -41,7 +40,7 @@ const UnReadMessages = () => {
                 <Card.Title
                     title={item.creator.name}
                     subtitle={dayjs(item.createDate).format("YYYY-MM-DD HH:mm:ss")}
-                    left={() => <PersonAvatar url={item.creator.avatar.fileUrl} name={item.creator.name} isOffLine={isOffline} />}
+                    left={() => <PersonAvatar url={item.creator.avatar.fileUrl} name={item.creator.name} />}
                     titleMaxFontSizeMultiplier={1.5}
                     subtitleMaxFontSizeMultiplier={1.5}
                 />

@@ -18,7 +18,7 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
         itemKey,
         initValue = "",
         pickDone,
-        placeholder,
+        placeholder="",
         errInfo = { isErr: false, msg: "" },
         width = "100%",
         height = 68,
@@ -66,7 +66,7 @@ const ScTextInput = (props: ScInputProps<ScDataTypeList.Text>) => {
                 label={label}
                 id={`${itemKey}${positionID}${rowIndex}`}
                 disabled={!isEdit}
-                placeholder={isEdit ? placeholder : ""}
+                placeholder={isEdit ? t(placeholder) : ""}
                 value={textValue}
                 error={errInfo.isErr}
                 left={buttonPosition === "right"

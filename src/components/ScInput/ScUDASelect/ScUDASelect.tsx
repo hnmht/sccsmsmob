@@ -76,7 +76,7 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
                 mode="outlined"
                 keyboardType="default"
                 label={label}
-                placeholder={isEdit ? placeholder : ""}
+                placeholder={isEdit ? t(placeholder) : ""}
                 editable={true}
                 disabled={!isEdit}
                 value={currentDoc.name}
@@ -86,7 +86,7 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
                         ? <TextInput.Icon
                             icon="alert"
                             color={theme.colors.error}
-                            onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                            onPress={() => Alert.alert(t("error"), errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon
@@ -101,7 +101,7 @@ const ScUDASelect = (props: ScInputProps<ScDataTypeList.UserDefinedArchive>) => 
                         ? <TextInput.Icon
                             icon="alert"
                             color={theme.colors.error}
-                            onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                            onPress={() => Alert.alert(t("error"), errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon

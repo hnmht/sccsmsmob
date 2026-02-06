@@ -57,14 +57,14 @@ const ScNumberInput = (props: ScInputProps<ScDataTypeList.Number>) => {
                 label={label}
                 key={`number${itemKey}${positionID}${rowIndex}`}
                 disabled={!isEdit}
-                placeholder={placeholder}
+                placeholder={isEdit ? t(placeholder) : ""}
                 value={formatWithThousands(textValue)}
                 error={errInfo.isErr}
                 left={errInfo.isErr
                     ? <TextInput.Icon
                         icon="alert"
                         color={theme.colors.error}
-                        onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                        onPress={() => Alert.alert(t("error"), errInfo.msg)}
                         disabled={!isEdit}
                     />
                     : null}

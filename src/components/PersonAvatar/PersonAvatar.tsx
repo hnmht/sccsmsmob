@@ -1,13 +1,14 @@
 import { Avatar } from "react-native-paper";
+import { useAppSelector } from "../../store/hooks";
 
 interface PersonAvatarProps {
     url: string | undefined;
-    isOffLine: number;
     name: string;
 }
 
-function PersonAvatar({ url, isOffLine, name }: PersonAvatarProps) {
-    const displayIcon = url === "" || url === undefined || isOffLine === 1;
+function PersonAvatar({ url, name }: PersonAvatarProps) {
+    const isOffline = useAppSelector(state => state.appInfo.isOffline);
+    const displayIcon = (url === "" || url === undefined || isOffline === 1);
     return (
         displayIcon
             ? <Avatar.Text size={48} label={name.charAt(0).toUpperCase()} />

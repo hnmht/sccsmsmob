@@ -73,7 +73,7 @@ const ScDcSelect = (props: ScInputProps<ScDataTypeList.SimpDC>) => {
                 mode="outlined"
                 keyboardType="default"
                 label={label}
-                placeholder={isEdit ? placeholder : ""}
+                placeholder={isEdit ? t(placeholder) : ""}
                 editable={false}
                 disabled={!isEdit}
                 value={currentDc.name}
@@ -83,7 +83,7 @@ const ScDcSelect = (props: ScInputProps<ScDataTypeList.SimpDC>) => {
                         ? <TextInput.Icon
                             icon="alert"
                             color={theme.colors.error}
-                            onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                            onPress={() => Alert.alert(t("error"), errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon
@@ -98,7 +98,7 @@ const ScDcSelect = (props: ScInputProps<ScDataTypeList.SimpDC>) => {
                         ? <TextInput.Icon
                             icon="alert"
                             color={theme.colors.error}
-                            onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                            onPress={() => Alert.alert(t("error"), errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon

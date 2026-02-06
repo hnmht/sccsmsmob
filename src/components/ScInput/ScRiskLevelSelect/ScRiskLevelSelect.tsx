@@ -74,7 +74,7 @@ const ScRLSelect = (props: ScInputProps<ScDataTypeList.RiskLevel>) => {
                 mode="outlined"
                 keyboardType="default"
                 label={label}
-                placeholder={isEdit ? placeholder : ""}
+                placeholder={isEdit ? t(placeholder) : ""}
                 editable={false}
                 disabled={!isEdit}
                 value={currentDoc.name}
@@ -103,7 +103,7 @@ const ScRLSelect = (props: ScInputProps<ScDataTypeList.RiskLevel>) => {
                         ? <TextInput.Icon
                             icon="alert"
                             color={theme.colors.error}
-                            onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                            onPress={() => Alert.alert(t("error"), errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon
@@ -118,7 +118,7 @@ const ScRLSelect = (props: ScInputProps<ScDataTypeList.RiskLevel>) => {
                         ? <TextInput.Icon
                             icon="alert"
                             color={theme.colors.error}
-                            onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                            onPress={() => Alert.alert(t("error"), errInfo.msg)}
                         />
                         : null
                     : <TextInput.Icon

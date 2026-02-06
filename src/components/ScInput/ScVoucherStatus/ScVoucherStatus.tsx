@@ -61,7 +61,7 @@ const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
                         mode="outlined"
                         keyboardType="default"
                         label={label}
-                        placeholder={isEdit ? placeholder : ""}
+                        placeholder={isEdit ? t(placeholder) : ""}
                         editable={false}
                         disabled={!isEdit}
                         value={VoucherStatus[fieldValue]}
@@ -71,7 +71,7 @@ const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
                                 ? <TextInput.Icon
                                     icon="alert"
                                     color={theme.colors.error}
-                                    onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                                    onPress={() => Alert.alert(t("error"), errInfo.msg)}
                                     disabled={!isEdit}
                                 />
                                 : null
@@ -87,7 +87,7 @@ const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
                                 ? <TextInput.Icon
                                     icon="alert"
                                     color={theme.colors.error}
-                                    onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                                    onPress={() => Alert.alert(t("error"), errInfo.msg)}
                                     disabled={!isEdit}
                                 />
                                 : null

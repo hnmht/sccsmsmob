@@ -62,7 +62,7 @@ const ScSelectYesOrNo = (props: ScInputProps<ScDataTypeList.SelectYesOrNo>) => {
                         mode="outlined"
                         keyboardType="default"
                         label={label}
-                        placeholder={isEdit ? placeholder : ""}
+                        placeholder={isEdit ? t(placeholder) : ""}
                         editable={false}
                         disabled={!isEdit}
                         value={t(valuesList[fieldValue])}
@@ -72,7 +72,7 @@ const ScSelectYesOrNo = (props: ScInputProps<ScDataTypeList.SelectYesOrNo>) => {
                                 ? <TextInput.Icon
                                     icon="alert"
                                     color={theme.colors.error}
-                                    onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                                    onPress={() => Alert.alert(t("error"), errInfo.msg)}
                                     disabled={!isEdit}
                                 />
                                 : null
@@ -88,7 +88,7 @@ const ScSelectYesOrNo = (props: ScInputProps<ScDataTypeList.SelectYesOrNo>) => {
                                 ? <TextInput.Icon
                                     icon="alert"
                                     color={theme.colors.error}
-                                    onPress={() => Alert.alert(t("err"), errInfo.msg)}
+                                    onPress={() => Alert.alert(t("error"), errInfo.msg)}
                                     disabled={!isEdit}
                                 />
                                 : null

@@ -24,7 +24,7 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
         itemKey,
         initValue = zeroValue,
         pickDone,
-        placeholder,
+        placeholder = "",
         errInfo = { isErr: false, msg: "" },
         width = "100%",
         height = 68
@@ -76,7 +76,7 @@ const ScDeptSelect = (props: ScInputProps<ScDataTypeList.SimpDept>) => {
                 mode="outlined"
                 keyboardType="default"
                 label={label}
-                placeholder={isEdit ? placeholder : ""}
+                placeholder={isEdit ? t(placeholder) : ""}
                 editable={false}
                 disabled={!isEdit}
                 value={currentDept.name}

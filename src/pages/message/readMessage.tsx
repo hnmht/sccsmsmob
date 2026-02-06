@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { View, FlatList } from "react-native";
 import { Text, Card, useTheme, IconButton } from "react-native-paper";
-import { useAppSelector } from "../../store/hooks";
 import { useTranslation } from "react-i18next";
 import { DateTimeFormat } from "../../i18n/dayjs";
 import ScInput from "../../components/ScInput";
@@ -20,8 +19,7 @@ const ReadMessage = () => {
     const [readMsgs, setReadMsgs] = useState([]);
     const queryFields = useMemo(generateMSGQueryFields, []);
     const theme = useTheme();
-    const isOffline = useAppSelector(state => state.appInfo.isOffline);
-    const { t } = useTranslation(); 
+    const { t } = useTranslation();
 
     const handleGetValue = (value: Condition[]) => {
         setShowDialog(false);
@@ -30,7 +28,7 @@ const ReadMessage = () => {
         handleReqReadMsgs(value);
     };
     // Request Message from backend server
-    const handleReqReadMsgs = async (cons: Condition[] = conditions) => {   
+    const handleReqReadMsgs = async (cons: Condition[] = conditions) => {
         let queryString = transConditionsToString(cons);
         let res = await reqReadComments({ queryString: queryString });
         let newRows = [];
@@ -38,7 +36,7 @@ const ReadMessage = () => {
             newRows = res.data;
         }
         setReadMsgs(newRows);
- 
+
     };
     const renderItem = ({ item }: { item: CommentMessage }) => {
         return (
@@ -46,7 +44,7 @@ const ReadMessage = () => {
                 <Card.Title
                     title={item.creator.name}
                     subtitle={DateTimeFormat(item.createDate, "LLL")}
-                    left={() => <PersonAvatar url={item.creator.avatar.fileUrl} name={item.creator.name} isOffLine={isOffline} />}
+                    left={() => <PersonAvatar url={item.creator.avatar.fileUrl} name={item.creator.name} />}
                     titleMaxFontSizeMultiplier={1.5}
                     subtitleMaxFontSizeMultiplier={1.5}
                 />
@@ -78,7 +76,7 @@ const ReadMessage = () => {
             </Card>
         );
     };
-  
+
     return (
         <View style={{ flex: 1 }}>
             <View style={{ minHeight: 40, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>

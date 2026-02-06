@@ -152,10 +152,10 @@ const Setting = () => {
             <ActivityOverlay
                 visible={overlayStatus.visible}
                 description={overlayStatus.description}
-            />          
+            />
             <Surface style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: 80 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", paddingLeft: 16 }}>
-                    <PersonAvatar url={user.avatar.fileUrl} isOffLine={appInfo.isOffline} name={user.name} />
+                    <PersonAvatar url={user.avatar.fileUrl} name={user.name} />
                     <View style={{ marginLeft: 8 }}>
                         <Text variant="titleLarge" maxFontSizeMultiplier={1}>{user.name}</Text>
                         {user.department.id !== 0
@@ -248,7 +248,7 @@ const Setting = () => {
                     </Button>
                 </View>
             </ScrollView>
-            
+
         </SafeAreaView>
     );
 };

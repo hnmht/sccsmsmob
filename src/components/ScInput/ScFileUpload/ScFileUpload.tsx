@@ -62,7 +62,7 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
                 mode="outlined"
                 keyboardType="default"
                 label={label}
-                placeholder={isEdit ? placeholder : ""}
+                placeholder={isEdit ? t(placeholder) : ""}
                 editable={false}
                 disabled
                 value={`${files.length}`}
