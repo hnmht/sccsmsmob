@@ -88,9 +88,11 @@ const EPCPIcker = ({ pressItemAction, cancelAction, currentItem, t, theme }: ScP
     return (
         <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
-                title="selectRecipients"
+                title="chooseCategory"
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             {allOrRecent === "all"
                 ? <ScrollView>
@@ -116,6 +118,8 @@ const EPCPIcker = ({ pressItemAction, cancelAction, currentItem, t, theme }: ScP
             <ScHandSwitch
                 docRefresh={handleDocRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
         </View>
     )

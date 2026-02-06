@@ -91,9 +91,11 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem, t, theme }: Sc
     return (
         <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
-                title="selectRecipients"
+                title={t("chooseDept")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             {allOrRecent === "all"
                 ? <ScrollView>
@@ -119,6 +121,8 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem, t, theme }: Sc
             <ScHandSwitch
                 docRefresh={handleDocRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
         </View>
     )

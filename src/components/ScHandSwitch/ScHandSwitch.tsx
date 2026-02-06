@@ -1,18 +1,17 @@
-import { AnimatedFAB,IconButton, useTheme } from "react-native-paper";
-import { useTranslation } from "react-i18next";
+import { AnimatedFAB, IconButton, MD3Theme } from "react-native-paper";
 import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { changeSwapPosition } from "../../store/slice/swapPosition";
-
+import { TFunction } from "i18next";
 
 interface ScHandSwitchProps {
     docRefresh: () => void;
     cancelAction: () => void;
+    theme: MD3Theme;
+    t: TFunction;
 }
 
 function ScHandSwitch(props: ScHandSwitchProps) {
-    const { docRefresh, cancelAction } = props;
-    const theme = useTheme();
-    const { t } = useTranslation();
+    const { docRefresh, cancelAction, theme, t } = props;
     const dispatch = useAppDispatch();
     const isOffline = useAppSelector(state => state.appInfo.isOffline);
     // Command buttons position

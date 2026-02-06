@@ -1,8 +1,7 @@
 import { EpochTime } from "../../i18n/dayjs";
 import { TC } from "../types/tc";
 import { getEmptyPerson } from "./person";
-import { getEmptyVoucherFile } from "./pubic";
-
+import { getEmptyVoucherFile } from "./voucherFile";
 export function getEmptyTC(): TC {
     const tc: TC = {
         id: 0,
@@ -20,6 +19,5 @@ export function getEmptyTC(): TC {
         ts: EpochTime,
         dr: 0,
     }
-
-    return tc
+    return tc;
 }

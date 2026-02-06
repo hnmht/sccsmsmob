@@ -81,9 +81,11 @@ const PersonPicker = ({ t, cancelAction, pressItemAction, currentItem, theme }: 
     return (
         <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
             <ScSegmentAllOrRecent
-                title="selectRecipients"
+                title={t("choosePerson")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             <DocList<Person>
                 rows={persons}
@@ -96,6 +98,8 @@ const PersonPicker = ({ t, cancelAction, pressItemAction, currentItem, theme }: 
             <ScHandSwitch
                 cancelAction={cancelAction}
                 docRefresh={handlePersonRefresh}
+                theme={theme}
+                t={t}
             />
         </View>
     );

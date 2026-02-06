@@ -11,9 +11,9 @@ import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
 // 901 SeaCloud Avatar Upload Component
 const ScAvatarUpload = ({
-    positionID,
-    rowIndex,
-    isEdit,
+    positionID = 0,
+    rowIndex = 0,
+    isEdit = false,
     itemKey,
     initValue,
     pickDone,

@@ -80,9 +80,11 @@ const EPTPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScP
     return (
         <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
-                title={t("chooseTemplate")}
+                title={t("chooseEPT")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             <DocList
                 rows={docs}
@@ -95,6 +97,8 @@ const EPTPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScP
             <ScHandSwitch
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
 
         </View>

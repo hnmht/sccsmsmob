@@ -89,6 +89,8 @@ const EPAPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScP
                 title={t("chooseEPA")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             <DocList
                 rows={docs}
@@ -101,6 +103,8 @@ const EPAPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScP
             <ScHandSwitch
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
         </View>
     );

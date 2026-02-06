@@ -78,9 +78,11 @@ const UDCPicker = ({ cancelAction, currentItem, pressItemAction, t, theme }: ScP
     return (
         <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
-                title="selectRecipients"
+                title={t("chooseUDC")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             <DocList
                 rows={docs}
@@ -93,6 +95,8 @@ const UDCPicker = ({ cancelAction, currentItem, pressItemAction, t, theme }: ScP
             <ScHandSwitch
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
         </View>
     );

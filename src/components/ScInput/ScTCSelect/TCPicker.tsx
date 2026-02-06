@@ -83,9 +83,11 @@ const TCPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPi
     return (
         <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
-                title="chooseTC"
+                title={t("chooseTC")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             <DocList
                 rows={docs}
@@ -98,6 +100,8 @@ const TCPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPi
             <ScHandSwitch
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
         </View>
     );

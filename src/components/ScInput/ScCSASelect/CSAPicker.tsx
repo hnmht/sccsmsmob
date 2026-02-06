@@ -95,6 +95,8 @@ const CSAPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScP
                 title={t("chooseCSA")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             <DocList
                 rows={docs}
@@ -108,6 +110,8 @@ const CSAPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScP
             <ScHandSwitch
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
         </View>
     );

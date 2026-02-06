@@ -99,6 +99,8 @@ const UDAPicker = ({ udc, pressItemAction, cancelAction, currentItem, t }: UDAPi
                 title={t("chooseUDA", { udcName: udc.name })}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             <DocList
                 rows={docs}
@@ -112,6 +114,8 @@ const UDAPicker = ({ udc, pressItemAction, cancelAction, currentItem, t }: UDAPi
             <ScHandSwitch
                 docRefresh={handleDocRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
 
         </View>

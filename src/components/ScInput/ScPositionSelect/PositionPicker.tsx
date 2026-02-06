@@ -80,39 +80,12 @@ const PositionPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }
 
     return (
         <View style={{ flex: 1 }}>
-            <View style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: 40,
-                width: "100%",
-                backgroundColor: theme.colors.background
-            }}>
-                <View style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <Text variant="titleMedium">选择岗位</Text>
-                </View>
-                <View style={{ width: "100%", minHeight: 42, padding: 2 }}>
-                    <SegmentedButtons
-                        value={allOrRecent}
-                        onValueChange={(value) => handleChangeSeg(value)}
-                        buttons={[
-                            {
-                                value: "recent",
-                                label: "最近"
-                            },
-                            {
-                                value: "all",
-                                label: "全部"
-                            }
-                        ]}
-                    />
-                </View>
-            </View>
             <ScSegmentAllOrRecent
-                title={t("position")}
+                title={t("selectPosition")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             <DocList
                 rows={docs}
@@ -125,6 +98,8 @@ const PositionPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }
             <ScHandSwitch
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
         </View>
     );

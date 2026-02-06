@@ -87,9 +87,11 @@ const PPEPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScP
     return (
         <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
-                title="ppe"
+                title={t("choosePPE")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             <DocList
                 rows={docs}
@@ -102,6 +104,8 @@ const PPEPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScP
             <ScHandSwitch
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
         </View>
     );

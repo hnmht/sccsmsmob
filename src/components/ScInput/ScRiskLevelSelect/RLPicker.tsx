@@ -85,9 +85,11 @@ const RLPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPi
     return (
         <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
-                title={t("riskLevel")}
+                title={t("chooseRiskLevel")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             <DocList
                 rows={docs}
@@ -100,6 +102,8 @@ const RLPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPi
             <ScHandSwitch
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
         </View>
     );

@@ -1,16 +1,16 @@
-import { useTranslation } from "react-i18next";
+import { TFunction } from "i18next";
 import { View } from "react-native";
-import { SegmentedButtons, Text, useTheme } from "react-native-paper";
+import { MD3Theme, SegmentedButtons, Text } from "react-native-paper";
 
 interface ScSegmentAllOrRecentProps {
     title: string;
     allOrRecent: "recent" | "all";
     setAllOrRecent: (value: "recent" | "all") => void;
+    theme: MD3Theme;
+    t: TFunction
 }
 
-function ScSegmentAllOrRecent({ title, allOrRecent, setAllOrRecent }: ScSegmentAllOrRecentProps) {
-    const theme = useTheme();
-    const { t } = useTranslation();
+function ScSegmentAllOrRecent({ title, allOrRecent, setAllOrRecent, theme, t }: ScSegmentAllOrRecentProps) {
     return (
         <View style={{
             display: "flex",
@@ -22,7 +22,7 @@ function ScSegmentAllOrRecent({ title, allOrRecent, setAllOrRecent }: ScSegmentA
             backgroundColor: theme.colors.background
         }}>
             <View style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                <Text variant="titleMedium">{t(title)}</Text>
+                <Text variant="titleMedium">{title}</Text>
             </View>
             <View style={{ width: "100%", minHeight: 42, padding: 2 }}>
                 <SegmentedButtons

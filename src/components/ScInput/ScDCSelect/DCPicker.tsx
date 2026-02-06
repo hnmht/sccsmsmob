@@ -88,9 +88,11 @@ const DcPicker = ({ pressItemAction, cancelAction, currentItem, t, theme }: ScPi
     return (
         <View style={{ flex: 1 }}>
             <ScSegmentAllOrRecent
-                title="dc"
+                title={t("chooseCategory")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             {allOrRecent === "all"
                 ? <ScrollView>
@@ -116,6 +118,8 @@ const DcPicker = ({ pressItemAction, cancelAction, currentItem, t, theme }: ScPi
             <ScHandSwitch
                 docRefresh={handleDocRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
         </View>
     )

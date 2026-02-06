@@ -89,9 +89,11 @@ const SICPicker = ({ pressItemAction, cancelAction, currentItem, t,theme }: ScPi
     return (
         <View style={{ flex: 1 }}>           
             <ScSegmentAllOrRecent
-                title="csc"
+                title={t("chooseCategory")}
                 allOrRecent={allOrRecent}
                 setAllOrRecent={handleChangeSeg}
+                theme={theme}
+                t={t}
             />
             {allOrRecent === "all"
                 ? <ScrollView>
@@ -117,6 +119,8 @@ const SICPicker = ({ pressItemAction, cancelAction, currentItem, t,theme }: ScPi
             <ScHandSwitch
                 docRefresh={handleDocRefresh}
                 cancelAction={cancelAction}
+                theme={theme}
+                t={t}
             />
 
         </View>
