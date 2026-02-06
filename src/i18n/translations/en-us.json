@@ -696,6 +696,7 @@
     "recents":"Recents",
     "mustBeNumber":"Must be a number",
     "photos":"Photos",
+    "encryptionFailed":"Encryption failed",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

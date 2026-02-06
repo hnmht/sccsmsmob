@@ -4,8 +4,7 @@ import { useTranslation } from "react-i18next";
 import Icon from "@react-native-vector-icons/material-design-icons";
 import { pubParams } from "../pub/pubParams";
 
-const itemSpace = 20;
-
+const itemSpace = 12;
 interface ScFuncIconProps {
     colors: string[];
     iconName: "bookmark-multiple" | "run-fast" | "clipboard-text-search" | "bell-check" | "book-open-outline" | "folder-open-outline" | "google-classroom" | "face-mask-outline";
@@ -34,7 +33,7 @@ function ScFuncIcon({ colors, iconName, title, onTouch, iconColor, textColor, di
             disabled={disabled}
         >
             <LinearGradient colors={colors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.linearGradient}>
-                <Icon name={iconName} color={iconColor} size={60 / pubParams.screen.fontScale} />
+                <Icon name={iconName} color={iconColor} size={32 / pubParams.screen.fontScale}  />
                 <Text style={{ ...styles.text, color: textColor }} allowFontScaling={false} >{t(title)}</Text>
             </LinearGradient>
         </TouchableOpacity>
@@ -50,11 +49,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 15,
-    },
-    icon: {
-        width: 40,
-        height: 40,
-    },
+    },    
     text: {
         marginTop: 10,
         fontSize: 16,

@@ -56,9 +56,8 @@ const ChangePassword = () => {
     const { t } = useTranslation();
     const dataErrs = useMemo(() => validateData(params), [params]);
 
-    // 
+    // Actions after  ScInput Components Input value
     const handleGetValue = <T extends keyof InitialValueMap>(value: InitialValueMap[T], itemkey: string, positionID: 0 | 1 | 2, rowIndex: number, errMsg: ErrMsg) => {
-        //更新输入的用户信息
         setParams((prevState) => {
             return ({
                 ...prevState,
@@ -79,11 +78,11 @@ const ChangePassword = () => {
         const publicKey = resPubKey.data;
         let thisParams = cloneDeep(params);
         let encryptor = new jsencrypt();
-        encryptor.setPublicKey(publicKey); 
+        encryptor.setPublicKey(publicKey);
 
         const encPassword = encryptor.encrypt(thisParams.password);
         if (!encPassword) {
-            Alert.alert(t("error"), "原密码加密失败");
+            Alert.alert(t("error"), t("encryptionFailed"));
             setIsLoading(false);
             return;
         }
@@ -91,7 +90,7 @@ const ChangePassword = () => {
 
         const encNewPassword = encryptor.encrypt(thisParams.newPassword);
         if (!encNewPassword) {
-            Alert.alert("错误", "新密码加密失败");
+            Alert.alert(t("error"), t("encryptionFailed"));
             setIsLoading(false);
             return;
         }
@@ -99,7 +98,7 @@ const ChangePassword = () => {
 
         const encConfirmPassword = encryptor.encrypt(thisParams.confirmNewPassword);
         if (!encConfirmPassword) {
-            Alert.alert("错误", "确认新密码加密失败");
+            Alert.alert(t("error"), t("encryptionFailed"));
             setIsLoading(false);
             return;
         }
@@ -107,11 +106,11 @@ const ChangePassword = () => {
 
         const resChangePwd = await reqChangePwd(thisParams);
 
-        if (resChangePwd.status) {       
+        if (!resChangePwd.status) {
             setIsLoading(false);
             return
         }
-        Alert.alert("tip", "修改密码成功,请记住新密码!");
+        Alert.alert(t("tip"), t("modifySuccessful"));
         setIsLoading(false);
         navigation.goBack();
     };
