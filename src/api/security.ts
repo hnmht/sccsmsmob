@@ -9,3 +9,12 @@ export function reqGetPublicKey(isLoading: boolean = true): Promise<APIResponse<
         isLoading
     });
 }
+
+// Validate Token
+export function reqValidateToken(isLoading: boolean = true): Promise<APIResponse<boolean>> {
+    return request({
+        url: "/auth/validatetoken",
+        method: "post",
+        isLoading
+    });
+}

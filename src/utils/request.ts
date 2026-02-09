@@ -8,6 +8,7 @@ import axios, {
 import { store } from "../store";
 import { i18n } from "../i18n/i18n";
 import { requestStart, requestEnd } from "../store/slice/reqStatus";
+import { setUserToken } from "../store/slice/user";
 import { APIResponse, ResSuccessCode, ResRemoveTokenCodes } from "../dataType/types/response";
 import { CustomRequestConfig } from "../dataType//types/request";
 
@@ -68,10 +69,8 @@ service.interceptors.response.use(
 
         if (!res.status) {
             Alert.alert(i18n.t("error"), res.msg || "请求返回错误", [{ text: "OK" }], { cancelable: false });
-
             if (ResRemoveTokenCodes.includes(res.resKey)) {
-                // TODO: 你可以在这里 dispatch 清除 token 的 action
-                // store.dispatch(userSlice.actions.clearToken());
+                store.dispatch(setUserToken(""));
             }
         }
 
@@ -95,5 +94,4 @@ export default function request<T = any>(config: CustomRequestConfig): Promise<A
     // 将 config 断言为 InternalAxiosRequestConfig 传入 axios（axios 内部会做转换）
     return service(config as InternalAxiosRequestConfig).then((response: AxiosResponse<APIResponse<T>>) => response.data);
 }
-
 

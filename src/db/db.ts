@@ -34,7 +34,7 @@ export function initDb() {
             id: 0,
             code: "",
             name: "",
-            avatar: { id: 0, fileUrl: "", dr: 0 },
+            avatar: { id: 0, fileUrl: "", dr: 0, source: "" },
             deptID: 0,
             deptCode: "",
             deptName: "",
@@ -68,11 +68,15 @@ export function initDb() {
             id: 0,
             code: "",
             name: "",
-            avatar: { id: 0, fileUrl: "" },
+            avatar: { id: 0, fileUrl: "", dr: 0, source: "" },
             token: "",
             menuList: [],
             person: emptyPerson,
-            department: emptySimpDept
+            department: emptySimpDept,
+            mobile: "",
+            email: "",
+            gender: 1,
+            description: ""
         };
         const userStr: string = JSON.stringify(emptyUserInfo)
         DB.execute(`insert into appinfo(appname,appversion,dbid,serveraddr,globalpath,

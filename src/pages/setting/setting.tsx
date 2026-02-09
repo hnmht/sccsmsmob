@@ -29,6 +29,8 @@ import { PPERepo } from "../../db/crud/ppe";
 import { useRootNavigation, useSettingNavigation } from "../../navigation/config/screenParams";
 import { reqLogout } from "../../api/login";
 import ChangeLanguage from "../../components/ChangeLang/changeLang";
+import { reqValidateToken } from "../../api/security";
+import { ResRemoveTokenCodes } from "../../dataType/types/response";
 
 const Setting = () => {
     const navigation = useRootNavigation();
@@ -56,6 +58,16 @@ const Setting = () => {
 
     // Download data
     const handleDownOfflineData = async () => {
+        // Validate Token
+        const validateRes = await reqValidateToken();
+        if (!validateRes.status) {
+            if (ResRemoveTokenCodes.includes(validateRes.resKey)) {
+                return
+            }
+            if (validateRes.resKey === "CodeAboutToExpireToken") {
+                return
+            }
+        }
         try {
             setOverlayStatus({ visible: true, description: t("syncUDC") });
             await UDCRepo.initCache();
@@ -109,13 +121,13 @@ const Setting = () => {
             await getEORefsDataWithImage();
 
             setOverlayStatus({ visible: false, description: "" });
-            // Switch to offline mode
-            dispatch(setIsOffline(1));
+
         } catch (err) {
             setOverlayStatus({ visible: false, description: "" });
-            Alert.alert(t("error"), t("syncErrorMsg"))
-            dispatch(setIsOffline(1));
+            Alert.alert(t("error"), t("syncErrorMsg"));
         }
+        // Switch to offline mode
+        dispatch(setIsOffline(1));
     };
     // Login out
     const handleExitLogin = () => {
