@@ -8,11 +8,11 @@ interface PersonAvatarProps {
 
 function PersonAvatar({ url, name }: PersonAvatarProps) {
     const isOffline = useAppSelector(state => state.appInfo.isOffline);
-    const displayIcon = (url === "" || url === undefined || isOffline === 1);
+    const showAvatar = url === undefined || url === "" || url === null || isOffline === 1;
     return (
-        displayIcon
+        showAvatar
             ? <Avatar.Text size={48} label={name.charAt(0).toUpperCase()} />
-            : <Avatar.Image size={48} source={{ uri: url }} onError={(err) => console.error(err)} />
+            : <Avatar.Image size={48} source={{ uri: url }} onError={(err) => { console.log(err) }} />
     );
 };
 
