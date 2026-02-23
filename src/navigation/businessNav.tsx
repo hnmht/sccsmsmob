@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 
 const BusinessStack = createNativeStackNavigator<BusinessNavParamList>();
 const BusinessNav = () => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     return (
         <BusinessStack.Navigator initialRouteName="BusinessScreen">
             <BusinessStack.Screen name="BusinessScreen" options={{ headerShown: true, title: t("business") }} component={BusinessScreen} />
@@ -26,7 +26,7 @@ const BusinessNav = () => {
             <BusinessStack.Screen
                 name="WorkOrder"
                 options={{ headerShown: false, title: t("MenuWO") }}
-                initialParams={{ isNew: true, isModify: false, oriWO: undefined }}
+                initialParams={{ isLocal: false, isNew: true, isModify: false, oriWO: undefined }}
                 component={WorkOrder}
             />
             <BusinessStack.Screen

@@ -15,7 +15,7 @@ import { useBusinessNavigation } from "../../navigation/config/screenParams";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { cloneDeep } from "lodash";
 
-const searchFields = ["code", "name", "deptname", "mobile", "email", "description"];
+const searchFields = ["code", "name", "deptName", "mobile", "email", "description"];
 
 const AddressBook = () => {
     const theme = useTheme();
