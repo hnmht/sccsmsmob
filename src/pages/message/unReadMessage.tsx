@@ -3,6 +3,7 @@ import { FlatList, View, Alert } from "react-native";
 import { Card, Text, useTheme, Button, IconButton } from "react-native-paper";
 import { useAppSelector } from "../../store/hooks";
 import { dayjs } from "../../i18n/i18n";
+import { DateTimeFormat } from "../../i18n/dayjs";
 import ScInput from "../../components/ScInput";
 import PersonAvatar from "../../components/PersonAvatar/PersonAvatar";
 import { reqToReadMsg } from "../../api/message";
@@ -39,7 +40,7 @@ const UnReadMessages = () => {
             <Card style={{ margin: 4 }}>
                 <Card.Title
                     title={item.creator.name}
-                    subtitle={dayjs(item.createDate).format("YYYY-MM-DD HH:mm:ss")}
+                    subtitle={DateTimeFormat(item.createDate,"LLL")}
                     left={() => <PersonAvatar url={item.creator.avatar.fileUrl} name={item.creator.name} />}
                     titleMaxFontSizeMultiplier={1.5}
                     subtitleMaxFontSizeMultiplier={1.5}

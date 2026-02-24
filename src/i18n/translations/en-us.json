@@ -697,6 +697,10 @@
     "mustBeNumber":"Must be a number",
     "photos":"Photos",
     "encryptionFailed":"Encryption failed",
+    "lineCount":"Line Count",
+    "operationDate":"Operation Date",
+    "local":"Local",
+    "remote":"Remote",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

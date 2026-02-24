@@ -1,88 +1,86 @@
 import { useEffect, useState } from "react";
 import { View, Alert } from "react-native";
-import { Text, IconButton, useTheme, Card, Button, Surface } from "react-native-paper";
-import { useSelector } from "react-redux";
-
+import { IconButton, useTheme, Card, Button, Surface } from "react-native-paper";
+import { cloneDeep } from "lodash";
 import DocList from "../../components/DocList/DocList";
-import WOCardContent from "./woCardContent";
-
-import { getLocalWOs, delLocalWO } from "../../db/table/workorderdoc";
+import WOCardContent from "./WOCardContent";
 import { wosSortByid } from "./constructor";
-import { DeepCloneJSON } from "../../utils/tools";
 import { reqAddWO } from "../../api/workOrder";
 import { transWOToBackend } from "../workOrder/constructor";
+// import { transWOToBackend } from "../workOrder/constructor";
+import { WorkOrder } from "../../dataType/types/workOrder";
+import { useBusinessNavigation } from "../../navigation/config/screenParams";
+import { useAppSelector } from "../../store/hooks";
+import { useTranslation } from "react-i18next";
+import { WORepo } from "../../db/crud/workorder";
 
-const LocalWorkOrderList = (props) => {
-    const { navigation, route } = props;
-    const [localWOs, setLocalWOs] = useState([]);
-    const user = useSelector(state => state.user);
+const LocalWorkOrderList = () => {
+    const navigation = useBusinessNavigation();
+    const [localWOs, setLocalWOs] = useState<WorkOrder[]>([]);
+    const user = useAppSelector(state => state.user);
+    const { t } = useTranslation();
     const theme = useTheme();
-    //命令按钮位置
-    const { buttonPosition } = useSelector(state => state.swapposition);
-    //获取本地暂存指令单
+    // Commands button position
+    const { buttonPosition } = useAppSelector(state => state.swapPosition);
+    // Get local Work order list
     const handleGetLocalWOs = () => {
-        let newWos = getLocalWOs(user.id);
+        let newWos = WORepo.getUserVouchers(user.id);
         setLocalWOs(newWos);
     };
-
     useEffect(() => {
         handleGetLocalWOs();
     }, []);
 
-    //新增
+    // Actions after press add button
     const handleAdd = () => {
-        navigation.navigate("WorkOrderDoc", { isLocal: false, isNew: true, isModify: false, oriWO: undefined, refreshAction: () => handleGetLocalWOs() });
+        navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: undefined });
     };
-    //删除
-    const handleDelete = (item) => {
-        //删除本地指令单
-        delLocalWO(item);
-        //刷新数据
+    // Actions after press delete button
+    const handleDelete = (item: WorkOrder) => {
+        // Delete local Work Order
+        WORepo.delVoucher(item)
+        // Refresh Local Work order list
         handleGetLocalWOs();
     };
-    //编辑
-    const handleEdit = (item) => {
-        navigation.navigate("WorkOrderDoc", { isLocal: true, isNew: false, isModify: true, oriWO: item, refreshAction: () => handleGetLocalWOs() });
+    // Actions after press edit button
+    const handleEdit = (item: WorkOrder) => {
+        navigation.navigate("WorkOrder", { isLocal: true, isNew: false, isModify: true, oriWO: item });
     };
-    //复制新增
-    const handleCopyAdd = (item) => {
-        navigation.navigate("WorkOrderDoc", { isLocal: false, isNew: true, isModify: false, oriWO: item, refreshAction: () => handleGetLocalWOs() });
+    // Actions after press copy add button
+    const handleCopyAdd = (item: WorkOrder) => {
+        navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: item });
     };
-    //详情
-    const handleDetail = (item) => {
-        navigation.navigate("WorkOrderDoc", { isLocal: true, isNew: false, isModify: false, oriWO: item });
+    // Actions after press detail button
+    const handleDetail = (item: WorkOrder) => {
+        navigation.navigate("WorkOrder", { isLocal: true, isNew: false, isModify: false, oriWO: item });
     };
-    //上传
-    const handleUpload = async (item) => {
-        let newWO = DeepCloneJSON(item);
-        //转换数据到后端格式
+    // Actions after press upload button
+    const handleUpload = async (item: WorkOrder) => {
+        let newWO = cloneDeep(item);
+        //Convert Work Order to backend format
         const thisWO = transWOToBackend(newWO);
         thisWO.id = 0
-        delete thisWO.isHeaderErr
-        delete thisWO.isBodyErr
+        // delete thisWO.isHeaderErr
+        // delete thisWO.isBodyErr
         let addRes = await reqAddWO(thisWO);
-        if (addRes.data.status === 0) {
-            delLocalWO(item);
-            //刷新数据
-            handleGetLocalWOs();
-            Alert.alert("提示", `本地指令单L${item.id}上传成功,远程单据编号:${addRes.data.data.billnumber}`);
-        } else {
-            Alert.alert("错误", `本地指令单L${item.id}上传失败:${addRes.data.statusMsg}`);
-            return
+        if (addRes.status) {
+            WORepo.delVoucher(item);           
+            Alert.alert(t("tip"), t("uploadSuccessful"));
         }
-
+        // Refresh local work order list
+        handleGetLocalWOs();
     };
-    //指令单卡片
-    const WOCard = ({ item }) => {
-        const wo = item.item;
+    // Local Work Order Card
+    const WOCard = ({ item }: { item: WorkOrder }) => {
+        const wo = item;
         return (
             <Card key={wo.id} style={{ marginTop: 2, marginBottom: 2 }}>
-                <WOCardContent wo={wo} isLocal={true} />
+                <WOCardContent wo={wo} isLocal={true} t={t} theme={theme} />
                 <Card.Actions style={{ flexDirection: buttonPosition === "right" ? "row" : "row-reverse" }}>
                     <IconButton key="delete" onPress={() => handleDelete(wo)} icon="delete-outline" iconColor={theme.colors.primary} size={20} mode="contained" />
                     <IconButton key="edit" onPress={() => handleEdit(wo)} icon="pencil-outline" iconColor={theme.colors.primary} size={20} mode="contained" />
                     <IconButton key="copyAdd" onPress={() => handleCopyAdd(wo)} icon="plus-box-multiple-outline" iconColor={theme.colors.primary} size={20} mode="contained" />
-                    <IconButton key="upload" onPress={() => handleUpload(wo)} disabled={wo.isHeaderErr || wo.isBodyErr} icon="cloud-upload" iconColor={theme.colors.primary} size={20} mode="contained" />
+                    <IconButton key="upload" onPress={() => handleUpload(wo)} disabled={true} icon="cloud-upload" iconColor={theme.colors.primary} size={20} mode="contained" />
                     <IconButton key="detail" onPress={() => handleDetail(wo)} icon="eye-outline" iconColor={theme.colors.primary} size={20} mode="contained" />
                 </Card.Actions>
             </Card>
@@ -99,11 +97,12 @@ const LocalWorkOrderList = (props) => {
                     rowsPerPage={10}
                     searchFields={["id", "billdate", "billnumber", "createuser.name", "department.name"]}
                     sortFunction={wosSortByid}
+                    refreshing={false}
                 />
             </View>
             <Surface style={{ minHeight: 40, flexDirection: buttonPosition === "right" ? "row" : "row-reverse", justifyContent: "flex-end", alignItems: "center" }}>
-                <Button icon="plus" iconColor={theme.colors.primary} onPress={handleAdd}>新增</Button>
-                <Button icon="refresh" iconColor={theme.colors.primary} onPress={handleGetLocalWOs}>刷新</Button>
+                <Button icon="plus" color={theme.colors.primary} onPress={handleAdd}>{t("add")}</Button>
+                <Button icon="refresh" color={theme.colors.primary} onPress={handleGetLocalWOs}>{t("refresh")}</Button>
             </Surface>
         </View>
     );

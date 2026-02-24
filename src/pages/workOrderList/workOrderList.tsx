@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
-import { View } from "react-native";
-import {  useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 import ScFunctionTitle from "../../components/ScFunctionTitle/ScFunctionTitle";
-// import RemoteWorkOrderList from "./remoteWorkOrderList";
-// import LocalWorkOrderList from "./localWorkOrderList";
-// import ScSwapButton from "../../components/ScSwapButton/ScSwapButton";
+import RemoteWorkOrderList from "./remoteWorkOrderList";
+import LocalWorkOrderList from "./localWorkOrderList";
 import { useAppSelector } from "../../store/hooks";
-import { useBusinessNavigation, useBusinessRoute } from "../../navigation/config/screenParams";
+import { useBusinessNavigation } from "../../navigation/config/screenParams";
 import ScSegmentLocalOrRemote from "../../components/ScSegmentLocalOrRemote/ScDegmentLocalOrRemote";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ScHandSwitch from "../../components/ScHandSwitch/ScHandSwitch";
@@ -16,7 +14,6 @@ const WorkOrderList = () => {
     const theme = useTheme();
     const { t } = useTranslation();
     const navigation = useBusinessNavigation();
-    const route = useBusinessRoute();
     const [localOrRemote, setLocalOrRemote] = useState<"local" | "remote">("local");
     const isOffline = useAppSelector(state => state.appInfo.isOffline);
 
@@ -32,7 +29,7 @@ const WorkOrderList = () => {
         setLocalOrRemote(newDisplay);
     }, [isOffline]);
 
-    //远程和本地切换
+    // Toggle Remote/Local Work Order list
     const handleChangeDataSource = (value: "local" | "remote") => {
         setLocalOrRemote(value);
     };
@@ -47,11 +44,11 @@ const WorkOrderList = () => {
                 t={t}
                 isOffline={isOffline}
             />
-           {localOrRemote === "remote"
-              /*   ? <RemoteWorkOrderList navigation={navigation} route={route} />
-                : <LocalWorkOrderList navigation={navigation} route={route} /> */
+            {localOrRemote === "remote"
+                ? <RemoteWorkOrderList />
+                : <LocalWorkOrderList />
             }
-           
+
             <ScHandSwitch
                 docRefresh={() => { }}
                 cancelAction={handleGoBack}

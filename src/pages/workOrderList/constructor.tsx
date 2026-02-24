@@ -1,9 +1,8 @@
-// import dayjs from "dayjs";
 import { dayjs } from "../../i18n/dayjs"
-import { getDocByID } from "../../db/DB";
 import { Condition, QueryField } from "../../dataType/types/queryPanel";
 import { greaterThanEqual, lessThanEqual } from "../../dataType/dataZero/queryPanel";
-import { WorkOrderRow } from "../../dataType/types/workOrder";
+import { WorkOrder } from "../../dataType/types/workOrder";
+import { EPTRepo } from "../../db/crud/ept";
 
 // Generate default query fields
 export const queryFields: QueryField[] = [
@@ -36,17 +35,17 @@ export const generateConditions = (): Condition[] => [
 
 
 //排序函数
-export function wosSortByid(a, b) {
+export function wosSortByid(a: WorkOrder, b: WorkOrder) {
     return b.id - a.id;
 }
 
 
 //后端详情数据转前端数据
-export const transWoDetailToFronted = (woDetail) => {
+export const transWoDetailToFronted = (woDetail: WorkOrder) => {
     function transBodyEit() {
         for (let row of woDetail.body) {
-            let eitId = row.eit.id
-            row.eit = getDocByID("exectivetemplate", eitId);
+            let eptID = row.ept.id
+            row.ept = EPTRepo.getDetailByID(eptID);
         }
     }
     transBodyEit();

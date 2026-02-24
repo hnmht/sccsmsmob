@@ -1,12 +1,13 @@
 import { dayjs, EpochTime } from "../../i18n/dayjs";
-import { WorkOrderRow } from "../types/workOrder";
+import { SimpDept } from "../types/department";
+import { Person } from "../types/person";
+import { WorkOrder, WorkOrderRow } from "../types/workOrder";
 import { getEmptyCSA } from "./csa";
-import {  getEmptySimpDept } from "./department";
 import { getEmptyEPT } from "./ept";
 import { getEmptyPerson } from "./person";
 
 // Generate empty Work Order Row
-export function getDefaultWorkOrderRow(): WorkOrderRow {
+export function getDefaultWorkOrderRow(person: Person, dept: SimpDept, currentDay: string): WorkOrderRow {
     return {
         id: 0,
         hid: 0,
@@ -20,18 +21,43 @@ export function getDefaultWorkOrderRow(): WorkOrderRow {
         status: 0,
         eoID: 0,
         eoNumber: "",
-        createDate: dayjs(new Date()).toISOString(),
-        creator: getEmptyPerson(),
+        createDate: currentDay,
+        creator: person,
         confirmDate: EpochTime,
         confirmer: getEmptyPerson(),
         modifyDate: EpochTime,
         modifier: getEmptyPerson(),
-        ts: dayjs(new Date()).toISOString(),
+        ts: currentDay,
         dr: 0,
         billNumber: "",
-        billDate: dayjs(new Date()).toISOString(),
-        department: getEmptySimpDept(),
+        billDate: currentDay,
+        department: dept,
         headerDescription: "",
-        workDate: dayjs(new Date()).toISOString(),
+        workDate: currentDay,
+    }
+}
+
+
+// Generate empty Work Order
+export function getEmptyWorkOrder(person: Person, dept: SimpDept): WorkOrder {
+    const emptyPerson = getEmptyPerson();
+    const currentDay = dayjs(new Date()).toISOString();
+    return {
+        id: 0,
+        billNumber: "",
+        billDate: currentDay,
+        department: dept,
+        description: "",
+        status: 0,
+        workDate: currentDay,
+        body: [getDefaultWorkOrderRow(person, dept, currentDay)],
+        createDate: currentDay,
+        creator: person,
+        confirmDate: EpochTime,
+        confirmer: emptyPerson,
+        modifyDate: EpochTime,
+        modifier: emptyPerson,
+        ts: currentDay,
+        dr: 0,
     }
 }

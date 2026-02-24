@@ -694,6 +694,10 @@
     "mustBeNumber":"必须为数字",
     "photos": "相册",
     "encryptionFailed": "加密失败",
+    "lineCount": "行数",
+    "operationDate": "作业日期",
+    "local": "本地",
+    "remote": "远程",
     
     "MenuDashboard": "首页",
     "MenuCalendar": "日程",

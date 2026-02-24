@@ -1,23 +1,30 @@
-import { Card, Text } from "react-native-paper";
-// import dayjs from "dayjs";
-import dayjs from "../../utils/myDayjs";
-import { VoucherStatus } from "../../utils/pub";
-import { pubParams } from "../../components/pub/pubParms";
+import { Card, MD3Theme, Text } from "react-native-paper";
+import { DateTimeFormat } from "../../i18n/dayjs";
+import { VoucherStatus } from "../../constant/voucherStatus";
+import { WorkOrder } from "../../dataType/types/workOrder";
+import { TFunction } from "i18next";
 
-const WOCardContent = ({ wo, isLocal }) => {
+interface WOCardContentProps {
+    wo: WorkOrder;
+    isLocal: boolean;
+    t: TFunction;
+    theme: MD3Theme;
+}
+
+const WOCardContent = ({ wo, isLocal, t, theme }: WOCardContentProps) => {
     return (
         <Card.Content key={`wocardcontent${wo.id}`} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center" }}>
-            <Text variant="titleMedium" style={{ width: pubParams.screen.isOverSize ? "100%" : "60%" }}>编号:{isLocal ? `LW${wo.id}` : wo.billnumber}</Text>
+            <Text variant="titleMedium" style={{ width: "100%" }}>{t("billNumber")} : {isLocal ? `LW${wo.id}` : wo.billNumber}</Text>
+            <Text variant="titleMedium" style={{ width: "100%" }}>{t("billDate")} : {DateTimeFormat(wo.billDate, "LL")}</Text>
             {isLocal
-                ? <Text variant="titleSmall" style={{ width: pubParams.screen.isOverSize ? "100%" : "40%" }}>行数:{wo.body.length}</Text>
+                ? <Text variant="bodyMedium" style={{ width: "100%" }}>{t("lineCount")} :{wo.body.length}</Text>
                 : null
             }
-            <Text variant="titleSmall" style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }}>作业日期:{dayjs(wo.workdate).format("YYYY-MM-DD")}</Text>
-            <Text variant="bodyMedium" style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }}>状态:{VoucherStatus[wo.status]}</Text>
-            <Text variant="titleSmall" style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }}>单据日期:{dayjs(wo.billdate).format("YYYY-MM-DD")}</Text>
-            <Text variant="bodyMedium" style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }}>制单人:{wo.createuser.name}</Text>
-            <Text variant="bodyMedium" style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }}>部门:{wo.department.name}</Text>
-            <Text variant="bodyMedium" style={{ width: "100%" }}>备注:{wo.description}</Text>
+            <Text variant="bodyMedium" style={{ width: "100%" }}>{t("operationDate")} : {DateTimeFormat(wo.workDate, "LL")}</Text>
+            <Text variant="bodyMedium" style={{ width: "100%" }}>{t("status")} : {t(VoucherStatus[wo.status])}</Text>
+            <Text variant="bodyMedium" style={{ width: "100%" }}>{t("creator")} : {wo.creator.name}</Text>
+            <Text variant="bodyMedium" style={{ width: "100%" }}>{t("department")} : {wo.department.name}</Text>
+            <Text variant="bodyMedium" style={{ width: "100%" }}>{t("description")} : {wo.description}</Text>
         </Card.Content>
     );
 };

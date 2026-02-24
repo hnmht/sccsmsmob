@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../store/hooks";
 import { ScInputProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
+import { VoucherStatus } from "../../../constant/voucherStatus";
 
-const VoucherStatus = ["free", "confirmed", "executing", "completed"];
 // 405 Seacloud Voucher Status Component
 const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
     const {

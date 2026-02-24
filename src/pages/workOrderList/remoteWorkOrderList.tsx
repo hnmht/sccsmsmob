@@ -1,140 +1,132 @@
 import { useEffect, useState } from "react";
-import { View, Alert, Modal } from "react-native";
+import { View, Alert } from "react-native";
 import { Button, Card, IconButton, useTheme, Surface } from "react-native-paper";
-import DocList from "../../components/DocList/DocList";
-import { QueryPanel, transConditionsToString } from "../../components/QueryPanel";
-import WOCardContent from "./woCardContent";
-import { reqGetWOList, reqGetWODetail, reqConfirmWO, reqCancelConfirmWO, reqDeleteWO } from "../../api/workOrder";
-import { generateConditions, queryFields, wosSortByid, transWoDetailToFronted } from "./constructor";
 import { useBusinessNavigation } from "../../navigation/config/screenParams";
 import { useAppSelector } from "../../store/hooks";
-
+import { useTranslation } from "react-i18next";
+import DocList from "../../components/DocList/DocList";
+import { QueryPanel, transConditionsToString } from "../../components/QueryPanel";
+import WOCardContent from "./WOCardContent";
+import { reqGetWOList, reqGetWODetail, reqConfirmWO, reqCancelConfirmWO, reqDeleteWO } from "../../api/workOrder";
+import { generateConditions, queryFields, wosSortByid } from "./constructor";
+import { transWoDetailToFronted } from "../workOrder/constructor";
+import { WorkOrder } from "../../dataType/types/workOrder";
+import { ScComponentModal } from "../../components/ScComponentModal/ScComponentModal";
+import { Condition } from "../../dataType/types/queryPanel";
 
 const RemoteWorkOrderList = () => {
     const navigation = useBusinessNavigation();
-    const [remoteWOs, setRemoteWOs] = useState([]);
+    const [remoteWOs, setRemoteWOs] = useState<WorkOrder[]>([]);
     const [showQueryPanel, setShowQueryPanel] = useState(false);
     const [conditions, setConditions] = useState(generateConditions());
     const theme = useTheme();
+    const { t } = useTranslation();
     const user = useAppSelector(state => state.user);
-    //命令按钮位置
+    // Commands button Position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
-
 
     useEffect(() => {
         handleReqWOs(conditions);
     }, []);
 
-    //获取查询条件
-    const handleGetConditions = (value, itemKey, positionID, rowIndex, err) => {
+    // Actions after get Query Condition
+    const handleGetConditions = (value: Condition[]) => {
         setShowQueryPanel(false);
         setConditions(value);
-        //向服务器请求数据
+        // Request Work Order List from backend
         handleReqWOs(value);
     };
 
-    //向服务器请求数据
+    // Request Work Order List from backend
     const handleReqWOs = async (cons = conditions) => {
-        //将查询条件转化为String
+        // Convert query criteria  to string
         let queryString = transConditionsToString(cons);
+        // Request Work Order List from backend
         let wosRes = await reqGetWOList({ queryString: queryString });
-        let newWos = [];
+        let newWos: WorkOrder[] = [];
         if (wosRes.status) {
             newWos = wosRes.data;
-        } else {
-            Alert.alert("错误", wosRes.msg);
         }
         setRemoteWOs(newWos);
     };
 
-    //增加
+    // Actions after press add button 
     const handleAddWO = () => {
-        navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: undefined, refreshAction: () => handleReqWOs() });
+        navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: undefined });
     };
-    //卡片详情按钮点击
-    const handleViewAction = async (item) => {
+    // Actions after press detail button
+    const handleViewAction = async (item: WorkOrder) => {
+        // Request Work Order Detail from backend
         let res = await reqGetWODetail(item);
-        if (res.data.status === 0) {
+        if (res.status) {
             let woDetail = transWoDetailToFronted(res.data);
             navigation.navigate("WorkOrder", { isLocal: false, isNew: false, isModify: false, oriWO: woDetail });
         } else {
-            Alert.alert("错误", res.msg);
             return
         }
     };
-    //卡片复制新增按钮点击
-    const handleCopyAdd = async (item) => {
+    // Actions after press copy add button
+    const handleCopyAdd = async (item: WorkOrder) => {
+        // Request work order detail from backend
         let res = await reqGetWODetail(item);
-        if (res.data.status === 0) {
+        if (res.status) {
             let woDetail = transWoDetailToFronted(res.data);
-            navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: woDetail, refreshAction: () => handleReqWOs() });
+            navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: woDetail });
         } else {
-            Alert.alert("错误", res.msg);
             return
         }
     };
 
-    //卡片编辑按钮点击
-    const handleEditAction = async (item) => {
+    // Actions after press edit button
+    const handleEditAction = async (item: WorkOrder) => {
         let res = await reqGetWODetail(item);
-        if (res.data.status === 0) {
-            let woDetail = transWoDetailToFronted(res.data.data);
-            navigation.navigate("WorkOrderDoc", { isLocal: false, isNew: false, isModify: true, oriWO: woDetail, refreshAction: () => handleReqWOs() });
-
+        if (res.status) {
+            let woDetail = transWoDetailToFronted(res.data);
+            navigation.navigate("WorkOrder", { isLocal: false, isNew: false, isModify: true, oriWO: woDetail });
         } else {
-            Alert.alert("错误", res.data.statusMsg);
             return
         }
     };
-    //卡片确认按钮点击
-    const handleConfirm = async (item) => {
+    // Actions after press confirm button
+    const handleConfirm = async (item: WorkOrder) => {
         let res = await reqConfirmWO(item);
-        if (res.data.status === 0) {
-            Alert.alert("提示", "确认" + item.billnumber + "指令单成功");
-        } else {
-            Alert.alert("错误", "确认" + item.billnumber + "指令单失败:" + res.data.statusMsg);
-            return
+        if (res.status) {
+            Alert.alert(t("tip"), t("confirmSuccessful"));
         }
-        //刷新数据
+        // Refresh work order list
         handleReqWOs();
+
     };
 
-    //卡片取消确认按钮点击
-    const handleCancelConfirm = async (item) => {
+    // Actions after press unconfirm button
+    const handleCancelConfirm = async (item: WorkOrder) => {
         let res = await reqCancelConfirmWO(item);
-        if (res.data.status === 0) {
-            Alert.alert("提示", "取消确认" + item.billnumber + "指令单成功");
-        } else {
-            Alert.alert("错误", "取消确认" + item.billnumber + "指令单失败:" + res.data.statusMsg);
-            return
-        }
-        //刷新数据
+        if (res.status) {
+            Alert.alert(t("tip"), t("unconfirmSuccessful"));
+        } 
+        // Refresh work order list
         handleReqWOs();
     };
 
-    //卡片删除按钮点击
-    const handleDelete = async (item) => {
+    // Actions after press delete button
+    const handleDelete = async (item: WorkOrder) => {
         let res = await reqDeleteWO(item);
-        if (res.data.status === 0) {
-            Alert.alert("提示", "删除" + item.billnumber + "指令单成功");
-        } else {
-            Alert.alert("错误", "删除" + item.billnumber + "指令单失败:" + res.data.statusMsg);
-            return
-        }
-        //刷新数据
+        if (res.status) {
+            Alert.alert(t("tip"), t("deleteSuccessful"));
+        } 
+        // Refresh work order list
         handleReqWOs();
     };
 
-    const WOCard = ({ item }) => {
-        const wo = item.item;
-        const delDisable = !(wo.status === 0 && wo.createuser.id === user.id);
-        const editDisable = !(wo.status === 0 && wo.createuser.id === user.id);
+    const WOCard = ({ item }: { item: WorkOrder }) => {
+        const wo = item;
+        const delDisable = !(wo.status === 0 && wo.creator.id === user.id);
+        const editDisable = !(wo.status === 0 && wo.creator.id === user.id);
         const startDisable = !(wo.status === 0);
-        const stopDisable = !(wo.status === 1 && wo.confirmuser.id === user.id);
-
+        const stopDisable = !(wo.status === 1 && wo.confirmer.id === user.id);
         return (
             <Card key={wo.id} style={{ marginTop: 2, marginBottom: 2 }}>
-                <WOCardContent wo={wo} isLocal={false} />
+                <WOCardContent wo={wo} isLocal={false} theme={theme} t={t} />
                 <Card.Actions style={{ flexDirection: buttonPosition === "right" ? "row" : "row-reverse" }}>
                     <IconButton key="cancelConfirm" onPress={() => handleCancelConfirm(wo)} icon="arrow-left-top" disabled={stopDisable} iconColor={theme.colors.primary} size={20} mode="contained" />
                     <IconButton key="confirm" onPress={() => handleConfirm(wo)} icon="play" disabled={startDisable} iconColor={theme.colors.primary} size={20} mode="contained" />
@@ -155,24 +147,24 @@ const RemoteWorkOrderList = () => {
                     rowsPerPage={10}
                     searchFields={["billdate", "billnumber", "createuser.name", "department.name"]}
                     sortFunction={wosSortByid}
+                    refreshing={false}
                 />
             </View>
             <Surface style={{ minHeight: 40, flexDirection: buttonPosition === "right" ? "row" : "row-reverse", justifyContent: "flex-end", alignItems: "center" }}>
-                <Button icon="plus" onPress={handleAddWO}>新增</Button>
-                <Button onPress={() => setShowQueryPanel(true)} icon="filter-variant">查询</Button>
+                <Button icon="plus" onPress={handleAddWO}>{t("add")}</Button>
+                <Button onPress={() => setShowQueryPanel(true)} icon="filter-variant">{t("filter")}</Button>
             </Surface>
-            <Modal
+            <ScComponentModal
                 visible={showQueryPanel}
-                onDismiss={() => setShowQueryPanel(false)}
             >
                 <QueryPanel
                     onCancel={() => setShowQueryPanel(false)}
-                    title="过滤条件"
+                    title="queryConditions"
                     queryFields={queryFields}
                     initalConditions={conditions}
                     onOk={handleGetConditions}
                 />
-            </Modal>
+            </ScComponentModal>
         </View>
     );
 };
