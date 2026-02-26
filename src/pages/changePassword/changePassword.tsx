@@ -8,7 +8,7 @@ import ScInput from "../../components/ScInput";
 import PersonAvatar from "../../components/PersonAvatar/PersonAvatar";
 import { reqGetPublicKey } from "../../api/security";
 import { reqChangePwd } from "../../api/login";
-import { checkObjectError } from "../pub/pubFunctions";
+import { checkObjectError } from "../../components/tools/checkError";
 import { ParamChangePwd } from "../../dataType/types/login";
 import { ErrMsg, InitialValueMap } from "../../dataType/types/scInput";
 import { useSettingNavigation } from "../../navigation/config/screenParams";

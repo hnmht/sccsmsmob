@@ -103,7 +103,7 @@ const RemoteWorkOrderList = () => {
         let res = await reqCancelConfirmWO(item);
         if (res.status) {
             Alert.alert(t("tip"), t("unconfirmSuccessful"));
-        } 
+        }
         // Refresh work order list
         handleReqWOs();
     };
@@ -113,7 +113,7 @@ const RemoteWorkOrderList = () => {
         let res = await reqDeleteWO(item);
         if (res.status) {
             Alert.alert(t("tip"), t("deleteSuccessful"));
-        } 
+        }
         // Refresh work order list
         handleReqWOs();
     };

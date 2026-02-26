@@ -15,7 +15,7 @@ import { getEmptyUser } from "../../dataType/dataZero/user";
 import { InitialValueMap, ErrMsg } from "../../dataType/types/scInput";
 import { ScDataTypeList } from "../../dataType/types/scDataType";
 import { getFieldErrMsg } from "../../dataType/dataZero/errors";
-import { checkObjectError } from "../pub/pubFunctions";
+import { checkObjectError } from "../../components/tools/checkError";
 
 // Update user avatar, gender, mobile, email, and description.
 const Profile = () => {

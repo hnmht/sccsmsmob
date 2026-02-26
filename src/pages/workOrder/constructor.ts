@@ -58,7 +58,7 @@ export const getInitialValue = async (oriWO: WorkOrder, isNew: boolean, isModify
 
 
 
-/* //检查错误
+ //检查错误
 export const checkWOErrors = (woData: WorkOrder) => {
     if (woData === undefined) {
         return undefined;
@@ -69,7 +69,6 @@ export const checkWOErrors = (woData: WorkOrder) => {
         workDate: noErr,
         body: []
     };
-
     //检查表头单据日期
     if (woData.billDate === "") {
         errData.billDate = { isErr: true, msg: "单据日期不能为空" };
@@ -82,10 +81,10 @@ export const checkWOErrors = (woData: WorkOrder) => {
     woData.body.forEach((row, index) => {
         let rowErr = {
             csa: noErr,
-            execperson: noErr,
-            eit: noErr,
-            starttime: noErr,
-            endtime: noErr
+            executor: noErr,
+            ept: noErr,
+            startTime: noErr,
+            endTime: noErr
         };
         if (row.csa.id === 0) {
             rowErr.csa = { isErr: true, msg: "现场档案不能为空" };
@@ -93,23 +92,23 @@ export const checkWOErrors = (woData: WorkOrder) => {
         if (row.executor.id === 0) {
             rowErr.executor = { isErr: true, msg: "执行人不能为空" };
         }
-        if (row.eit.id === 0) {
-            rowErr.eit = { isErr: true, msg: "执行模板不能为空" };
+        if (row.ept.id === 0) {
+            rowErr.ept = { isErr: true, msg: "执行模板不能为空" };
         }
-        if (row.starttime === "") {
-            rowErr.starttime = { isErr: true, msg: "开始时间必须填写" };
+        if (row.startTime === "") {
+            rowErr.startTime = { isErr: true, msg: "开始时间必须填写" };
         }
-        if (row.endtime === "") {
-            rowErr.endtime = { isErr: true, msg: "结束时间必须填写" };
+        if (row.endTime === "") {
+            rowErr.endTime = { isErr: true, msg: "结束时间必须填写" };
         } else {
-            if (row.endtime < row.starttime) {
-                rowErr.endtime = { isErr: true, msg: "结束时间必须大于开始时间" };
+            if (row.endTime < row.startTime) {
+                rowErr.endTime = { isErr: true, msg: "结束时间必须大于开始时间" };
             }
         }
         errData.body.push(rowErr);
     });
     return errData;
-}; */
+};
 
 // Convert Work order to backend
 export function transWOToBackend(newWo: WorkOrder) {

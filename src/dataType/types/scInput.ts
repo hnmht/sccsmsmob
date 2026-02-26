@@ -46,7 +46,7 @@ export type InitialValueMap = {
     [ScDataTypeList.Password]: string;
     [ScDataTypeList.Mobile]: string;
     [ScDataTypeList.Email]: string;
-    [ScDataTypeList.Date]: string ;
+    [ScDataTypeList.Date]: string;
     [ScDataTypeList.DateTime]: string;
 
     [ScDataTypeList.Gender]: 0 | 1 | 2;

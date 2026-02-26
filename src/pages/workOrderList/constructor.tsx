@@ -39,15 +39,3 @@ export function wosSortByid(a: WorkOrder, b: WorkOrder) {
     return b.id - a.id;
 }
 
-
-//后端详情数据转前端数据
-export const transWoDetailToFronted = (woDetail: WorkOrder) => {
-    function transBodyEit() {
-        for (let row of woDetail.body) {
-            let eptID = row.ept.id
-            row.ept = EPTRepo.getDetailByID(eptID);
-        }
-    }
-    transBodyEit();
-    return woDetail;
-};
