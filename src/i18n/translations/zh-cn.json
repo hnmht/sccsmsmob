@@ -698,6 +698,7 @@
     "operationDate": "作业日期",
     "local": "本地",
     "remote": "远程",
+    "notAllowedEditRemotoVoucher": "编辑远程单据不允许暂存.",
     
     "MenuDashboard": "首页",
     "MenuCalendar": "日程",

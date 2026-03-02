@@ -701,6 +701,7 @@
     "operationDate":"Operation Date",
     "local":"Local",
     "remote":"Remote",
+    "notAllowedStagRemotoVoucher":"Staging is not allowed when editing remote voucher.",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

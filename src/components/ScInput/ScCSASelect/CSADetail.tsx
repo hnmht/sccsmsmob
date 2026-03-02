@@ -23,7 +23,7 @@ const CSADetail = ({ visible, currentItem, backAction, t,theme }: ScDetailProps<
                             <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("subDept")} : {currentItem.subDept.name}</Text>
                             <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("respDept")} : {currentItem.respDept.name}</Text>
                             <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("respPerson")} : {currentItem.respPerson.name}</Text>
-                            <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("longtitude")}: {currentItem.longitude}</Text>
+                            <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("longitude")}: {currentItem.longitude}</Text>
                             <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("latitude")}: {currentItem.latitude}</Text>
                             {csos.map(cso => {
                                 return cso.enable === 1

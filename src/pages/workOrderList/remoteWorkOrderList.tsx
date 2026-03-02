@@ -50,9 +50,16 @@ const RemoteWorkOrderList = () => {
         setRemoteWOs(newWos);
     };
 
+    // Actions On EditWorkOrder Page goBack
+    const handleOnGoBack = (shouldRefresh: boolean = false) => {
+        if (shouldRefresh) {
+            handleReqWOs();
+        }
+    }
+
     // Actions after press add button 
     const handleAddWO = () => {
-        navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: undefined });
+        navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: undefined, onGoBack: handleOnGoBack });
     };
     // Actions after press detail button
     const handleViewAction = async (item: WorkOrder) => {
@@ -60,7 +67,7 @@ const RemoteWorkOrderList = () => {
         let res = await reqGetWODetail(item);
         if (res.status) {
             let woDetail = transWoDetailToFronted(res.data);
-            navigation.navigate("WorkOrder", { isLocal: false, isNew: false, isModify: false, oriWO: woDetail });
+            navigation.navigate("WorkOrder", { isLocal: false, isNew: false, isModify: false, oriWO: woDetail, onGoBack: handleOnGoBack });
         } else {
             return
         }
@@ -71,7 +78,7 @@ const RemoteWorkOrderList = () => {
         let res = await reqGetWODetail(item);
         if (res.status) {
             let woDetail = transWoDetailToFronted(res.data);
-            navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: woDetail });
+            navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: woDetail, onGoBack: handleOnGoBack });
         } else {
             return
         }
@@ -82,7 +89,7 @@ const RemoteWorkOrderList = () => {
         let res = await reqGetWODetail(item);
         if (res.status) {
             let woDetail = transWoDetailToFronted(res.data);
-            navigation.navigate("WorkOrder", { isLocal: false, isNew: false, isModify: true, oriWO: woDetail });
+            navigation.navigate("WorkOrder", { isLocal: false, isNew: false, isModify: true, oriWO: woDetail, onGoBack: handleOnGoBack });
         } else {
             return
         }

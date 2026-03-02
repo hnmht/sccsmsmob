@@ -20,9 +20,9 @@ export function useAuthRoute<T extends keyof AuthStackParmList>() {
 export type BusinessNavParamList = {
     BusinessScreen: undefined;
     AddressBook: undefined;
-    WorkOrder: WorkOrderParams | undefined;
+    WorkOrder: WorkOrderParams;
     WorkOrderList: undefined;
-    ExecutionOrder: WorkOrderParams | undefined;
+    ExecutionOrder: WorkOrderParams;
     ExecutionOrderList: undefined;
     ExecutionOrderReview: undefined;
     ExecutionOrderReviewList: undefined;

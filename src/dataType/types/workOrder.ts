@@ -2,6 +2,15 @@ import { SimpDept } from "./department";
 import { Person } from "./person";
 import { ConstructionSite } from "./csa";
 import { EPT } from "./ept";
+import { ErrMsg } from "./scInput";
+// Work Order Row Errors
+export interface WORowErrors {
+    csa: ErrMsg;
+    executor: ErrMsg;
+    ept: ErrMsg;
+    startTime: ErrMsg;
+    endTime: ErrMsg;
+}
 // Work Order Row
 export interface WorkOrderRow {
     id: number; // BID
@@ -32,6 +41,16 @@ export interface WorkOrderRow {
     workDate: string;
 }
 
+// Work Order Errors
+export interface WOErrors {
+    billDate: ErrMsg;
+    workDate: ErrMsg;
+    body: WORowErrors[];
+    isErr?: boolean;
+    isHeaderErr?: boolean;
+    isBodyErr?: boolean;
+}
+
 // Work Order Header
 export interface WorkOrder {
     id: number; // HID
@@ -50,4 +69,5 @@ export interface WorkOrder {
     modifier: Person;
     ts: string;
     dr: 0 | 1;
+    errData?: WOErrors;
 }

@@ -26,7 +26,7 @@ const BusinessNav = () => {
             <BusinessStack.Screen
                 name="WorkOrder"
                 options={{ headerShown: false, title: t("MenuWO") }}
-                initialParams={{ isLocal: false, isNew: true, isModify: false, oriWO: undefined }}
+                initialParams={{ isLocal: false, isNew: true, isModify: false, oriWO: undefined, needRefresh: true }}
                 component={WorkOrder}
             />
             <BusinessStack.Screen

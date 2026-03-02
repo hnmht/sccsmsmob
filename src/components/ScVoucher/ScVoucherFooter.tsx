@@ -1,27 +1,32 @@
 import { ReactNode, useState } from "react";
-import { Surface, Text, Divider, IconButton } from "react-native-paper";
+import { Surface, Text, Divider, IconButton, MD3Theme } from "react-native-paper";
 import ScCollapse from "../ScCollapse/ScCollapse";
 import Icon from "@react-native-vector-icons/material-design-icons";
-import { useAppSelector } from "../../store/hooks";
+import { TFunction } from "i18next";
 
 interface ScVoucherFootProps {
     children: ReactNode;
     isFooterErr: boolean;
     title: string;
+    buttonPosition: "left" | "right";
+    theme: MD3Theme;
+    t: TFunction;
 }
 
 function ScVoucherFooter({
     children,
     isFooterErr = false,
-    title = "footer"
+    title = "footer",
+    buttonPosition = "right",
+    theme,
+    t,
 }: ScVoucherFootProps) {
     const [footerCollapse, setFooterCollapse] = useState(false);
-    //命令按钮位置
-    const { buttonPosition } = useAppSelector(state => state.swapPosition);
+    
     return (
         <>
             <Surface key="voucherFooterDivider" style={{ flexDirection: buttonPosition === "right" ? "row" : "row-reverse", alignItems: "center" }}>
-                <Text variant="bodyMedium" style={{ paddingRight: 4 }}>{title}</Text>
+                <Text variant="bodyMedium" style={{ paddingRight: 4 }}>{t(title)}</Text>
                 {
                     isFooterErr ? <Icon name="alert" size={24} color="red" /> : <Icon name="check" size={24} color="green" />
                 }

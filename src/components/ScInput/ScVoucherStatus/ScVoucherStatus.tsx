@@ -43,7 +43,6 @@ const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
             return
         }
         setVisible(false);
-
         setFieldValue(value);
         pickDone(value, itemKey, positionID, rowIndex, errInfo);
     };
@@ -64,7 +63,7 @@ const ScVoucherStatus = (props: ScInputProps<ScDataTypeList.VoucherStatus>) => {
                         placeholder={isEdit ? t(placeholder) : ""}
                         editable={false}
                         disabled={!isEdit}
-                        value={VoucherStatus[fieldValue]}
+                        value={t(VoucherStatus[fieldValue])}
                         error={errInfo.isErr}
                         left={buttonPosition === "right"
                             ? errInfo.isErr
