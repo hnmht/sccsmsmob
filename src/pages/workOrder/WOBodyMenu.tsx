@@ -10,12 +10,12 @@ interface WoBodyMenuProps {
     woRows: WorkOrderRow[];
     setCurrentRowIndex: (index: number) => void;
     theme: MD3Theme;
-    t: TFunction;    
+    t: TFunction;
 }
 
 const WOBodyMenu = ({ woErrors, woRows, setCurrentRowIndex, theme, t }: WoBodyMenuProps) => {
     const [rowMenuVisible, setRowMenuVisible] = useState<boolean>(false);
-    const handleSelectRow = (index: number) =>{
+    const handleSelectRow = (index: number) => {
         setRowMenuVisible(false);
         setCurrentRowIndex(index);
     }
@@ -27,11 +27,11 @@ const WOBodyMenu = ({ woErrors, woRows, setCurrentRowIndex, theme, t }: WoBodyMe
             anchor={
                 < Button
                     onPress={() => setRowMenuVisible(true)}
-                    icon="select"
-                    textColor={woErrors.isBodyErr ? "red" : theme.colors.primary}
+                    icon="telescope"
+                    textColor={woErrors.isBodyErr ? theme.colors.error : theme.colors.primary}
                     disabled={woRows.length <= 0}
                 >
-                    定位行
+                    {t("quickJump")}
                 </Button>
             }>
             {woRows.map((row, index) => {
@@ -41,7 +41,7 @@ const WOBodyMenu = ({ woErrors, woRows, setCurrentRowIndex, theme, t }: WoBodyMe
                         leadingIcon={() => isErr ? <Icon name="alert" size={24} color="red" /> : <Icon name="check" size={24} color="green" />}
                         key={row.rowNumber}
                         onPress={() => handleSelectRow(index)}
-                        title={`第${row.rowNumber}行 ${row.csa.name}`}
+                        title={`${t("rowTh", { rowNumber: row.rowNumber })} ${row.csa.name}`}
                         style={{ width: "90%" }}
                         titleStyle={{ width: "100%" }}
                     />

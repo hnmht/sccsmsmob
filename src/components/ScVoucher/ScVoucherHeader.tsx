@@ -46,4 +46,3 @@ function ScVoucherHeader({
 };
 
 export default ScVoucherHeader;
-

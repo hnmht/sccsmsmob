@@ -112,6 +112,7 @@ const UDAPicker = ({ udc, pressItemAction, cancelAction, currentItem, t }: UDAPi
             />
 
             <ScHandSwitch
+                refreshDisplay={true}
                 docRefresh={handleDocRefresh}
                 cancelAction={cancelAction}
                 theme={theme}

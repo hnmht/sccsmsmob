@@ -98,6 +98,7 @@ const TCPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScPi
                 refreshing={false}
             />
             <ScHandSwitch
+                refreshDisplay={true}
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
                 theme={theme}

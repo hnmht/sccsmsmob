@@ -116,6 +116,7 @@ const DcPicker = ({ pressItemAction, cancelAction, currentItem, t, theme }: ScPi
                 />
             }
             <ScHandSwitch
+                refreshDisplay={true}
                 docRefresh={handleDocRefresh}
                 cancelAction={cancelAction}
                 theme={theme}

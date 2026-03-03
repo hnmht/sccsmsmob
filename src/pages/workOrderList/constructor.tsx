@@ -2,7 +2,6 @@ import { dayjs } from "../../i18n/dayjs"
 import { Condition, QueryField } from "../../dataType/types/queryPanel";
 import { greaterThanEqual, lessThanEqual } from "../../dataType/dataZero/queryPanel";
 import { WorkOrder } from "../../dataType/types/workOrder";
-import { EPTRepo } from "../../db/crud/ept";
 
 // Generate default query fields
 export const queryFields: QueryField[] = [
@@ -32,9 +31,7 @@ export const generateConditions = (): Condition[] => [
     }
 ];
 
-
-
-//排序函数
+// Work Order Sort Function
 export function wosSortByid(a: WorkOrder, b: WorkOrder) {
     return b.id - a.id;
 }

@@ -96,6 +96,7 @@ const PersonPicker = ({ t, cancelAction, pressItemAction, currentItem, theme }: 
                 refreshing={false}
             />
             <ScHandSwitch
+                refreshDisplay={true}
                 cancelAction={cancelAction}
                 docRefresh={handlePersonRefresh}
                 theme={theme}

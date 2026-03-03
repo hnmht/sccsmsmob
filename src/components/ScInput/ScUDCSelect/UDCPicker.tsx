@@ -93,6 +93,7 @@ const UDCPicker = ({ cancelAction, currentItem, pressItemAction, t, theme }: ScP
                 refreshing={false}
             />
             <ScHandSwitch
+                refreshDisplay={true}
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
                 theme={theme}

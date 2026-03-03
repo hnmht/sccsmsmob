@@ -226,7 +226,7 @@ function EditWorkOrder() {
         } else {
             let addRes = await reqAddWO(thisWO);
             if (addRes.status) {
-                Alert.prompt(t("tip"), t("addSuccessful"));
+                Alert.alert(t("tip"), t("addSuccessful"));
             } else {
                 return
             }
@@ -274,7 +274,7 @@ function EditWorkOrder() {
                     <ScrollView>
                         <ScVoucherHeader
                             isHeaderErr={dataErrs.isHeaderErr ?? false}
-                            title="header"
+                            title="voucherHeader"
                             buttonPosition={buttonPosition}
                             theme={theme}
                             t={t}
@@ -288,7 +288,7 @@ function EditWorkOrder() {
                                 itemKey="billNumber"
                                 initValue={isLocal ? `L${voucherData.id}` : voucherData.billNumber}
                                 pickDone={handleGetValue}
-                                placeholder="自动编号"
+                                placeholder=""
                                 isBackendTest={false}
                                 key="billNumber"
                                 positionID={0}
@@ -318,7 +318,7 @@ function EditWorkOrder() {
                                 errInfo={{ isErr: false, msg: "" }}
                                 initValue={voucherData.department}
                                 pickDone={handleGetValue}
-                                placeholder="请选择部门"
+                                placeholder="deptPlaceholder"
                                 isBackendTest={false}
                                 key="department"
                                 positionID={0}
@@ -362,7 +362,7 @@ function EditWorkOrder() {
                                 itemKey="description"
                                 initValue={voucherData.description}
                                 pickDone={handleGetValue}
-                                placeholder="请输入备注"
+                                placeholder="descriptionPlaceholder"
                                 isBackendTest={false}
                                 key="description"
                                 positionID={0}
@@ -373,9 +373,10 @@ function EditWorkOrder() {
                         </ScVoucherHeader>
                         <ScVoucherBody
                             isBodyErr={dataErrs.isBodyErr ?? false}
-                            title="body"
+                            title="voucherBody"
                             buttonPosition={buttonPosition}
                             isEdit={isEdit}
+                            addRowDisabled={false}
                             bodyMenu={<WOBodyMenu
                                 woErrors={dataErrs}
                                 woRows={voucherData.body}
@@ -400,13 +401,12 @@ function EditWorkOrder() {
                                         dataType={ScDataTypeList.Number}
                                         allowNull={false}
                                         isEdit={false}
-                                        itemShowName="行号"
+                                        itemShowName="rowNumber"
                                         errInfo={{ isErr: false, msg: "" }}
                                         itemKey="rowNumber"
                                         initValue={voucherData.body[currentRowIndex].rowNumber}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="rowNumber"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width={"50%"}
@@ -415,7 +415,7 @@ function EditWorkOrder() {
                                         dataType={405}
                                         allowNull={true}
                                         isEdit={false}
-                                        itemShowName="状态"
+                                        itemShowName="status"
                                         errInfo={{ isErr: false, msg: "" }}
                                         itemKey="status"
                                         initValue={voucherData.body[currentRowIndex].status}
@@ -430,7 +430,7 @@ function EditWorkOrder() {
                                         dataType={570}
                                         allowNull={false}
                                         isEdit={isEdit}
-                                        itemShowName="现场"
+                                        itemShowName="csa"
                                         itemKey="csa"
                                         initValue={voucherData.body[currentRowIndex].csa}
                                         errInfo={dataErrs.body[currentRowIndex].csa}
@@ -445,12 +445,12 @@ function EditWorkOrder() {
                                         dataType={301}
                                         allowNull={true}
                                         isEdit={isEdit}
-                                        itemShowName="说明"
+                                        itemShowName="description"
                                         errInfo={{ isErr: false, msg: "" }}
                                         itemKey="description"
                                         initValue={voucherData.body[currentRowIndex].description}
                                         pickDone={handleGetValue}
-                                        placeholder="请输入说明"
+                                        placeholder="descriptionPlaceholder"
                                         isBackendTest={false}
                                         key="description"
                                         positionID={1}
@@ -462,7 +462,7 @@ function EditWorkOrder() {
                                         dataType={510}
                                         allowNull={false}
                                         isEdit={isEdit}
-                                        itemShowName="执行人"
+                                        itemShowName="executor"
                                         itemKey="executor"
                                         initValue={voucherData.body[currentRowIndex].executor}
                                         errInfo={dataErrs.body[currentRowIndex].executor}
@@ -477,7 +477,7 @@ function EditWorkOrder() {
                                         dataType={580}
                                         allowNull={false}
                                         isEdit={isEdit}
-                                        itemShowName="执行模板"
+                                        itemShowName="ept"
                                         itemKey="ept"
                                         initValue={voucherData.body[currentRowIndex].ept}
                                         errInfo={dataErrs.body[currentRowIndex].ept}
@@ -492,7 +492,7 @@ function EditWorkOrder() {
                                         dataType={307}
                                         allowNull={false}
                                         isEdit={isEdit}
-                                        itemShowName="开始时间"
+                                        itemShowName="startTime"
                                         itemKey="startTime"
                                         initValue={voucherData.body[currentRowIndex].startTime}
                                         errInfo={dataErrs.body[currentRowIndex].startTime}
@@ -507,7 +507,7 @@ function EditWorkOrder() {
                                         dataType={307}
                                         allowNull={false}
                                         isEdit={isEdit}
-                                        itemShowName="结束时间"
+                                        itemShowName="endTime"
                                         itemKey="endTime"
                                         initValue={voucherData.body[currentRowIndex].endTime}
                                         errInfo={dataErrs.body[currentRowIndex].endTime}
@@ -524,7 +524,7 @@ function EditWorkOrder() {
                         </ScVoucherBody>
                         <ScVoucherFooter
                             isFooterErr={false}
-                            title={"表尾"}
+                            title={"voucherFooter"}
                             buttonPosition={buttonPosition}
                             theme={theme}
                             t={t}
@@ -533,7 +533,7 @@ function EditWorkOrder() {
                                 dataType={510}
                                 allowNull={true}
                                 isEdit={false}
-                                itemShowName="创建人"
+                                itemShowName="creator"
                                 errInfo={{ isErr: false, msg: "" }}
                                 itemKey="creator"
                                 initValue={voucherData.creator}
@@ -548,7 +548,7 @@ function EditWorkOrder() {
                                 dataType={307}
                                 allowNull={true}
                                 isEdit={false}
-                                itemShowName="创建日期"
+                                itemShowName="createDate"
                                 errInfo={{ isErr: false, msg: "" }}
                                 itemKey="createDate"
                                 initValue={voucherData.createDate}
@@ -563,7 +563,7 @@ function EditWorkOrder() {
                                 dataType={510}
                                 allowNull={true}
                                 isEdit={false}
-                                itemShowName="修改人"
+                                itemShowName="modifier"
                                 errInfo={{ isErr: false, msg: "" }}
                                 itemKey="modifier"
                                 initValue={voucherData.modifier}
@@ -578,7 +578,7 @@ function EditWorkOrder() {
                                 dataType={307}
                                 allowNull={true}
                                 isEdit={false}
-                                itemShowName="更新日期"
+                                itemShowName="modifyDate"
                                 errInfo={{ isErr: false, msg: "" }}
                                 itemKey="modifyDate"
                                 initValue={voucherData.modifyDate}
@@ -593,7 +593,7 @@ function EditWorkOrder() {
                                 dataType={510}
                                 allowNull={true}
                                 isEdit={false}
-                                itemShowName="确认人"
+                                itemShowName="confirmer"
                                 errInfo={{ isErr: false, msg: "" }}
                                 itemKey="confirmer"
                                 initValue={voucherData.confirmer}
@@ -608,7 +608,7 @@ function EditWorkOrder() {
                                 dataType={307}
                                 allowNull={true}
                                 isEdit={false}
-                                itemShowName="确认日期"
+                                itemShowName="confirmDate"
                                 errInfo={{ isErr: false, msg: "" }}
                                 itemKey="confirmDate"
                                 initValue={voucherData.confirmDate}
@@ -625,18 +625,18 @@ function EditWorkOrder() {
                     {isEdit
                         ? <Surface style={{ minHeight: 42, flexDirection: buttonPosition === "right" ? "row" : "row-reverse", alignItems: "center", justifyContent: "flex-end", paddingHorizontal: 16 }}>
                             {canTempSave
-                                ? <Button mode="text" icon="cellphone-arrow-down" onPress={handleTempSave}>暂存</Button>
+                                ? <Button mode="text" icon="cellphone-arrow-down" onPress={handleTempSave}>{t("draft")}</Button>
                                 : null
                             }
-
                             {isOffLine === 0
-                                ? <Button mode="text" onPress={handleUploadWO} icon="cloud-upload" disabled={dataErrs.isErr ?? false}>上传</Button>
+                                ? <Button mode="text" onPress={handleUploadWO} icon="cloud-upload" disabled={dataErrs.isErr ?? false}>{t("upload")}</Button>
                                 : null
                             }
                         </Surface>
                         : null
                     }
                     <ScHandSwitch
+                        refreshDisplay={false}
                         docRefresh={() => { }}
                         cancelAction={handleCancel}
                         theme={theme}

@@ -116,6 +116,7 @@ const EPCPIcker = ({ pressItemAction, cancelAction, currentItem, t, theme }: ScP
                 />
             }
             <ScHandSwitch
+                refreshDisplay={true}
                 docRefresh={handleDocRefresh}
                 cancelAction={cancelAction}
                 theme={theme}

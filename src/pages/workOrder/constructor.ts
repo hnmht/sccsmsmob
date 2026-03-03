@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { getEmptyPerson } from "../../dataType/dataZero/person";
 import { getEmptyWorkOrder } from "../../dataType/dataZero/workOrder";
 import { SimpDept } from "../../dataType/types/department";
@@ -13,8 +14,8 @@ export const getInitialValue = async (oriWO: WorkOrder | undefined, isNew: boole
     let newWO = getEmptyWorkOrder(person, dept);
     const currentDay = dayjs(new Date()).toISOString();
     const emptyPerson = getEmptyPerson();
-    if (isNew) { //是否新增单据
-        if (oriWO) {//复制新增            
+    if (isNew) { // Check if new Voucher
+        if (oriWO) {// Check if created from existing            
             newWO = cloneDeep(oriWO);
             newWO.id = 0;
             newWO.billNumber = "";
@@ -34,18 +35,18 @@ export const getInitialValue = async (oriWO: WorkOrder | undefined, isNew: boole
             newWO.confirmer = emptyPerson;
             newWO.confirmDate = EpochTime;
         }
-    } else { //编辑或者查看
+    } else { 
         if (!oriWO) {
-            return newWO;
+            return undefined;
         } else {
-            if (isModify) { //编辑                
+            if (isModify) { //  Edit Mode               
                 newWO = cloneDeep(oriWO);
                 newWO.createDate = currentDay;
                 newWO.modifier = person;
                 newWO.modifyDate = EpochTime;
                 newWO.confirmer = emptyPerson;
                 newWO.confirmDate = EpochTime;
-            } else { //查看
+            } else { // View Mode
                 newWO = cloneDeep(oriWO);
                 newWO.createDate = currentDay;
                 newWO.modifyDate = EpochTime;
@@ -55,8 +56,6 @@ export const getInitialValue = async (oriWO: WorkOrder | undefined, isNew: boole
     }
     return newWO;
 };
-
-
 
 // Check WorkOrder Data errors
 export const checkWOErrors = (woData: WorkOrder | undefined): WOErrors => {
@@ -75,17 +74,17 @@ export const checkWOErrors = (woData: WorkOrder | undefined): WOErrors => {
     }
     let headerErrNumber = 0;
     let bodyErrorNumber = 0;
-    //检查表头单据日期
+    // Check header billDate field
     if (woData.billDate === "") {
-        errData.billDate = { isErr: true, msg: "单据日期不能为空" };
+        errData.billDate = { isErr: true, msg: t("cannotEmpty") };
         headerErrNumber++
     }
-    //检查表头作业日期
+    // Check header workDate field
     if (woData.workDate === "") {
-        errData.workDate = { isErr: true, msg: "作业日期不能为空" }
+        errData.workDate = { isErr: true, msg: t("cannotEmpty") }
         headerErrNumber++
     }
-    //检查表体
+    // Check body
     woData.body.forEach((row, index) => {
         let rowErr: WORowErrors = {
             csa: noErr,
@@ -95,27 +94,27 @@ export const checkWOErrors = (woData: WorkOrder | undefined): WOErrors => {
             endTime: noErr
         };
         if (row.csa.id === 0) {
-            rowErr.csa = { isErr: true, msg: "现场档案不能为空" };
+            rowErr.csa = { isErr: true, msg: t("cannotEmpty") };
             bodyErrorNumber++
         }
         if (row.executor.id === 0) {
-            rowErr.executor = { isErr: true, msg: "执行人不能为空" };
+            rowErr.executor = { isErr: true, msg: t("cannotEmpty") };
             bodyErrorNumber++
         }
         if (row.ept.id === 0) {
-            rowErr.ept = { isErr: true, msg: "执行模板不能为空" };
+            rowErr.ept = { isErr: true, msg: t("cannotEmpty") };
             bodyErrorNumber++
         }
         if (row.startTime === "") {
-            rowErr.startTime = { isErr: true, msg: "开始时间必须填写" };
+            rowErr.startTime = { isErr: true, msg: t("cannotEmpty") };
             bodyErrorNumber++
         }
         if (row.endTime === "") {
-            rowErr.endTime = { isErr: true, msg: "结束时间必须填写" };
+            rowErr.endTime = { isErr: true, msg: t("cannotEmpty") };
             bodyErrorNumber++
         } else {
             if (row.endTime < row.startTime) {
-                rowErr.endTime = { isErr: true, msg: "结束时间必须大于开始时间" };
+                rowErr.endTime = { isErr: true, msg: t("endTimePrecedeStartTime") };
                 bodyErrorNumber++
             }
         }

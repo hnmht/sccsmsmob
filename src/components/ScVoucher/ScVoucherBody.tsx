@@ -10,6 +10,7 @@ interface ScVoucherBodyProps<T> {
     buttonPosition: "left" | "right";
     isBodyErr: boolean;
     isEdit: boolean;
+    addRowDisabled:boolean;
     addRowAction: () => void,
     totalRows: number;
     bodyMenu: ReactNode;
@@ -25,6 +26,7 @@ function ScVoucherBody<T>({
     buttonPosition = "right",
     isBodyErr,
     isEdit,
+    addRowDisabled=true,
     addRowAction,
     totalRows,
     bodyMenu,
@@ -63,7 +65,7 @@ function ScVoucherBody<T>({
                         key={"addRow"}
                         icon="playlist-plus"
                         textColor={theme.colors.primary}
-                        disabled={true}
+                        disabled={addRowDisabled}
                     >
                         {t("addRow")}
                     </Button>

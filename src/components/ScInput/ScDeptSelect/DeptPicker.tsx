@@ -119,6 +119,7 @@ const DeptPicker = ({ pressItemAction, cancelAction, currentItem, t, theme }: Sc
                 />
             }
             <ScHandSwitch
+                refreshDisplay={true}
                 docRefresh={handleDocRefresh}
                 cancelAction={cancelAction}
                 theme={theme}

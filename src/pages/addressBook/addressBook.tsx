@@ -106,6 +106,7 @@ const AddressBook = () => {
                     })}
             </ScrollView>
             <ScHandSwitch
+                refreshDisplay={true}
                 theme={theme}
                 t={t}
                 docRefresh={handlePersonRefresh}

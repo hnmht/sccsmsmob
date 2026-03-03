@@ -96,6 +96,7 @@ const PositionPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }
                 refreshing={false}
             />
             <ScHandSwitch
+                refreshDisplay={true}
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
                 theme={theme}

@@ -702,6 +702,12 @@
     "local":"Local",
     "remote":"Remote",
     "notAllowedStagRemotoVoucher":"Staging is not allowed when editing remote voucher.",
+    "quickJump":"Quick Jump",
+    "rowTh":"Row {{ rowNumber }}",
+    "voucherHeader":"Header",
+    "voucherBody":"Body",
+    "voucherFooter":"Footer",
+    "draft":"Draft",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

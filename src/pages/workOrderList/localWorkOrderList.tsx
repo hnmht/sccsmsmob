@@ -7,7 +7,6 @@ import WOCardContent from "./WOCardContent";
 import { wosSortByid } from "./constructor";
 import { reqAddWO } from "../../api/workOrder";
 import { transWOToBackend } from "../workOrder/constructor";
-// import { transWOToBackend } from "../workOrder/constructor";
 import { WorkOrder } from "../../dataType/types/workOrder";
 import { useBusinessNavigation } from "../../navigation/config/screenParams";
 import { useAppSelector } from "../../store/hooks";
@@ -18,6 +17,8 @@ const LocalWorkOrderList = () => {
     const navigation = useBusinessNavigation();
     const [localWOs, setLocalWOs] = useState<WorkOrder[]>([]);
     const user = useAppSelector(state => state.user);
+    const appInfo = useAppSelector(state => state.appInfo);
+    const isOffLine = appInfo.isOffline === 1;
     const { t } = useTranslation();
     const theme = useTheme();
     // Commands button position
@@ -30,10 +31,15 @@ const LocalWorkOrderList = () => {
     useEffect(() => {
         handleGetLocalWOs();
     }, []);
-
+    // Actions on EditWorkOrder Page goBack
+    const handleGoBack = (shouldRefresh: boolean = false) => {
+        if (shouldRefresh) {
+            handleGetLocalWOs();
+        }
+    };
     // Actions after press add button
     const handleAdd = () => {
-        navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: undefined });
+        navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: undefined, onGoBack: handleGoBack });
     };
     // Actions after press delete button
     const handleDelete = (item: WorkOrder) => {
@@ -44,15 +50,15 @@ const LocalWorkOrderList = () => {
     };
     // Actions after press edit button
     const handleEdit = (item: WorkOrder) => {
-        navigation.navigate("WorkOrder", { isLocal: true, isNew: false, isModify: true, oriWO: item });
+        navigation.navigate("WorkOrder", { isLocal: true, isNew: false, isModify: true, oriWO: item, onGoBack: handleGoBack });
     };
     // Actions after press copy add button
     const handleCopyAdd = (item: WorkOrder) => {
-        navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: item });
+        navigation.navigate("WorkOrder", { isLocal: false, isNew: true, isModify: false, oriWO: item, onGoBack: handleGoBack });
     };
     // Actions after press detail button
     const handleDetail = (item: WorkOrder) => {
-        navigation.navigate("WorkOrder", { isLocal: true, isNew: false, isModify: false, oriWO: item });
+        navigation.navigate("WorkOrder", { isLocal: true, isNew: false, isModify: false, oriWO: item, onGoBack: handleGoBack });
     };
     // Actions after press upload button
     const handleUpload = async (item: WorkOrder) => {
@@ -60,12 +66,10 @@ const LocalWorkOrderList = () => {
         //Convert Work Order to backend format
         const thisWO = transWOToBackend(newWO);
         thisWO.id = 0
-        // delete thisWO.isHeaderErr
-        // delete thisWO.isBodyErr
         let addRes = await reqAddWO(thisWO);
         if (addRes.status) {
-            WORepo.delVoucher(item);           
-            Alert.alert(t("tip"), t("uploadSuccessful"));
+            WORepo.delVoucher(item);
+            Alert.alert(t("tip"), t("successful"));
         }
         // Refresh local work order list
         handleGetLocalWOs();
@@ -73,6 +77,7 @@ const LocalWorkOrderList = () => {
     // Local Work Order Card
     const WOCard = ({ item }: { item: WorkOrder }) => {
         const wo = item;
+        const canUpload: boolean = wo.errData?.isErr ?? false;
         return (
             <Card key={wo.id} style={{ marginTop: 2, marginBottom: 2 }}>
                 <WOCardContent wo={wo} isLocal={true} t={t} theme={theme} />
@@ -80,11 +85,10 @@ const LocalWorkOrderList = () => {
                     <IconButton key="delete" onPress={() => handleDelete(wo)} icon="delete-outline" iconColor={theme.colors.primary} size={20} mode="contained" />
                     <IconButton key="edit" onPress={() => handleEdit(wo)} icon="pencil-outline" iconColor={theme.colors.primary} size={20} mode="contained" />
                     <IconButton key="copyAdd" onPress={() => handleCopyAdd(wo)} icon="plus-box-multiple-outline" iconColor={theme.colors.primary} size={20} mode="contained" />
-                    <IconButton key="upload" onPress={() => handleUpload(wo)} disabled={true} icon="cloud-upload" iconColor={theme.colors.primary} size={20} mode="contained" />
+                    <IconButton key="upload" onPress={() => handleUpload(wo)} disabled={canUpload || isOffLine} icon="cloud-upload" iconColor={theme.colors.primary} size={20} mode="contained" />
                     <IconButton key="detail" onPress={() => handleDetail(wo)} icon="eye-outline" iconColor={theme.colors.primary} size={20} mode="contained" />
                 </Card.Actions>
             </Card>
-
         );
     };
 

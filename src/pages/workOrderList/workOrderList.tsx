@@ -48,8 +48,8 @@ const WorkOrderList = () => {
                 ? <RemoteWorkOrderList />
                 : <LocalWorkOrderList />
             }
-
             <ScHandSwitch
+                refreshDisplay={false}
                 docRefresh={() => { }}
                 cancelAction={handleGoBack}
                 theme={theme}

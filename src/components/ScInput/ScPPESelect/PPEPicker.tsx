@@ -102,6 +102,7 @@ const PPEPicker = ({ cancelAction, pressItemAction, currentItem, t, theme }: ScP
                 refreshing={false}
             />
             <ScHandSwitch
+                refreshDisplay={true}
                 docRefresh={handleRefresh}
                 cancelAction={cancelAction}
                 theme={theme}

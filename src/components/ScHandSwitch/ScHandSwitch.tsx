@@ -4,6 +4,7 @@ import { changeSwapPosition } from "../../store/slice/swapPosition";
 import { TFunction } from "i18next";
 
 interface ScHandSwitchProps {
+    refreshDisplay: boolean;
     docRefresh: () => void;
     cancelAction: () => void;
     theme: MD3Theme;
@@ -11,7 +12,7 @@ interface ScHandSwitchProps {
 }
 
 function ScHandSwitch(props: ScHandSwitchProps) {
-    const { docRefresh, cancelAction, theme, t } = props;
+    const { refreshDisplay = true, docRefresh, cancelAction, theme, t } = props;
     const dispatch = useAppDispatch();
     const isOffline = useAppSelector(state => state.appInfo.isOffline);
     // Command buttons position
@@ -23,7 +24,7 @@ function ScHandSwitch(props: ScHandSwitchProps) {
 
     return (
         <>
-            {isOffline === 0
+            {isOffline === 0 && refreshDisplay
                 ? <AnimatedFAB
                     icon="refresh"
                     label={t("refresh")}
