@@ -35,7 +35,7 @@ const WorkOrderList = () => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
             <ScFunctionTitle title="MenuWOList" icon="bookmark-multiple" theme={theme} t={t} />
             <ScSegmentLocalOrRemote
                 localOrRemote={localOrRemote}

@@ -71,14 +71,14 @@ function BottomNav() {
                     tabBarShowLabel: true,
                     tabBarHideOnKeyboard: true,
                     tabBarAllowFontScaling: false,
-                    headerTitleAllowFontScaling: false,
+                    headerTitleAllowFontScaling: false,                    
                     tabBarIcon: ({ color, size }) => (
                         <MaterialDesignIcons
                             name={config?.icon ?? 'help-circle'}
                             size={size}
                             color={color}
                         />
-                    ),
+                    ),                  
                 };
             }}
         >

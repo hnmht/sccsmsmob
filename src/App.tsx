@@ -27,7 +27,6 @@ const App = () => {
         [toggleTheme, isThemeDark]
     );
 
-    theme.dark
     return (
         <ThemeContext.Provider value={preferences}>
             <Provider store={store}>
