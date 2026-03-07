@@ -10,7 +10,7 @@ import ScSegmentLocalOrRemote from "../../components/ScSegmentLocalOrRemote/ScDe
 import { SafeAreaView } from "react-native-safe-area-context";
 import ScHandSwitch from "../../components/ScHandSwitch/ScHandSwitch";
 
-const WorkOrderList = () => {
+function WorkOrderList() {
     const theme = useTheme();
     const { t } = useTranslation();
     const navigation = useBusinessNavigation();

@@ -152,7 +152,7 @@ const RemoteWorkOrderList = () => {
                     rows={remoteWOs}
                     ItemElement={WOCard}
                     rowsPerPage={10}
-                    searchFields={["billdate", "billnumber", "createuser.name", "department.name"]}
+                    searchFields={["billDate", "billNumber", "creator.name", "department.name"]}
                     sortFunction={wosSortByid}
                     refreshing={false}
                 />

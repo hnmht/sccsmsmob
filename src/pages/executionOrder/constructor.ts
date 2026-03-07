@@ -1,0 +1,378 @@
+import { store } from "../../store";
+import { dayjs } from "../../i18n/dayjs";
+import { cloneDeep, uniqBy } from "lodash";
+import { mailRegex } from "../../utils/regex";
+import { WorkOrderRow } from "../../dataType/types/workOrder";
+import { getDefaultExecutionOrderRow, getEmptyExecutionOrder } from "../../dataType/dataZero/executionOrder";
+import { EOErrors, EORowErrors, ExecutionOrder, ExecutionOrderRow } from "../../dataType/types/executionOrder";
+import { EPTRepo } from "../../db/crud/ept";
+import { EPTRow } from "../../dataType/types/ept";
+import { Person } from "../../dataType/types/person";
+import { ErrMsg, MarkText } from "../../dataType/types/scInput";
+import { ScDataTypeList } from "../../dataType/types/scDataType";
+import { ScFile } from "../../dataType/types/file";
+
+// Generate Execution Order Data
+export const getInitialValue = (isNew: boolean, isModify: boolean, oriWOR: WorkOrderRow, oriEO: ExecutionOrder) => {
+    const { user } = store.getState();
+    const { person, department } = user;
+    const currentDay = dayjs(new Date()).toISOString();
+    let newEO = getEmptyExecutionOrder(person, department, currentDay);
+    if (isNew) {// Check If new Voucher
+        if (oriWOR) {// Add per the work Order Row
+            newEO.department = oriWOR.department;
+            newEO.description = oriWOR.headerDescription;
+            newEO.sourceType = "WO";
+            newEO.sourceBillNumber = oriWOR.billNumber;
+            newEO.sourceHID = oriWOR.hid;
+            newEO.sourceRowNumber = oriWOR.rowNumber;
+            newEO.sourceBID = oriWOR.id;
+            newEO.sourceRowTs = oriWOR.ts;
+            newEO.startTime = oriWOR.startTime;
+            newEO.endTime = oriWOR.endTime;
+            newEO.csa = oriWOR.csa;
+            newEO.ept = EPTRepo.getDetailByID(oriWOR.ept.id);
+            newEO.allowAddRow = newEO.ept.allowAddRow;
+            newEO.allowDelRow = newEO.ept.allowDelRow;
+            newEO.body = eptBodyToEOBody(newEO.ept.body, newEO.startTime, newEO.endTime, newEO.csa.respPerson);
+        }
+    } else {
+        if (!oriEO) {
+            return
+        } else {
+            if (isModify) { // Edit
+                newEO = cloneDeep(oriEO);
+                newEO.modifier = person;
+                newEO.modifyDate = currentDay;
+            } else {// View
+                newEO = cloneDeep(oriEO);
+            }
+        }
+    }
+    return newEO;
+};
+
+// Convert Execution Project Template Body to Execution Order Body
+export const eptBodyToEOBody = (eptBody: EPTRow[], startTime: string, endTime: string, issueOwner: Person) => {
+    let eoBody: ExecutionOrderRow[] = [];
+    const currentDay = dayjs(new Date()).toISOString();
+    const emptyEOR = getDefaultExecutionOrderRow(issueOwner, currentDay)
+    if (eptBody.length === 0) {
+        eoBody = [emptyEOR];
+    } else {
+        eptBody.forEach(eptRow => {
+            let eoRow = getDefaultExecutionOrderRow(issueOwner, currentDay);
+            eoRow.rowNumber = eptRow.rowNumber;
+            eoRow.epa = eptRow.epa;
+            eoRow.allowDelRow = eptRow.allowDelRow;
+            eoRow.executionValue = eptRow.defaultValue;
+            eoRow.executionValueDisp = eptRow.defaultValueDisp;
+            eoRow.files = [];
+            eoRow.epaDescription = eptRow.description;
+            eoRow.isCheckError = eptRow.isCheckError;
+            eoRow.errorValue = eptRow.errorValue;
+            eoRow.errorValueDisp = eptRow.errorValueDisp;
+            eoRow.isRequireFile = eptRow.isRequireFile;
+            eoRow.isOnSitePhoto = eptRow.isOnSitePhoto;
+            eoRow.isFromEpt = 1;
+            eoRow.issueOwner = issueOwner;
+            eoRow.handleStartTime = startTime;
+            eoRow.handleEndTime = endTime;
+            eoRow.riskLevel = eptRow.riskLevel;
+            eoBody.push(eoRow);
+        });
+    }
+    return eoBody;
+};
+
+//检查执行单错误
+export const checkEOErrors = (eoData: ExecutionOrder): EOErrors | undefined => {
+    if (eoData === undefined) {
+        return undefined;
+    }
+    const noErr: ErrMsg = { isErr: false, msg: "" };
+    const errData: EOErrors = {
+        billDate: noErr,
+        department: noErr,
+        csa: noErr,
+        executor: noErr,
+        ept: noErr,
+        startTime: noErr,
+        endTime: noErr,
+        body: []
+    };
+    //检查表头单据日期
+    if (eoData.billDate === "") {
+        errData.billDate = { isErr: true, msg: "单据日期不能为空" };
+    }
+    //检查表头部门
+    if (eoData.department.id === 0) {
+        errData.department = { isErr: true, msg: "部门不能为空" };
+    }
+    //检查表头现场
+    if (eoData.csa.id === 0) {
+        errData.csa = { isErr: true, msg: "现场不能为空" };
+    }
+    //检查表头执行模板
+    if (eoData.ept.id === 0) {
+        errData.ept = { isErr: true, msg: "执行模板不能为空" };
+    }
+    //检查开始时间
+    if (eoData.startTime === "") {
+        errData.startTime = { isErr: true, msg: "开始时间不能为空" };
+    }
+    //检查结束时间
+    if (eoData.endTime === "") {
+        errData.endTime = { isErr: true, msg: "结束时间不能为空" }
+    } else {
+        if (eoData.startTime > eoData.endTime) {
+            errData.endTime = { isErr: true, msg: "结束时间不能小于开始时间" };
+        }
+    }
+
+    //检查表体
+    eoData.body.forEach((row, index) => {
+        let rowErr: EORowErrors = {
+            epa: noErr,
+            executionValue: noErr,
+            files: noErr,
+            issueOwner: noErr,
+            handleStartTime: noErr,
+            handleEndTime: noErr,
+        };
+
+        //检查执行项目
+        if (row.epa.id === 0) {
+            rowErr.epa = { isErr: true, msg: "执行项目不能为空" };
+        }
+        //检查执行值
+        switch (row.epa.resultType.id) {
+            case 301:
+                if (row.executionValue === "") {
+                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                }
+                break;
+            case 302:
+                if (!Number.isFinite(row.executionValue)) {
+                    rowErr.executionValue = { isErr: true, msg: `执行值必须为数值` };
+                }
+                break;
+            case 303:
+                if (row.executionValue === "") {
+                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                }
+                break;
+            case 304:
+                if (row.executionValue === "") {
+                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                }
+                break;
+            case 305:
+                if (row.executionValue === "") {
+                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                } else {
+                    if (!mailRegex.test(row.executionValue)) {
+                        rowErr.executionValue = { isErr: true, msg: `执行值邮件格式不正确` };
+                    }
+                }
+                break;
+            case 306:
+                if (row.executionValue === "") {
+                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                } else {
+                    if (!dayjs(row.executionValue, "YYYYMMDD", true).isValid()) {
+                        rowErr.executionValue = { isErr: true, msg: `执行值日期格式不正确` };
+                    }
+                }
+                break;
+            case 307:
+                if (row.executionValue === "") {
+                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                } else {
+                    if (!dayjs(row.executionValue, "YYYYMMDDHHmm", true).isValid()) {
+                        rowErr.executionValue = { isErr: true, msg: `执行值日期时间格式不正确` };
+                    }
+                }
+                break;
+            case 401:
+                if (row.executionValue === 0) {
+                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                }
+                break;
+            case 402:
+            case 403:
+                break;
+            case 404:
+                if (row.executionValue === 2) {
+                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                }
+                break;
+            case 510:
+            case 520:
+            case 525:
+            case 530:
+            case 540:
+            case 550:
+            case 560:
+            case 570:
+            case 580:
+                if (row.executionValue.id === 0) {
+                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                }
+                break;
+            default:
+                break;
+        }
+
+        //检查文件        
+        if (row.isRequireFile === 1) {
+            let fileNumber = 0;
+            row.files.forEach(file => {
+                if (file.dr === 0) {
+                    fileNumber++
+                }
+            })
+            if (fileNumber === 0) {
+                rowErr.files = { isErr: true, msg: "必须上传附件" }
+            }
+        }
+
+        //检查处理人
+        if (row.isHandle === 1 && row.issueOwner.id === 0) {
+            rowErr.issueOwner = { isErr: true, msg: "处理人必须输入" };
+        }
+
+        //检查开始处理时间
+        if (row.isHandle === 1 && row.handleStartTime === "") {
+            rowErr.handleStartTime = { isErr: true, msg: "开始处理时间必须输入" };
+        }
+
+        //检查结束处理时间
+        if (row.isHandle === 1) {
+            if (row.handleEndTime === "") {
+                rowErr.handleEndTime = { isErr: true, msg: "结束处理时间必须输入" };
+            } else {
+                if (row.handleStartTime > row.handleEndTime) {
+                    rowErr.handleEndTime = { isErr: true, msg: "结束处理时间必须大于开始处理时间" };
+                }
+            }
+        }
+        errData.body.push(rowErr);
+    })
+    return errData;
+};
+
+//表体行自动检查问题
+export const checkForProblem = (resultTypeId: ScDataTypeList, errorValue: any, value: any) => {
+    switch (resultTypeId) {
+        case 301:
+        case 302:
+        case 306:
+        case 307:
+        case 401:
+        case 404:
+            return errorValue === value ? 1 : 0;
+        case 510:
+        case 520:
+        case 525:
+        case 530:
+        case 540:
+        case 550:
+            return errorValue.id === value.id ? 1 : 0;
+        default:
+            return 0;
+    }
+};
+
+//表体所有文件转换为[]pg.File格式
+export const transVoucherDataToFiles = (voucherData: ExecutionOrder) => {
+    let files: ScFile[] = [];
+    if (voucherData === undefined || voucherData.body.length <= 0) {
+        return files;
+    }
+    voucherData.body.forEach(row => {
+        if (row.files && row.files.length > 0) {
+            row.files.forEach(file => {
+                if (file.file.id === 0) {
+                    files.push(file.file);
+                }
+            });
+        }
+    });
+    const noDupFiles = uniqBy(files, "filehash");
+    return noDupFiles;
+};
+
+//转换数据到后端格式
+export function transEOToBackend(eo: ExecutionOrder) {
+    // 拷贝数据
+    const newEO = cloneDeep(eo);
+    newEO.ept.body = [];
+
+    newEO.body.map((row) => {
+        switch (row.epa.resultType.id) {
+            case 301:
+                row.executionValueDisp = row.executionValue;
+                break;
+            case 306:
+                row.executionValueDisp = row.executionValue === "" ? "" : dayjs(row.executionValue, "YYYYMMDD").format("YYYY-MM-DD");
+                break;
+            case 307:
+                row.executionValueDisp = row.executionValue === "" ? "" : dayjs(row.executionValue, "YYYYMMDDHHmm").format("YYYY-MM-DD HH:mm");
+                break;
+            case 302:
+                row.executionValue = row.executionValue.toString();
+                row.executionValueDisp = row.executionValue.toString();
+                row.errorValue = row.errorValue.toString();
+                break;
+            case 401:
+                row.executionValueDisp = row.executionValue === 0 ? "" : row.executionValue === 1 ? "男" : "女";
+                row.executionValue = row.executionValue.toString();
+                row.errorValue = row.errorValue.toString();
+                break;
+            case 404:
+                row.executionValueDisp = row.executionValue === 0 ? "否" : row.executionValue === 1 ? "是" : "";
+                row.executionValue = row.executionValue.toString();
+                row.errorValue = row.errorValue.toString();
+                break;
+            case 510:
+            case 520:
+            case 525:
+            case 530:
+            case 540:
+            case 550:
+                row.executionValueDisp = row.executionValue.name;
+                row.executionValue = row.executionValue.id.toString();
+                row.errorValue = row.errorValue.id.toString();
+                break;
+            default:
+                console.error("No matching DataType");
+        }
+        row.epa.defaultValue = "";
+        row.epa.errorValue = "";
+        return row;
+    });
+
+    return newEO;
+};
+
+//生成水印文本
+export const generateMarkText = (voucherData: ExecutionOrder, row: ExecutionOrderRow) => {
+    let mark: MarkText[] = [];
+    if (!voucherData || !row) {
+        return mark;
+    }
+    //生成作者信息
+    const { appInfo, user } = store.getState();
+    mark.push({ position: { x: 0, y: 0 }, text: `${appInfo.serverInfo.organization?.organizationName} | ${user.person.name} | 执行单`, textSize: 20, color: " rgb(92, 93, 114)" });
+    //生成现场信息
+    if (voucherData.csa.name !== "") {
+        mark.push({ position: { x: 0, y: 0 }, text: `现场:${voucherData.csa.name}`, textSize: 20, color: " rgb(92, 93, 114)" });
+    }
+    //生成执行项目
+    if (row.epa.name !== "") {
+        mark.push({ position: { x: 0, y: 0 }, text: `执行项目:${row.epa.name}`, textSize: 20, color: " rgb(92, 93, 114)" });
+    }
+    return mark;
+};
+

@@ -5,6 +5,16 @@ import { EPT } from "./ept";
 import { ExecutionProject } from "./epa";
 import { VoucherFile } from "./voucherFile";
 import { RiskLevel } from "./riskLevel";
+import { ErrMsg } from "./scInput";
+// Execution Order Row Errors
+export interface EORowErrors {
+    epa: ErrMsg;
+    executionValue: ErrMsg;
+    files: ErrMsg;
+    issueOwner: ErrMsg;
+    handleStartTime: ErrMsg;
+    handleEndTime: ErrMsg;
+}
 // Execution Order Row
 export interface ExecutionOrderRow {
     id: number; // BID
@@ -44,6 +54,21 @@ export interface ExecutionOrderRow {
     dr: 0 | 1;
 }
 
+// Execution Order Errors
+export interface EOErrors {
+    billDate: ErrMsg;
+    department: ErrMsg;
+    csa: ErrMsg;
+    executor: ErrMsg;
+    ept: ErrMsg;
+    startTime: ErrMsg;
+    endTime: ErrMsg;
+    body: EORowErrors[];
+    isErr?: boolean;
+    isHeaderErr?: boolean;
+    isBodyErr?: boolean;
+}
+
 // Execution Order Header
 export interface ExecutionOrder {
     id: number; // HID
@@ -77,6 +102,7 @@ export interface ExecutionOrder {
     modifier: Person;
     ts: string;
     dr: 0 | 1;
+    errData?:EOErrors;
 }
 
 // Execution Order Record for Reference by Downstreams Voucher

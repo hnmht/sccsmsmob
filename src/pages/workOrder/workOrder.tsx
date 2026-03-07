@@ -265,7 +265,7 @@ function EditWorkOrder() {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
             <Surface key="voucherTitle" style={{ height: 42, alignItems: "center", justifyContent: "center" }}>
                 <Text variant="titleLarge" maxFontSizeMultiplier={1.2}>{t("wo")}</Text>
             </Surface>

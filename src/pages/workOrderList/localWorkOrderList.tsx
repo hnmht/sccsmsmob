@@ -13,7 +13,7 @@ import { useAppSelector } from "../../store/hooks";
 import { useTranslation } from "react-i18next";
 import { WORepo } from "../../db/crud/workorder";
 
-const LocalWorkOrderList = () => {
+function LocalWorkOrderList() {
     const navigation = useBusinessNavigation();
     const [localWOs, setLocalWOs] = useState<WorkOrder[]>([]);
     const user = useAppSelector(state => state.user);
@@ -99,7 +99,7 @@ const LocalWorkOrderList = () => {
                     rows={localWOs}
                     ItemElement={WOCard}
                     rowsPerPage={10}
-                    searchFields={["id", "billdate", "billnumber", "createuser.name", "department.name"]}
+                    searchFields={["id", "billDate", "billNumber", "creator.name", "department.name"]}
                     sortFunction={wosSortByid}
                     refreshing={false}
                 />
