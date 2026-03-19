@@ -22,9 +22,9 @@ import { useTranslation } from "react-i18next";
 import ScHandSwitch from "../../components/ScHandSwitch/ScHandSwitch";
 
 function EditWorkOrder() {
-    const navigation = useBusinessNavigation();
+    const navigation = useBusinessNavigation<"WorkOrder">();
     const theme = useTheme();
-    const route = useBusinessRoute();
+    const route = useBusinessRoute<"WorkOrder">();
     const { isLocal = false, isNew = false, isModify = false, oriWO = undefined, onGoBack } = route.params ?? {};
     const { t } = useTranslation();
     const { person, department } = useAppSelector(state => state.user);

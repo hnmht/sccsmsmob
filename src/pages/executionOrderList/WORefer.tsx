@@ -1,50 +1,57 @@
 import { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
-import { Text, useTheme, IconButton, AnimatedFAB, Card } from "react-native-paper";
-// import dayjs from "dayjs";s
-import dayjs from "../../utils/myDayjs";
-import { useDispatch, useSelector } from "react-redux";
-import { changeSwapPosition } from "../../store/slice/swapPosition";
+import { Text, IconButton, Card, MD3Theme } from "react-native-paper";
+import { DateTimeFormat } from "../../i18n/dayjs";
+import { VoucherStatus } from "../../constant/voucherStatus";
 import DocList from "../../components/DocList/DocList";
 import { transConditionsToString } from "../../components/QueryPanel";
 import { reqReferWO } from "../../api/workOrder";
-import { edsSortByID } from "./constructor";
-import { VoucherStatus } from "../../utils/pub";
-import { pubParams } from "../../components/pub/pubParms";
+import { Condition } from "../../dataType/types/queryPanel";
+import { TFunction } from "i18next";
+import {  useAppSelector } from "../../store/hooks";
+import { WorkOrderRow } from "../../dataType/types/workOrder";
+import { worsSortByid } from "./constructor";
+import ScHandSwitch from "../../components/ScHandSwitch/ScHandSwitch";
 
-const WORefer = ({
-    isOffline,
-    title,
-    conditions,
-    cancelClickAction,
-    okClickAction,
-    fileterButtonDisp,
-    filterAction
-}) => {
-    const [rows, setRows] = useState([]);
-    const [refreshing, setRefreshing] = useState(false);
-    const theme = useTheme();
-    const dispatch = useDispatch();
-    const worefs = useSelector(state => state.dynamicdata.worefs);
-    //命令按钮位置
-    const { buttonPosition, swapPosition, orderPosition } = useSelector(state => state.swapposition);
-    //切换命令按钮位置
-    const handleSwapPosition = () => {
-        dispatch(changeSwapPosition());
-    };
+interface WOReferProps {
+    isOffline: boolean;
+    title: string;
+    conditions: Condition[];
+    cancelPressAction: () => void;
+    okPressAction: (wor: WorkOrderRow) => void;
+    filterButtonDisp: boolean;
+    filterAction: () => void;
+    theme: MD3Theme;
+    t: TFunction
+}
+
+function WORefer({
+    isOffline = false,
+    title = "generateRefWO",
+    conditions = [],
+    cancelPressAction,
+    okPressAction,
+    filterButtonDisp = true,
+    filterAction,
+    theme,
+    t,
+}: WOReferProps) {
+    const [rows, setRows] = useState<WorkOrderRow[]>([]);
+    const [refreshing, setRefreshing] = useState<boolean>(false);
+    const woRefs = useAppSelector(state => state.dynamicData.woRefs);  
 
     useEffect(() => {
         async function reqData() {
             setRefreshing(true);
-            let newRows = [];
-            if (isOffline === 0) {
+            let newRows: WorkOrderRow[] = [];
+            if (!isOffline) {
                 let querystring = transConditionsToString(conditions);
-                const res = await reqReferWO({ querystring: querystring });
-                if (res.data.status === 0) {
-                    newRows = res.data.data;
+                const res = await reqReferWO({ queryString: querystring });
+                if (res.status) {
+                    newRows = res.data;
                 }
             } else {
-                newRows = worefs;
+                newRows = woRefs;
             }
             setRows(newRows);
             setRefreshing(false);
@@ -52,26 +59,26 @@ const WORefer = ({
         reqData();
     }, [conditions, isOffline]);
 
-    const WORCard = ({ item }) => {
-        const wor = item.item;
+    const WORCard = ({ item }: { item: WorkOrderRow }) => {
+        const wor = item;
         return (
             <Card key={wor.id} style={{ marginTop: 2, marginBottom: 2 }}>
-                <TouchableOpacity onPress={() => okClickAction(wor)} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", margin: 4 }}>
-                    <Text variant="titleMedium" style={{ width: "100%", color: theme.colors.primary }} >现场: {wor.sceneitem.name}</Text>
-                    <Text variant="titleMedium" style={{ width: "100%", color: theme.colors.primary }}>执行模板: {wor.eit.name}</Text>
-                    <Text variant="titleMedium" style={{ width: "100%" }}>开始时间: {dayjs(wor.starttime).format("YYYY-MM-DD HH:mm")}</Text>
-                    <Text variant="titleMedium" style={{ width: "100%" }}>结束时间: {dayjs(wor.endtime).format("YYYY-MM-DD HH:mm")}</Text>
-                    <Text variant="titleSmall" style={{ width: pubParams.screen.isOverSize ? "100%" : "70%" }}>单据编号: {wor.billnumber}</Text>
-                    <Text variant="titleSmall" style={{ width: pubParams.screen.isOverSize ? "100%" : "30%" }}>行号: {wor.rownumber}</Text>
-                    <Text variant="titleSmall" style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }}>单据日期: {dayjs(wor.billdate).format("YYYY-MM-DD")}</Text>
-                    <Text variant="titleMedium" style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }}>执行人: {wor.execperson.name}</Text>
+                <TouchableOpacity onPress={() => okPressAction(wor)} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", margin: 4 }}>
+                    <Text variant="titleMedium" style={{ width: "100%", color: theme.colors.primary }} >现场: {wor.csa.name}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%", color: theme.colors.primary }}>执行模板: {wor.ept.name}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>开始时间: {DateTimeFormat(wor.startTime, "LLL")}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>结束时间: {DateTimeFormat(wor.endTime, "LLL")}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>单据编号: {wor.billNumber}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>行号: {wor.rowNumber}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>单据日期: {DateTimeFormat(wor.billDate, "LL")}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>执行人: {wor.executor.name}</Text>
                     <Text variant="bodyMedium" style={{ width: "100%" }}>行说明: {wor.description}</Text>
                     <Text variant="bodyMedium" style={{ width: "100%" }} >表头说明: {wor.description}</Text>
-                    <Text variant="bodyMedium" style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }}>行状态: {VoucherStatus[wor.status]}</Text>
-                    <Text variant="bodyMedium" style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }}>制单人: {wor.createuser.name}</Text>
-                    <Text variant="bodyMedium" style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }}>部门: {wor.department.name}</Text>
-                    <Text variant="bodyMedium" style={{ width: pubParams.screen.isOverSize ? "100%" : "50%" }}>确认人: {wor.confirmuser.name}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>确认时间: {dayjs(wor.confirmdate).format("YYYY-MM-DD HH:mm")}</Text>
+                    <Text variant="bodyMedium" style={{ width: "100%" }}>行状态: {VoucherStatus[wor.status]}</Text>
+                    <Text variant="bodyMedium" style={{ width: "100%" }}>制单人: {wor.creator.name}</Text>
+                    <Text variant="bodyMedium" style={{ width: "100%" }}>部门: {wor.department.name}</Text>
+                    <Text variant="bodyMedium" style={{ width: "100%" }}>确认人: {wor.confirmer.name}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>确认时间: {DateTimeFormat(wor.confirmDate, "LLL")}</Text>
                 </TouchableOpacity>
             </Card>
         );
@@ -90,7 +97,7 @@ const WORefer = ({
             }}>
                 <View style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text variant="titleMedium">{title}</Text>
-                    {fileterButtonDisp
+                    {filterButtonDisp
                         ? <IconButton icon="filter-variant" iconColor={theme.colors.primary} onPress={filterAction} />
                         : null
                     }
@@ -101,40 +108,20 @@ const WORefer = ({
                     rows={rows}
                     ItemElement={WORCard}
                     rowsPerPage={10}
-                    searchFields={["billdate", "billnumber", "eit.name", "createuser.name", "confirmuser.name", "department.name", "starttime", "endtime"]}
-                    sortFunction={edsSortByID}
+                    searchFields={["billDate", "billNumber", "ept.name", "creator.name", "confirmer.name", "department.name", "startTime", "endTime"]}
+                    sortFunction={worsSortByid}
                     refreshing={refreshing}
                 />
             </View>
-            <AnimatedFAB
-                icon="keyboard-return"
-                label="返回"
-                extended={false}
-                visible={true}
-                onPress={cancelClickAction}
-                animateFrom={buttonPosition}
-                style={{ bottom: 64, position: "absolute", ...orderPosition }}
-            />
-            <IconButton
-                icon="swap-horizontal"
-                label="切换"
-                visible={true}
-                iconColor={theme.colors.primary}
-                onPress={handleSwapPosition}
-                style={{ bottom: 160, position: "absolute", ...swapPosition }}
+            <ScHandSwitch
+                refreshDisplay={false}
+                docRefresh={() => { }}
+                cancelAction={cancelPressAction}
+                theme={theme}
+                t={t}
             />
         </View>
     );
 };
 
 export default WORefer;
-
-WORefer.defaultProps = {
-    isOffline: 0,
-    title: "参照指令单",
-    conditions: [],
-    cancelClickAction: () => { },
-    okClickAction: () => { },
-    fileterButtonDisp: true,
-    filterAction: () => { }
-};

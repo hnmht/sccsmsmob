@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { View, Alert, Modal } from "react-native";
-import { IconButton, useTheme, Card, Button, Surface } from "react-native-paper";
+import { IconButton, useTheme, Card, Button, Surface, MD3Theme } from "react-native-paper";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import ActivityOverlay from "../../components/ActivityOverlay/ActivityOverlay";
 import DocList from "../../components/DocList/DocList";
-import WORefer from "./woRefer";
+import WORefer from "./WORefer";
 import EOCardContent from "./EOCardContent";
 import { useTranslation } from "react-i18next";
 import { getAllDynamicDataOnline } from "../../store/pub";
@@ -14,22 +14,32 @@ import { eosSortByID } from "./constructor";
 import { transEOToBackend, transVoucherDataToFiles } from "../executionOrder/constructor";
 import { reqAddEO } from "../../api/executionOrder";
 import { updateWORefStatus, getLocalWOR } from "../../db/crud/workorderref";
-import { useBusinessNavigation } from "../../navigation/config/screenParams";
+import { BusinessNavParamList, useBusinessNavigation } from "../../navigation/config/screenParams";
 import { ExecutionOrder } from "../../dataType/types/executionOrder";
 import { EORepo } from "../../db/crud/executionOrder";
 import { WorkOrderRow } from "../../dataType/types/workOrder";
+import { TFunction } from "i18next";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-function LocalEOList() {
-    const navigation = useBusinessNavigation();
+interface LocalEOListProps {
+    t: TFunction;
+    theme: MD3Theme;
+    isOffline: boolean;
+    navigation: NativeStackNavigationProp<BusinessNavParamList, keyof BusinessNavParamList>;
+}
+
+function LocalEOList({
+    t,
+    theme,
+    isOffline,
+    navigation,
+}: LocalEOListProps) {
     const [localEOs, setLocalEOs] = useState<ExecutionOrder[]>([]);
     const [overlayStatus, setOverlayStatus] = useState({ visible: false, description: "" });
     const [diagStatus, setDiagStatus] = useState({
         isOpen: false,
     });
     const user = useAppSelector(state => state.user);
-    const isOffline = useAppSelector(state => state.appInfo.isOffline === 1);
-    const theme = useTheme();
-    const { t } = useTranslation();
     // Commands button position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
     const dispatch = useAppDispatch();
@@ -221,10 +231,14 @@ function LocalEOList() {
             >
                 <WORefer
                     title={"参照指令单(本地)"}
-                    isOffline={1}
-                    cancelClickAction={handleDialogClose}
-                    okClickAction={handleWoReferOk}
-                    fileterButtonDisp={false}
+                    isOffline={isOffline}
+                    cancelPressAction={handleDialogClose}
+                    okPressAction={handleWoReferOk}
+                    filterButtonDisp={false}
+                    conditions={[]}
+                    filterAction={() => { }}
+                    theme={theme}
+                    t={t}
                 />
             </Modal>
         </View>

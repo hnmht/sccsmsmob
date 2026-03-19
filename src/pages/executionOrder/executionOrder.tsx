@@ -1,67 +1,73 @@
 import { useState, useEffect, useMemo } from "react";
 import { View, ScrollView, Alert } from "react-native";
-import { Text, Button, ActivityIndicator, Menu, useTheme, Surface, AnimatedFAB } from "react-native-paper";
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useSelector, useDispatch } from "react-redux";
-import dayjs from "../../utils/myDayjs";
+import { Text, Button, ActivityIndicator, Menu, useTheme, Surface } from "react-native-paper";
+import Icon from "@react-native-vector-icons/material-design-icons";
+import { dayjs } from "../../i18n/dayjs";
 import { cloneDeep } from "lodash";
 
-import ScSwapButton from "../../components/ScSwapButton/ScSwapButton";
 import { ScVoucherHeader, ScVoucherBody, ScVoucherFooter } from "../../components/ScVoucher";
 import ScInput from "../../components/ScInput";
 import ActivityOverlay from "../../components/ActivityOverlay/ActivityOverlay";
-import { pubParams } from "../../components/pub/pubParms";
+import { pubParams } from "../../components/pub/pubParams";
 
-import { getAllDynamicData } from "../../store/pub";
+import { getAllDynamicDataOnline } from "../../store/pub";
 import { updateDynamicWORefs } from "../../store/slice/dynamicData";
 import { reqGetFilesByHash, reqUploadFiles } from "../../api/file";
-import { reqAddED, reqEditED } from "../../api/executeDoc";
+import { reqAddEO, reqEditEO } from "../../api/executionOrder";
+import { multiSortByArr } from "../../components/tools/sort";
 
-import { DeepCloneJSON, MultiSortByArr } from "../../utils/tools";
-import { getInitialValue, checkEDErrors, checkForProblem, voucherRow, eitBodyToEdBody, transVoucherDataToFiles, transEDToBackend, generateMarkText } from "./constructor";
-import { checkObjErrors, checkVouchBodyErrors } from "../../utils/pub";
-import { delLocalED, editLocalED, saveLocalED } from "../../db/table/executedoc";
-import { updateWorefStatus, getLocalWOR } from "../../db/table/workerorderref";
 
-const ExecuteDoc = (props) => {
-    const { navigation } = props;
-    const { isLocal, isNew, isModify, oriWOR, oriED, refreshAction } = props.route.params;
+import { getInitialValue, checkEOErrors, checkForProblem, eptBodyToEOBody, transVoucherDataToFiles, transEOToBackend, generateMarkText } from "./constructor";
+import { updateWORefStatus,getLocalWOR } from "../../db/crud/workorderref";
+import { useBusinessNavigation, useBusinessRoute } from "../../navigation/config/screenParams";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { ExecutionOrder } from "../../dataType/types/executionOrder";
+import ScHandSwitch from "../../components/ScHandSwitch/ScHandSwitch";
+import { useTranslation } from "react-i18next";
+import { ErrMsg, InitialValueMap } from "../../dataType/types/scInput";
+import { EORepo } from "../../db/crud/executionOrder";
+
+
+const EditExecutionOrder = () => {
+    const navigation = useBusinessNavigation();
+    const route = useBusinessRoute<"ExecutionOrder">();
+    const { isLocal, isNew, isModify, oriWOR, oriEO, onGoBack } = route.params ?? {};
     const [overlayStatus, setOverlayStatus] = useState({ visible: false, description: "" });
-    const [voucherData, setVoucherData] = useState((undefined));
-    const isOffLine = useSelector(state => state.appinfo.isoffline);
+    const [voucherData, setVoucherData] = useState<ExecutionOrder | undefined>((undefined));
+    const isOffLine = useAppSelector(state => state.appInfo.isOffline);
+    const { t } = useTranslation();
+    const { person, department } = useAppSelector(state => state.user);
     //命令按钮位置
-    const { buttonPosition, orderPosition, orderVisible } = useSelector(state => state.swapposition);
+    const { buttonPosition } = useAppSelector(state => state.swapPosition);
     const [deletedRows, setDeletedRows] = useState([]);
     const [currentRowIndex, setCurrentRowIndex] = useState(0);
-    const dataErrs = useMemo(() => checkEDErrors(voucherData), [voucherData]);
+    const dataErrs = useMemo(() => checkEOErrors(voucherData), [voucherData]);
 
     const theme = useTheme();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const isOverSize = pubParams.screen.isOverSize;
     const row = voucherData ? voucherData.body[currentRowIndex] : undefined;
     const rowErrs = dataErrs ? dataErrs.body[currentRowIndex] : undefined;
     const isEdit = !(!isModify && !isNew);
     const canTempSave = isLocal ? true : isModify ? false : true;
-    const isHeaderErr = useMemo(() => checkObjErrors(dataErrs), [dataErrs]);
-    const isBodyErr = useMemo(() => checkVouchBodyErrors(dataErrs), [dataErrs])
-    const delButtonEnabled = row && (!isEdit || (row.allowdelrow === 0));
+    const delButtonEnabled = row && (!isEdit || (row.allowDelRow === 0));
 
     const rowMarkTexts = generateMarkText(voucherData, row);
 
     useEffect(() => {
         function initVoucher() {
-            const newED = getInitialValue(isNew, isModify, oriWOR, oriED);
+            const newED = getInitialValue(isNew, isModify, oriWOR, oriEO);
             setVoucherData(newED);
         }
         initVoucher();
-    }, [oriWOR, isModify, oriED, isNew]);
+    }, [oriWOR, isModify, oriEO, isNew]);
 
     const MenuItem = ({ row, index, isErr, selectRowAction }) => {
         return (<Menu.Item
             leadingIcon={() => isErr ? <Icon name="alert" size={24} color="red" /> : <Icon name="check" size={24} color="green" />}
-            key={row.rownumber}
+            key={row.rowNumber}
             onPress={() => selectRowAction(index)}
-            title={`第${row.rownumber}行 ${row.eid.name}`}
+            title={`第${row.rowNumber}行 ${row.epa.name}`}
             style={{ width: "90%" }}
             titleStyle={{ width: "100%" }}
         />);
@@ -69,8 +75,8 @@ const ExecuteDoc = (props) => {
 
     //取消
     const handleCancel = () => {
-        if (refreshAction !== undefined) {
-            refreshAction();
+        if (onGoBack !== undefined) {
+            onGoBack(true);
         }
         navigation.goBack();
     };
@@ -78,133 +84,140 @@ const ExecuteDoc = (props) => {
         setCurrentRowIndex(0);
     };
     //获取值后的操作
-    const handleGetValue = async (value, itemkey, positionID, rowIndex, errMsg) => {
+    const handleGetValue = async <T extends keyof InitialValueMap>(
+        value: any,
+        itemKey: string,
+        positionID: 0 | 1 | 2,
+        rowIndex: number,
+        errMsg: ErrMsg
+    ) => {
         if (voucherData === undefined || !isEdit) {
             return
         }
-        // let startTime = new Date();
+
         //设置单据值
         setVoucherData((prevState) => {
+            if (prevState === undefined) {
+                return undefined;
+            }
             let newData = cloneDeep(prevState);
             switch (positionID) {
                 case 0://修改表头字段
-                    if (itemkey === "eit" && value.id !== prevState.eit.id) { //如果修改的是eit字段且于前值不同
+                    if (itemKey === "ept" && ("id" in value) && value.id !== prevState.ept.id) { //如果修改的是ept字段且于前值不同
                         handleResteCurrentRowIndex(); //将currentIndex设置为0
-                        isModifyEit = true;
-                        newEitRowNumber = value.body.length;
-                        const handlePerson = newData.sceneitem.id === 0 ? newData.execperson : newData.sceneitem.respperson;
-                        newData.body = eitBodyToEdBody(value.body, newData.starttime, newData.endtime, handlePerson); //将执行模板表体转换到表体
-                        newData.allowaddrow = value.allowaddrow;
-                        newData.allowdelrow = value.allowdelrow;
+                        const handlePerson = newData.csa.id === 0 ? newData.executor : newData.csa.respPerson;
+                        newData.body = eptBodyToEOBody(value.body, newData.startTime, newData.endTime, handlePerson); //将执行模板表体转换到表体
+                        newData.allowAddRow = value.allowAddRow;
+                        newData.allowDelRow = value.allowDelRow;
                     }
                     //如果修改的是现场档案字段
-                    if (itemkey === "sceneitem" && value.id !== prevState.sceneitem.id) {
+                    if (itemKey === "csa" && value.id !== prevState.csa.id) {
                         if (newData.body.length > 0) {
                             newData.body.map(row => {
-                                row.handleperson = value.respperson;
+                                row.issueOwner = value.respPerson;
                                 return row;
                             })
                         }
                     }
                     //如果修改的是开始时间字段
-                    if (itemkey === "starttime" && value !== prevState.starttime) {
-                        if (newData.endtime <= value) { //如果结束时间小于开始时间，自动将结束时间延后一个小时
-                            newData.endtime = dayjs(value, "YYYYMMDDHHmm", true).add(1, "hours").format("YYYYMMDDHHmm");
+                    if (itemKey === "startTime" && value !== prevState.startTime) {
+                        if (newData.endTime <= value) { //如果结束时间小于开始时间，自动将结束时间延后一个小时
+                            newData.endTime = dayjs(value, "YYYYMMDDHHmm", true).add(1, "hours").format("YYYYMMDDHHmm");
                         }
 
                         if (newData.body.length > 0) { //如果表体存在行
                             newData.body.map(row => {
-                                row.handlestarttime = dayjs(value).add(24, "hour").format("YYYYMMDDHHmm");
-                                row.handleendtime = dayjs(newData.endtime).add(1, "day").format("YYYYMMDDHHmm");
+                                row.handleStartTime = dayjs(value).add(24, "hour").format("YYYYMMDDHHmm");
+                                row.handleEndTime = dayjs(newData.endTime).add(1, "day").format("YYYYMMDDHHmm");
                                 return row;
                             })
                         }
                     }
                     //如果修改的是结束时间字段
-                    if (itemkey === "endtime" && value !== prevState.endtime) {
-                        if (newData.starttime >= value) {//如果开始时间大于结束时间,自动将开始时间提前1小时
-                            newData.starttime = dayjs(value, "YYYYMMDDHHmm", true).subtract(1, "hours").format("YYYYMMDDHHmm");
+                    if (itemKey === "endTime" && value !== prevState.endTime) {
+                        if (newData.startTime >= value) {//如果开始时间大于结束时间,自动将开始时间提前1小时
+                            newData.startTime = dayjs(value, "YYYYMMDDHHmm", true).subtract(1, "hours").format("YYYYMMDDHHmm");
                         }
                         if (newData.body.length > 0) { //如果表体存在行
                             newData.body.map(row => {
-                                row.handlestarttime = dayjs(newData.starttime).add(24, "hour").format("YYYYMMDDHHmm");
-                                row.handleendtime = dayjs(value).add(1, "day").format("YYYYMMDDHHmm");
+                                row.handleStartTime = dayjs(newData.startTime).add(24, "hour").format("YYYYMMDDHHmm");
+                                row.handleEndTime = dayjs(value).add(1, "day").format("YYYYMMDDHHmm");
                                 return row;
                             })
                         }
                     }
-                    newData[itemkey] = value;
+                    newData[itemKey] = value;
                     break;
                 case 1://如果修改的是表体字段                                       
 
                     //更新的是项目值列，则自动检查是否存在问题
-                    if (itemkey === "exectivevalue") {
-                        if (newData.body[rowIndex].ischeckerror === 1) {//自动检查问题
-                            let isProblem = checkForProblem(newData.body[rowIndex].eid.resulttype.id, newData.body[rowIndex].errorvalue, value);
-                            newData.body[rowIndex].iserr = isProblem;
+                    if (itemKey === "executionValue") {
+                        if (newData.body[rowIndex].isCheckError === 1) {//自动检查问题
+                            let isProblem = checkForProblem(newData.body[rowIndex].epa.resultType.id, newData.body[rowIndex].errorValue, value);
+                            newData.body[rowIndex].isIssue = isProblem;
                             if (isProblem === 0) {
-                                newData.body[rowIndex].isrectify = 0; //是否现场处理
-                                newData.body[rowIndex].ishandle = 0; //是否后续处理                                
+                                newData.body[rowIndex].isRectify = 0; //是否现场处理
+                                newData.body[rowIndex].isHandle = 0; //是否后续处理                                
                             } else {
-                                if (newData.body[rowIndex].isrectify === 1) { //现场处理为1
-                                    newData.body[rowIndex].ishandle = 0; //是否后续处理  
+                                if (newData.body[rowIndex].isRectify === 1) { //现场处理为1
+                                    newData.body[rowIndex].isHandle = 0; //是否后续处理  
                                 } else {
-                                    newData.body[rowIndex].ishandle = 1; //是否后续处理    
+                                    newData.body[rowIndex].isHandle = 1; //是否后续处理    
                                 }
                             }
                         }
                     }
                     //如果更新的是是否存在问题
-                    if (itemkey === "iserr") {
+                    if (itemKey === "isIssue") {
                         if (value === 0) {
-                            newData.body[rowIndex].isrectify = 0;
-                            newData.body[rowIndex].ishandle = 0;
+                            newData.body[rowIndex].isRectify = 0;
+                            newData.body[rowIndex].isHandle = 0;
                         } else {
-                            if (newData.body[rowIndex].isrectify === 0) {
-                                newData.body[rowIndex].ishandle = 1;
+                            if (newData.body[rowIndex].isRectify === 0) {
+                                newData.body[rowIndex].isHandle = 1;
                             } else {
-                                newData.body[rowIndex].ishandle = 0;
+                                newData.body[rowIndex].isHandle = 0;
                             }
                         }
                     }
                     //如果更新的是是否现场整改
-                    if (itemkey === "isrectify") {
+                    if (itemKey === "isRectify") {
                         if (value === 1) {
-                            newData.body[rowIndex].ishandle = 0;
+                            newData.body[rowIndex].isHandle = 0;
                         } else {
-                            newData.body[rowIndex].ishandle = 1;
+                            newData.body[rowIndex].isHandle = 1;
                         }
                     }
                     //如果更新的是执行项目字段
-                    if (itemkey === "eid" && value.id !== prevState.body[rowIndex].eid.id) {
-                        newData.body[rowIndex].exectivevalue = value.defaultvalue;
-                        newData.body[rowIndex].exectivedisp = value.defaultvaluedisp;
+                    if (itemKey === "epa" && value.id !== prevState.body[rowIndex].epa.id) {
+                        newData.body[rowIndex].executionValue = value.defaultValue;
+                        newData.body[rowIndex].executionValueDisp = value.defaultValueDisp;
                         newData.body[rowIndex].files = [];
-                        newData.body[rowIndex].eiddescription = value.description;
-                        newData.body[rowIndex].ischeckerror = value.ischeckerror;
-                        newData.body[rowIndex].errorvalue = value.errorvalue;
-                        newData.body[rowIndex].errorvaluedisp = value.errorvaluedisp;
-                        newData.body[rowIndex].isrequirefile = value.isrequirefile;
-                        newData.body[rowIndex].isonsitephoto = value.isonsitephoto;
-                        newData.body[rowIndex].isfromeit = 0;
-                        newData.body[rowIndex].risklevel = value.risklevel;
+                        newData.body[rowIndex].epaDescription = value.description;
+                        newData.body[rowIndex].isCheckError = value.isCheckError;
+                        newData.body[rowIndex].errorValue = value.errorValue;
+                        newData.body[rowIndex].errorValueDisp = value.errorValueDisp;
+                        newData.body[rowIndex].isRequireFile = value.isRequireFile;
+                        newData.body[rowIndex].isOnSitePhoto = value.isOnSitePhoto;
+                        newData.body[rowIndex].isFromEpt = 0;
+                        newData.body[rowIndex].riskLevel = value.riskLevel;
                     }
                     //如果更新的是开始时间字段
-                    if (itemkey === "handlestarttime") {
-                        if (newData.body[rowIndex].handleendtime <= value) {
-                            newData.body[rowIndex].handleendtime = dayjs(value, "YYYYMMDDHHmm", true).add(1, "hours").format("YYYYMMDDHHmm");
+                    if (itemKey === "handleStartTime") {
+                        if (newData.body[rowIndex].handleEndTime <= value) {
+                            newData.body[rowIndex].handleEndTime = dayjs(value, "YYYYMMDDHHmm", true).add(1, "hours").format("YYYYMMDDHHmm");
                         }
                     }
                     //如果更新的结束时间字段
-                    if (itemkey === "handleendtime") {
-                        if (newData.body[rowIndex].handlestarttime >= value) {
-                            newData.body[rowIndex].handlestarttime = dayjs(value, "YYYYMMDDHHmm", true).subtract(1, "hours").format("YYYYMMDDHHmm");
+                    if (itemKey === "handleEndTime") {
+                        if (newData.body[rowIndex].handleStartTime >= value) {
+                            newData.body[rowIndex].handleStartTime = dayjs(value, "YYYYMMDDHHmm", true).subtract(1, "hours").format("YYYYMMDDHHmm");
                         }
                     }
-                    newData.body[rowIndex][itemkey] = value;
+                    newData.body[rowIndex][itemKey] = value;
                     break;
                 case 2:
-                    newData[itemkey] = value;
+                    newData[itemKey] = value;
                     break;
                 default:
                     break;
@@ -217,32 +230,35 @@ const ExecuteDoc = (props) => {
     //增行
     const handleAddRow = () => {
         //生成表体数据
-        const newVoucherData = DeepCloneJSON(voucherData);
-        let newRow = DeepCloneJSON(voucherRow);
+        const newVoucherData = cloneDeep(voucherData);
+        let newRow = cloneDeep(voucherRow);
         //自动生成行号
         if (newVoucherData.body.length === 1) { //如果表体只有一行
-            newRow.rownumber = newVoucherData.body[0].rownumber + 10;
+            newRow.rowNumber = newVoucherData.body[0].rowNumber + 10;
         } else {
-            newVoucherData.body.sort(MultiSortByArr([{ field: "rownumber", order: "asc" }]))
-            newRow.rownumber = newVoucherData.body[newVoucherData.body.length - 1].rownumber + 10;
+            newVoucherData.body.sort(multiSortByArr([{ field: "rowNumber", order: "asc" }]))
+            newRow.rowNumber = newVoucherData.body[newVoucherData.body.length - 1].rowNumber + 10;
         }
         //填写处理人、处理开始时间、处理结束时间
-        const handlePerson = newVoucherData.sceneitem.id === 0 ? newVoucherData.execperson : newVoucherData.sceneitem.respperson;
-        newRow.handleperson = handlePerson;
-        newRow.handlestarttime = newVoucherData.endtime;
-        newRow.handleendtime = newVoucherData.endtime;
+        const handlePerson = newVoucherData.csa.id === 0 ? newVoucherData.executor : newVoucherData.csa.respPerson;
+        newRow.issueOwner = handlePerson;
+        newRow.handleStartTime = newVoucherData.endTime;
+        newRow.handleEndTime = newVoucherData.endTime;
         newVoucherData.body.push(newRow);
         setVoucherData(newVoucherData);
         setCurrentRowIndex(newVoucherData.body.length - 1);
     };
     //删行
     const handleDeleteRow = () => {
+        if (voucherData === undefined) {
+            return
+        }
         if (voucherData.body.length === 1) {
             Alert.alert("错误", "不能删除最后一行!");
             return
         }
-        const newVoucherData = DeepCloneJSON(voucherData);
-        const newDeletedRows = DeepCloneJSON(deletedRows);
+        const newVoucherData = cloneDeep(voucherData);
+        const newDeletedRows = cloneDeep(deletedRows);
         let row = newVoucherData.body[currentRowIndex];
         let newRowIndex = currentRowIndex;
         if (isModify) {
@@ -268,69 +284,74 @@ const ExecuteDoc = (props) => {
     };
     //暂存指令单
     const handleTempSave = () => {
-        let newVoucherData = DeepCloneJSON(voucherData);
+        if (voucherData === undefined) {
+            return
+        }
+        let newVoucherData = cloneDeep(voucherData);
         //记录单据是否存在错误
-        newVoucherData.isHeaderErr = isHeaderErr;
-        newVoucherData.isBodyErr = isBodyErr;
-
+        newVoucherData.errData = dataErrs;
         //暂存单据
         if (isModify) { //是否编辑
             if (isLocal) {
                 //更新修改数据
-                editLocalED(newVoucherData);
+                EORepo.editVoucher(newVoucherData);
             } else { //远程单据编辑不允许暂存
                 Alert.alert("错误", "编辑远程单据时不允许暂存!");
             }
         } else { //非编辑状态
-            if (newVoucherData.sourcebid !== 0 && isOffLine === 1) { //参照单据需要修改本地worefs为执行态
-                updateWorefStatus(newVoucherData.sourcebid, 2); //修改数据库中woref为执行态
+            if (newVoucherData.sourceBID !== 0 && isOffLine === 1) { //参照单据需要修改本地worefs为执行态
+                updateWORefStatus(newVoucherData.sourceBID, 2); //修改数据库中woref为执行态
+                
                 //更新状态
                 const worefs = getLocalWOR();
                 dispatch(updateDynamicWORefs(worefs));
             }
-            saveLocalED(newVoucherData);
+            EORepo.saveVoucher(newVoucherData, person.id);
         }
 
-        if (refreshAction !== undefined) {
-            refreshAction();
+        if (onGoBack !== undefined) {
+            onGoBack(true);
         }
         navigation.goBack();
     };
     //上传指令单
     const handleUpload = async () => {
-        let newEd = DeepCloneJSON(voucherData);
+        if (voucherData === undefined) {
+            return
+        }
+        let newEO = cloneDeep(voucherData);
         if (isModify && deletedRows.length > 0) {
-            newEd.body.push(...deletedRows);
+            newEO.body.push(...deletedRows);
         }
 
-        const thisED = transEDToBackend(newEd);
+        const thisEO = transEOToBackend(newEO);
         //处理指令单文件
         setOverlayStatus({ visible: true, description: "正在上传文件..." });
         try {
             const filesArr = transVoucherDataToFiles(voucherData);
             if (filesArr.length > 0) { //如果存在文件则需要先上传文件
                 const getFilesHashRes = await reqGetFilesByHash(filesArr);
-                if (getFilesHashRes.data.status !== 0) {
-                    Alert.alert("错误", "向服务器请求检查重复文件出错:" + getFilesHashRes.data.statusMsg)
-                    setOverlayStatus({ visible: false, goBackDisabled: false, description: "" });
+                if (!getFilesHashRes.status) {
+                    Alert.alert("错误", "向服务器请求检查重复文件出错:" + getFilesHashRes.msg)
+                    setOverlayStatus({ visible: false, description: "" });
                     return
                 }
                 //上传文件
                 let willUploadFileNumber = 0;
-                let willUploadFiles = getFilesHashRes.data.data;
+                let willUploadFiles = getFilesHashRes.data;
                 let formData = new FormData(); //准备formData
                 for (let i = 0; i < willUploadFiles.length; i++) {
-                    if (willUploadFiles[i].fileid === 0) {
+                    if (willUploadFiles[i].id === 0) {
                         willUploadFileNumber++
-                        let file = { uri: willUploadFiles[i].filepath, type: willUploadFiles[i].mime, name: willUploadFiles[i].originfilename };
+                        let file = { uri: willUploadFiles[i].filePath, type: willUploadFiles[i].mime, name: willUploadFiles[i].originfilename };
                         formData.append("files", file);
                         formData.append("filekey", i);
-                        formData.append("filehash", willUploadFiles[i].filehash);
-                        formData.append("filename", willUploadFiles[i].originfilename);
-                        formData.append("filetype", willUploadFiles[i].filetype);
-                        formData.append("isimage", willUploadFiles[i].isimage);
+                        formData.append("filehash", willUploadFiles[i].hash);
+                        formData.append("filename", willUploadFiles[i].originFileName);
+                        formData.append("filetype", willUploadFiles[i].fileType);
+                        formData.append("isimage", willUploadFiles[i].isImage);
                         formData.append("model", willUploadFiles[i].model); //相机型号
-                        formData.append("DateTimeOriginal", willUploadFiles[i].datetimeoriginal); //初始拍摄时间
+                        formData.append("dateTimeOriginal", willUploadFiles[i].dateTimeOriginal); //初始拍摄时间
                         formData.append("latitude", willUploadFiles[i].latitude);//纬度
                         formData.append("longitude", willUploadFiles[i].longitude);//经度 
                         formData.append("source", willUploadFiles[i].source);// 来源
@@ -342,26 +363,26 @@ const ExecuteDoc = (props) => {
 
                 if (willUploadFileNumber > 0) {
                     const uploadRes = await reqUploadFiles(formData, false);    //将未获取hash值的文件进行上传
-                    if (uploadRes.data.status !== 0) {
-                        Alert.alert("错误", "向服务器上传文件时出错" + uploadRes.data.statusMsg);
-                        setOverlayStatus({ visible: false, goBackDisabled: false, description: "" });
+                    if (!uploadRes.status) {
+                        Alert.alert("错误", "向服务器上传文件时出错" + uploadRes.msg);
+                        setOverlayStatus({ visible: false, description: "" });
                         return
                     }
                     //根据返回的数据修改服务器返回的文件列表
-                    const uploadFiles = uploadRes.data.data;
+                    const uploadFiles = uploadRes.data;
                     //合并fileArr1 和 uploadFiles
                     willUploadFiles = willUploadFiles.concat(uploadFiles);
                 }
                 //创建fileMap
                 const fileMap = new Map();
                 willUploadFiles.forEach(item => {
-                    fileMap.set(item.filehash, item);
+                    fileMap.set(item.hash, item);
                 });
                 //修改单据表体所有文件的id
-                thisED.body.map(row => {
+                thisEO.body.map(row => {
                     row.files.map((rowFile) => {
-                        if (rowFile.file.fileid === 0) {
-                            rowFile.file = fileMap.get(rowFile.file.filehash);
+                        if (rowFile.file.id === 0) {
+                            rowFile.file = fileMap.get(rowFile.file.hash);
                         }
                     })
                 });
@@ -369,35 +390,32 @@ const ExecuteDoc = (props) => {
             setOverlayStatus({ visible: true, description: "正在上传单据..." });
             if (isModify) {
                 if (isLocal) {//编辑状态下本地单据上传
-
-                    thisED.id = 0
-                    delete thisED.isHeaderErr
-                    delete thisED.isBodyErr
-                    let addRes = await reqAddED(thisED);
-                    if (addRes.data.status === 0) {
-                        delLocalED(voucherData);
-                        Alert.alert("提示", "新增执行单成功,单据编号:" + addRes.data.data.billnumber);
+                    thisEO.id = 0
+                    let addRes = await reqAddEO(thisEO);
+                    if (addRes.status) {
+                        EORepo.delVoucher(voucherData);
+                        Alert.alert("提示", "新增执行单成功,单据编号:" + addRes.data.billNumber);
                     } else {
-                        Alert.alert("错误", "新增执行单失败:" + addRes.data.statusMsg);
+                        Alert.alert("错误", "新增执行单失败:" + addRes.msg);
                         setOverlayStatus({ visible: false, description: "" });
                         return
                     }
                 } else { //远程单据编辑
-                    const editRes = await reqEditED(thisED);
-                    if (editRes.data.status === 0) {
-                        Alert.alert("提示", "修改执行单成功,单据编号:" + editRes.data.data.billnumber);
+                    const editRes = await reqEditEO(thisEO);
+                    if (editRes.status) {
+                        Alert.alert("提示", "修改执行单成功,单据编号:" + editRes.data.billNumber);
                     } else {
-                        Alert.alert("错误", "修改执行单失败:" + editRes.data.statusMsg);
+                        Alert.alert("错误", "修改执行单失败:" + editRes.msg);
                         setOverlayStatus({ visible: false, description: "" });
                         return
                     }
                 }
             } else { //新增
-                let addRes = await reqAddED(thisED);
-                if (addRes.data.status === 0) {
-                    Alert.prompt("提示", "新增执行单成功,单据编号:" + addRes.data.data.billnumber);
+                let addRes = await reqAddEO(thisEO);
+                if (addRes.status) {
+                    Alert.prompt("提示", "新增执行单成功,单据编号:" + addRes.data.billNumber);
                 } else {
-                    Alert.alert("错误", "新增执行单失败:" + addRes.data.statusMsg);
+                    Alert.alert("错误", "新增执行单失败:" + addRes.msg);
                     setOverlayStatus({ visible: false, description: "" });
                     return
                 }
@@ -410,12 +428,12 @@ const ExecuteDoc = (props) => {
         setOverlayStatus({ visible: false, description: "" });
 
         //如果指令单参照单据生成,则刷新worefs
-        if (thisED.sourcetype !== "UA" && isOffLine === 0) {
-            getAllDynamicData();
+        if (thisEO.sourceType !== "UA" && isOffLine === 0) {
+            getAllDynamicDataOnline();
         }
 
-        if (refreshAction !== undefined) {
-            refreshAction();
+        if (onGoBack !== undefined) {
+            onGoBack(true);
         }
         navigation.goBack();
     };
@@ -426,7 +444,7 @@ const ExecuteDoc = (props) => {
             <ActivityOverlay
                 visible={overlayStatus.visible}
                 description={overlayStatus.description}
-                closeAction={() => setOverlayStatus({ visible: false, goBackDisabled: false, description: "" })}
+                closeAction={() => setOverlayStatus({ visible: false, description: "" })}
             />
             <View key="voucherTitle" style={{ height: 42, alignItems: "center", justifyContent: "center" }}>
                 <Text variant="titleLarge" maxFontSizeMultiplier={1.2}>执行单</Text>
@@ -435,14 +453,14 @@ const ExecuteDoc = (props) => {
             {voucherData !== undefined
                 ? <View style={{ flex: 1 }}>
                     <ScrollView>
-                        <ScVoucherHeader isHeaderErr={isHeaderErr} title="表头">
+                        <ScVoucherHeader isHeaderErr={dataErrs.isHeaderErr} title="表头">
                             <ScInput
                                 dataType={301}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="单据编号"
                                 itemKey="billnumber"
-                                initValue={isLocal ? `L${voucherData.id}` : voucherData.billnumber}
+                                initValue={isLocal ? `L${voucherData.id}` : voucherData.billNumber}
                                 placeholder="自动编号"
                                 isBackendTest={false}
                                 key="billnumber"
@@ -455,12 +473,12 @@ const ExecuteDoc = (props) => {
                                 allowNull={false}
                                 isEdit={false}
                                 itemShowName="单据日期"
-                                itemKey="billdate"
-                                initValue={voucherData.billdate}
+                                itemKey="billDate"
+                                initValue={voucherData.billDate}
                                 pickDone={handleGetValue}
                                 placeholder=""
                                 isBackendTest={false}
-                                key="billdate"
+                                key="billDate"
                                 positionID={0}
                                 rowIndex={-1}
                                 width={isOverSize ? "100%" : "50%"}
@@ -486,12 +504,12 @@ const ExecuteDoc = (props) => {
                                 allowNull={false}
                                 isEdit={false}
                                 itemShowName="执行人"
-                                itemKey="execperson"
-                                initValue={voucherData.execperson}
-                                errInfo={dataErrs.execperson}
+                                itemKey="executor"
+                                initValue={voucherData.executor}
+                                errInfo={dataErrs.executor}
                                 pickDone={handleGetValue}
                                 isBackendTest={false}
-                                key="execperson"
+                                key="executor"
                                 positionID={0}
                                 rowIndex={-1}
                                 width={isOverSize ? "100%" : "50%"}
@@ -499,14 +517,14 @@ const ExecuteDoc = (props) => {
                             <ScInput
                                 dataType={570}
                                 allowNull={false}
-                                isEdit={isEdit && voucherData.sourcebid === 0}
+                                isEdit={isEdit && voucherData.sourceBID === 0}
                                 itemShowName="现场"
-                                itemKey="sceneitem"
-                                initValue={voucherData.sceneitem}
-                                errInfo={dataErrs.sceneitem}
+                                itemKey="csa"
+                                initValue={voucherData.csa}
+                                errInfo={dataErrs.csa}
                                 pickDone={handleGetValue}
                                 isBackendTest={false}
-                                key="sceneitem"
+                                key="csa"
                                 positionID={0}
                                 rowIndex={-1}
                                 width="100%"
@@ -514,14 +532,14 @@ const ExecuteDoc = (props) => {
                             <ScInput
                                 dataType={580}
                                 allowNull={false}
-                                isEdit={isNew && isEdit && voucherData.sourcebid === 0}
+                                isEdit={isNew && isEdit && voucherData.sourceBID === 0}
                                 itemShowName="执行模板"
-                                itemKey="eit"
-                                initValue={voucherData.eit}
-                                errInfo={dataErrs.eit}
+                                itemKey="ept"
+                                initValue={voucherData.ept}
+                                errInfo={dataErrs.ept}
                                 pickDone={handleGetValue}
                                 isBackendTest={false}
-                                key="eit"
+                                key="ept"
                                 positionID={0}
                                 rowIndex={-1}
                                 width="100%"
@@ -531,12 +549,12 @@ const ExecuteDoc = (props) => {
                                 allowNull={false}
                                 isEdit={isEdit}
                                 itemShowName="开始时间"
-                                itemKey="starttime"
-                                initValue={voucherData.starttime}
-                                errInfo={dataErrs.starttime}
+                                itemKey="startTime"
+                                initValue={voucherData.startTime}
+                                errInfo={dataErrs.startTime}
                                 pickDone={handleGetValue}
                                 isBackendTest={false}
-                                key="starttime"
+                                key="startTime"
                                 positionID={0}
                                 rowIndex={-1}
                                 width="100%"
@@ -546,12 +564,12 @@ const ExecuteDoc = (props) => {
                                 allowNull={false}
                                 isEdit={isEdit}
                                 itemShowName="结束时间"
-                                itemKey="endtime"
-                                initValue={voucherData.endtime}
-                                errInfo={dataErrs.endtime}
+                                itemKey="endTime"
+                                initValue={voucherData.endTime}
+                                errInfo={dataErrs.endTime}
                                 pickDone={handleGetValue}
                                 isBackendTest={false}
-                                key="endtime"
+                                key="endTime"
                                 positionID={0}
                                 rowIndex={-1}
                                 width="100%"
@@ -575,11 +593,11 @@ const ExecuteDoc = (props) => {
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="来源单据类型"
-                                itemKey="sourcetype"
-                                initValue={voucherData.sourcetype}
+                                itemKey="sourceType"
+                                initValue={voucherData.sourceType}
                                 pickDone={handleGetValue}
                                 isBackendTest={false}
-                                key="sourcetype"
+                                key="sourceType"
                                 positionID={0}
                                 rowIndex={-1}
                                 width={isOverSize ? "100%" : "50%"}
@@ -589,11 +607,11 @@ const ExecuteDoc = (props) => {
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="来源单据号"
-                                itemKey="sourcebillnumber"
-                                initValue={voucherData.sourcebillnumber}
+                                itemKey="sourceBillNumber"
+                                initValue={voucherData.sourceBillNumber}
                                 pickDone={handleGetValue}
                                 isBackendTest={false}
-                                key="sourcebillnumber"
+                                key="sourceBillNumber"
                                 positionID={0}
                                 rowIndex={-1}
                                 width={isOverSize ? "100%" : "50%"}
@@ -603,11 +621,11 @@ const ExecuteDoc = (props) => {
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="来源单据行号"
-                                itemKey="sourcerownumber"
-                                initValue={voucherData.sourcerownumber}
+                                itemKey="sourceRowNumber"
+                                initValue={voucherData.sourceRowNumber}
                                 pickDone={handleGetValue}
                                 isBackendTest={false}
-                                key="sourcerownumber"
+                                key="sourceRowNumber"
                                 positionID={0}
                                 rowIndex={-1}
                                 width={isOverSize ? "100%" : "50%"}
@@ -632,11 +650,11 @@ const ExecuteDoc = (props) => {
                                 allowNull={false}
                                 isEdit={false}
                                 itemShowName="允许增行"
-                                itemKey="allowaddrow"
-                                initValue={voucherData.allowaddrow}
+                                itemKey="allowAddRow"
+                                initValue={voucherData.allowAddRow}
                                 pickDone={handleGetValue}
                                 isBackendTest={false}
-                                key="allowaddrow"
+                                key="allowAddRow"
                                 positionID={0}
                                 rowIndex={-1}
                                 width="50%"
@@ -651,7 +669,7 @@ const ExecuteDoc = (props) => {
                             MenuItem={MenuItem}
                             currentRowIndex={currentRowIndex}
                             setCurrentRowIndex={setCurrentRowIndex}
-                            addRowDisabled={!(isEdit && voucherData.eit.id !== 0 && voucherData.allowaddrow === 1)}
+                            addRowDisabled={!(isEdit && voucherData.ept.id !== 0 && voucherData.allowAddRow === 1)}
                         >
                             {row !== undefined
                                 ? <>
@@ -671,11 +689,11 @@ const ExecuteDoc = (props) => {
                                         allowNull={false}
                                         isEdit={false}
                                         itemShowName="行号"
-                                        itemKey="rownumber"
-                                        initValue={row.rownumber}
+                                        itemKey="rowNumber"
+                                        initValue={row.rowNumber}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="rownumber"
+                                        key="rowNumber"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width={"50%"}
@@ -697,14 +715,14 @@ const ExecuteDoc = (props) => {
                                     <ScInput
                                         dataType={560}
                                         allowNull={false}
-                                        isEdit={isEdit && row.isfromeit === 0}
+                                        isEdit={isEdit && row.isFromEpt === 0}
                                         itemShowName="执行项目"
-                                        itemKey="eid"
-                                        initValue={row.eid}
-                                        errInfo={rowErrs.eid}
+                                        itemKey="epa"
+                                        initValue={row.epa}
+                                        errInfo={rowErrs.epa}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="eid"
+                                        key="epa"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width="100%"
@@ -714,35 +732,35 @@ const ExecuteDoc = (props) => {
                                         allowNull={false}
                                         isEdit={false}
                                         itemShowName="风险等级"
-                                        itemKey="risklevel"
-                                        initValue={row.risklevel}
-                                        errInfo={rowErrs.risklevel}
+                                        itemKey="riskLevel"
+                                        initValue={row.riskLevel}
+                                        errInfo={rowErrs.riskLevel}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="risklevel"
+                                        key="riskLevel"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width="100%"
                                     />
                                     <ScInput
-                                        dataType={row.eid.resulttype.id}
+                                        dataType={row.epa.resultType.id}
                                         allowNull={false}
                                         isEdit={isEdit}
                                         itemShowName="执行项目值"
-                                        itemKey="exectivevalue"
-                                        initValue={row.exectivevalue}
-                                        errInfo={rowErrs.exectivevalue}
+                                        itemKey="executionValue"
+                                        initValue={row.executionValue}
+                                        errInfo={rowErrs.executionValue}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="exectivevalue"
+                                        key="executionValue"
                                         positionID={1}
-                                        udc={row.eid.udc}
+                                        udc={row.epa.udc}
                                         rowIndex={currentRowIndex}
                                         width="100%"
                                     />
                                     <ScInput
                                         dataType={902}
-                                        allowNull={row.isrequirefile === 0}
+                                        allowNull={row.isRequireFile === 0}
                                         isEdit={isEdit}
                                         itemShowName="附件"
                                         itemKey="files"
@@ -752,7 +770,7 @@ const ExecuteDoc = (props) => {
                                         isBackendTest={false}
                                         key="files"
                                         positionID={1}
-                                        isOnSitePhoto={row.isonsitephoto === 1}
+                                        isOnSitePhoto={row.isOnSitePhoto === 1}
                                         rowIndex={currentRowIndex}
                                         width="40%"
                                         markTexts={rowMarkTexts}
@@ -762,11 +780,11 @@ const ExecuteDoc = (props) => {
                                         allowNull={true}
                                         isEdit={false}
                                         itemShowName="必传附件"
-                                        itemKey="isrequirefile"
-                                        initValue={row.isrequirefile}
+                                        itemKey="isRequireFile"
+                                        initValue={row.isRequireFile}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="isrequirefile"
+                                        key="isRequireFile"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width="60%"
@@ -776,11 +794,11 @@ const ExecuteDoc = (props) => {
                                         allowNull={true}
                                         isEdit={false}
                                         itemShowName="必须现场拍照"
-                                        itemKey="isonsitephoto"
-                                        initValue={row.isonsitephoto}
+                                        itemKey="isOnSitePhoto"
+                                        initValue={row.isOnSitePhoto}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="isonsitephoto"
+                                        key="isOnSitePhoto"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width={isOverSize ? "80%" : "50%"}
@@ -790,12 +808,12 @@ const ExecuteDoc = (props) => {
                                         allowNull={true}
                                         isEdit={false}
                                         itemShowName="填写说明"
-                                        itemKey="eiddescription"
-                                        initValue={row.eiddescription}
+                                        itemKey="epaDescription"
+                                        initValue={row.epaDescription}
                                         pickDone={handleGetValue}
                                         placeholder=""
                                         isBackendTest={false}
-                                        key="eiddescription"
+                                        key="epaDescription"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width="100%"
@@ -818,13 +836,13 @@ const ExecuteDoc = (props) => {
                                     <ScInput
                                         dataType={403}
                                         allowNull={true}
-                                        isEdit={isEdit && row.ischeckerror === 0}
+                                        isEdit={isEdit && row.isCheckError === 0}
                                         itemShowName="是否存在问题"
-                                        itemKey="iserr"
-                                        initValue={row.iserr}
+                                        itemKey="isIssue"
+                                        initValue={row.isIssue}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="iserr"
+                                        key="isIssue"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width={isOverSize ? "100%" : "50%"}
@@ -832,13 +850,13 @@ const ExecuteDoc = (props) => {
                                     <ScInput
                                         dataType={403}
                                         allowNull={true}
-                                        isEdit={isEdit && row.iserr === 1}
+                                        isEdit={isEdit && row.isIssue === 1}
                                         itemShowName="是否现场整改"
-                                        itemKey="isrectify"
-                                        initValue={row.isrectify}
+                                        itemKey="isRectify"
+                                        initValue={row.isRectify}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="isrectify"
+                                        key="isRectify"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width={isOverSize ? "100%" : "50%"}
@@ -848,54 +866,54 @@ const ExecuteDoc = (props) => {
                                         allowNull={true}
                                         isEdit={false}
                                         itemShowName="是否问题处理"
-                                        itemKey="ishandle"
-                                        initValue={row.ishandle}
+                                        itemKey="isHandle"
+                                        initValue={row.isHandle}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="ishandle"
+                                        key="isHandle"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width={isOverSize ? "100%" : "50%"}
                                     />
                                     <ScInput
                                         dataType={510}
-                                        allowNull={row.ishandle === 0}
-                                        isEdit={isEdit && row.ishandle === 1}
+                                        allowNull={row.isHandle === 0}
+                                        isEdit={isEdit && row.isHandle === 1}
                                         itemShowName="问题处理人"
-                                        itemKey="handleperson"
-                                        initValue={row.handleperson}
-                                        errInfo={rowErrs.handleperson}
+                                        itemKey="issueOwner"
+                                        initValue={row.issueOwner}
+                                        errInfo={rowErrs.issueOwner}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="handleperson"
+                                        key="issueOwner"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width={isOverSize ? "100%" : "50%"}
                                     />
                                     <ScInput
                                         dataType={307}
-                                        allowNull={row.ishandle === 0}
-                                        isEdit={isEdit && row.ishandle === 1}
+                                        allowNull={row.isHandle === 0}
+                                        isEdit={isEdit && row.isHandle === 1}
                                         itemShowName="处理开始时间"
-                                        itemKey="handlestarttime"
-                                        initValue={row.handlestarttime}
+                                        itemKey="handleStartTime"
+                                        initValue={row.handleStartTime}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="handlestarttime"
+                                        key="handleStartTime"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width="100%"
                                     />
                                     <ScInput
                                         dataType={307}
-                                        allowNull={row.ishandle === 0}
-                                        isEdit={isEdit && row.ishandle === 1}
+                                        allowNull={row.isHandle === 0}
+                                        isEdit={isEdit && row.isHandle === 1}
                                         itemShowName="处理完成时间"
-                                        itemKey="handleendtime"
-                                        initValue={row.handleendtime}
+                                        itemKey="handleEndTime"
+                                        initValue={row.handleEndTime}
                                         pickDone={handleGetValue}
                                         isBackendTest={false}
-                                        key="handleendtime"
+                                        key="handleEndTime"
                                         positionID={1}
                                         rowIndex={currentRowIndex}
                                         width="100%"
@@ -911,11 +929,11 @@ const ExecuteDoc = (props) => {
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="创建人"
-                                itemKey="createuser"
-                                initValue={voucherData.createuser}
+                                itemKey="creator"
+                                initValue={voucherData.creator}
                                 pickDone={() => { }}
                                 isBackendTest={false}
-                                key="createuser"
+                                key="creator"
                                 positionID={2}
                                 rowIndex={-1}
                                 width={isOverSize ? "100%" : "40%"}
@@ -925,11 +943,11 @@ const ExecuteDoc = (props) => {
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="创建日期"
-                                itemKey="createdate"
-                                initValue={voucherData.createdate}
+                                itemKey="createDate"
+                                initValue={voucherData.createDate}
                                 pickDone={() => { }}
                                 isBackendTest={false}
-                                key="createdate"
+                                key="createDate"
                                 positionID={2}
                                 rowIndex={-1}
                                 width={isOverSize ? "100%" : "60%"}
@@ -939,11 +957,11 @@ const ExecuteDoc = (props) => {
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="修改人"
-                                itemKey="modifyuser"
-                                initValue={voucherData.modifyuser}
+                                itemKey="modifier"
+                                initValue={voucherData.modifier}
                                 pickDone={() => { }}
                                 isBackendTest={false}
-                                key="modifyuser"
+                                key="modifier"
                                 positionID={2}
                                 rowIndex={-1}
                                 width={isOverSize ? "100%" : "40%"}
@@ -953,11 +971,11 @@ const ExecuteDoc = (props) => {
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="更新日期"
-                                itemKey="modifydate"
-                                initValue={voucherData.modifydate}
+                                itemKey="modifyDate"
+                                initValue={voucherData.modifyDate}
                                 pickDone={() => { }}
                                 isBackendTest={false}
-                                key="modifydate"
+                                key="modifyDate"
                                 positionID={2}
                                 rowIndex={-1}
                                 width={isOverSize ? "100%" : "60%"}
@@ -967,11 +985,11 @@ const ExecuteDoc = (props) => {
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="确认人"
-                                itemKey="confirmuser"
-                                initValue={voucherData.confirmuser}
+                                itemKey="confirmer"
+                                initValue={voucherData.confirmer}
                                 pickDone={() => { }}
                                 isBackendTest={false}
-                                key="confirmuser"
+                                key="confirmer"
                                 positionID={2}
                                 rowIndex={-1}
                                 width={isOverSize ? "100%" : "40%"}
@@ -981,11 +999,11 @@ const ExecuteDoc = (props) => {
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="确认日期"
-                                itemKey="confirmdate"
-                                initValue={voucherData.confirmdate}
+                                itemKey="confirmDate"
+                                initValue={voucherData.confirmDate}
                                 pickDone={() => { }}
                                 isBackendTest={false}
-                                key="confirmdate"
+                                key="confirmDate"
                                 positionID={2}
                                 rowIndex={-1}
                                 width={isOverSize ? "100%" : "60%"}
@@ -1005,21 +1023,14 @@ const ExecuteDoc = (props) => {
                         </Surface>
                         : null
                     }
-                    {orderVisible
-                        ? <>
-                            <AnimatedFAB
-                                icon="keyboard-return"
-                                label="返回"
-                                extended={false}
-                                visible={true}
-                                onPress={handleCancel}
-                                animateFrom={buttonPosition}
-                                style={{ bottom: 64, position: "absolute", ...orderPosition }}
-                            />
-                        </>
-                        : null
-                    }
-                    <ScSwapButton hiddenIconVisible={true} />
+                    <ScHandSwitch
+                        refreshDisplay={false}
+                        docRefresh={() => { }}
+                        cancelAction={handleCancel}
+                        theme={theme}
+                        t={t}
+                    />
+
                 </View>
                 : <ActivityIndicator animating={true} />
             }
@@ -1027,4 +1038,4 @@ const ExecuteDoc = (props) => {
     );
 };
 
-export default ExecuteDoc;
+export default EditExecutionOrder;

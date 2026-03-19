@@ -1,4 +1,5 @@
 import { store } from "../../store";
+import { t } from "i18next";
 import { dayjs } from "../../i18n/dayjs";
 import { cloneDeep, uniqBy } from "lodash";
 import { mailRegex } from "../../utils/regex";
@@ -13,7 +14,7 @@ import { ScDataTypeList } from "../../dataType/types/scDataType";
 import { ScFile } from "../../dataType/types/file";
 
 // Generate Execution Order Data
-export const getInitialValue = (isNew: boolean, isModify: boolean, oriWOR: WorkOrderRow, oriEO: ExecutionOrder) => {
+export const getInitialValue = (isNew: boolean, isModify: boolean, oriWOR: WorkOrderRow | undefined, oriEO: ExecutionOrder | undefined) => {
     const { user } = store.getState();
     const { person, department } = user;
     const currentDay = dayjs(new Date()).toISOString();
@@ -85,11 +86,8 @@ export const eptBodyToEOBody = (eptBody: EPTRow[], startTime: string, endTime: s
     return eoBody;
 };
 
-//检查执行单错误
-export const checkEOErrors = (eoData: ExecutionOrder): EOErrors | undefined => {
-    if (eoData === undefined) {
-        return undefined;
-    }
+// Check Execution Order Data errors
+export const checkEOErrors = (eoData: ExecutionOrder | undefined): EOErrors => {
     const noErr: ErrMsg = { isErr: false, msg: "" };
     const errData: EOErrors = {
         billDate: noErr,
@@ -101,36 +99,51 @@ export const checkEOErrors = (eoData: ExecutionOrder): EOErrors | undefined => {
         endTime: noErr,
         body: []
     };
-    //检查表头单据日期
+    errData.isErr = false;
+    errData.isBodyErr = false;
+    errData.isHeaderErr = false;
+    if (eoData === undefined) {
+        return errData;
+    }
+    let headerErrNumber = 0;
+    let bodyErrorNumber = 0;
+    // Check header billDate field
     if (eoData.billDate === "") {
-        errData.billDate = { isErr: true, msg: "单据日期不能为空" };
+        errData.billDate = { isErr: true, msg: t("cannotEmpty") };
+        headerErrNumber++
     }
-    //检查表头部门
+    // Check header department field
     if (eoData.department.id === 0) {
-        errData.department = { isErr: true, msg: "部门不能为空" };
+        errData.department = { isErr: true, msg: t("cannotEmpty") };
+        headerErrNumber++
     }
-    //检查表头现场
+    // Check header Construction Site Archive field
     if (eoData.csa.id === 0) {
-        errData.csa = { isErr: true, msg: "现场不能为空" };
+        errData.csa = { isErr: true, msg: t("cannotEmpty") };
+        headerErrNumber++
     }
-    //检查表头执行模板
+    // Check header Execution Project Templete field
     if (eoData.ept.id === 0) {
-        errData.ept = { isErr: true, msg: "执行模板不能为空" };
+        errData.ept = { isErr: true, msg: t("cannotEmpty") };
+        headerErrNumber++
     }
-    //检查开始时间
+    // Check Header Start Time field
     if (eoData.startTime === "") {
-        errData.startTime = { isErr: true, msg: "开始时间不能为空" };
+        errData.startTime = { isErr: true, msg: t("cannotEmpty") };
+        headerErrNumber++
     }
-    //检查结束时间
+    // Check Header End Time field
     if (eoData.endTime === "") {
-        errData.endTime = { isErr: true, msg: "结束时间不能为空" }
+        errData.endTime = { isErr: true, msg: t("cannotEmpty") }
+        headerErrNumber++
     } else {
         if (eoData.startTime > eoData.endTime) {
-            errData.endTime = { isErr: true, msg: "结束时间不能小于开始时间" };
+            errData.endTime = { isErr: true, msg: t("endTimePrecedeStartTime") };
+            headerErrNumber++
         }
     }
 
-    //检查表体
+    // Check body field row by row
     eoData.body.forEach((row, index) => {
         let rowErr: EORowErrors = {
             epa: noErr,
@@ -141,62 +154,74 @@ export const checkEOErrors = (eoData: ExecutionOrder): EOErrors | undefined => {
             handleEndTime: noErr,
         };
 
-        //检查执行项目
+        // Check Execution Project field
         if (row.epa.id === 0) {
-            rowErr.epa = { isErr: true, msg: "执行项目不能为空" };
+            rowErr.epa = { isErr: true, msg: t("cannotEmpty") };
+            bodyErrorNumber++
         }
-        //检查执行值
+        // Check Execution Value field
         switch (row.epa.resultType.id) {
             case 301:
                 if (row.executionValue === "") {
-                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                    rowErr.executionValue = { isErr: true, msg: t("cannotEmpty") };
+                    bodyErrorNumber++
                 }
                 break;
             case 302:
                 if (!Number.isFinite(row.executionValue)) {
-                    rowErr.executionValue = { isErr: true, msg: `执行值必须为数值` };
+                    rowErr.executionValue = { isErr: true, msg: t("cannotEmpty") };
+                    bodyErrorNumber++
                 }
                 break;
             case 303:
                 if (row.executionValue === "") {
-                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                    rowErr.executionValue = { isErr: true, msg: t("cannotEmpty") };
+                    bodyErrorNumber++
                 }
                 break;
             case 304:
                 if (row.executionValue === "") {
-                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                    rowErr.executionValue = { isErr: true, msg: t("cannotEmpty") };
+                    bodyErrorNumber++
                 }
                 break;
             case 305:
                 if (row.executionValue === "") {
-                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                    rowErr.executionValue = { isErr: true, msg: t("cannotEmpty") };
+                    bodyErrorNumber++
+
                 } else {
                     if (!mailRegex.test(row.executionValue)) {
-                        rowErr.executionValue = { isErr: true, msg: `执行值邮件格式不正确` };
+                        rowErr.executionValue = { isErr: true, msg: t("emailIncorrect") };
+                        bodyErrorNumber++
                     }
                 }
                 break;
             case 306:
                 if (row.executionValue === "") {
-                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                    rowErr.executionValue = { isErr: true, msg: t("cannotEmpty") };
+                    bodyErrorNumber++
                 } else {
                     if (!dayjs(row.executionValue, "YYYYMMDD", true).isValid()) {
                         rowErr.executionValue = { isErr: true, msg: `执行值日期格式不正确` };
+                        bodyErrorNumber++
                     }
                 }
                 break;
             case 307:
                 if (row.executionValue === "") {
-                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                    rowErr.executionValue = { isErr: true, msg: t("cannotEmpty") };
                 } else {
-                    if (!dayjs(row.executionValue, "YYYYMMDDHHmm", true).isValid()) {
+                    if (!dayjs(row.executionValue).isValid()) {
                         rowErr.executionValue = { isErr: true, msg: `执行值日期时间格式不正确` };
+                        bodyErrorNumber++
                     }
                 }
                 break;
             case 401:
                 if (row.executionValue === 0) {
-                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                    rowErr.executionValue = { isErr: true, msg: t("cannotEmpty") };
+                    bodyErrorNumber++
                 }
                 break;
             case 402:
@@ -204,7 +229,8 @@ export const checkEOErrors = (eoData: ExecutionOrder): EOErrors | undefined => {
                 break;
             case 404:
                 if (row.executionValue === 2) {
-                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                    rowErr.executionValue = { isErr: true, msg: t("cannotEmpty") };
+                    bodyErrorNumber++
                 }
                 break;
             case 510:
@@ -217,14 +243,15 @@ export const checkEOErrors = (eoData: ExecutionOrder): EOErrors | undefined => {
             case 570:
             case 580:
                 if (row.executionValue.id === 0) {
-                    rowErr.executionValue = { isErr: true, msg: `执行值不能为空` };
+                    rowErr.executionValue = { isErr: true, msg: t("cannotEmpty") };
+                    bodyErrorNumber++
                 }
                 break;
             default:
                 break;
         }
 
-        //检查文件        
+        // Check Row File        
         if (row.isRequireFile === 1) {
             let fileNumber = 0;
             row.files.forEach(file => {
@@ -233,32 +260,42 @@ export const checkEOErrors = (eoData: ExecutionOrder): EOErrors | undefined => {
                 }
             })
             if (fileNumber === 0) {
-                rowErr.files = { isErr: true, msg: "必须上传附件" }
+                rowErr.files = { isErr: true, msg: t("isRequireFile") };
+                bodyErrorNumber++
             }
         }
 
-        //检查处理人
+        // Check issueOwner field
         if (row.isHandle === 1 && row.issueOwner.id === 0) {
-            rowErr.issueOwner = { isErr: true, msg: "处理人必须输入" };
+            rowErr.issueOwner = { isErr: true, msg: t("cannotEmpty") };
+            bodyErrorNumber++
         }
 
-        //检查开始处理时间
+        // Check handleStartTime field
         if (row.isHandle === 1 && row.handleStartTime === "") {
-            rowErr.handleStartTime = { isErr: true, msg: "开始处理时间必须输入" };
+            rowErr.handleStartTime = { isErr: true, msg: t("cannotEmpty") };
+            bodyErrorNumber++
         }
 
-        //检查结束处理时间
+        // Check handleEndTime field
         if (row.isHandle === 1) {
             if (row.handleEndTime === "") {
-                rowErr.handleEndTime = { isErr: true, msg: "结束处理时间必须输入" };
+                rowErr.handleEndTime = { isErr: true, msg: t("cannotEmpty") };
+                bodyErrorNumber++
             } else {
                 if (row.handleStartTime > row.handleEndTime) {
-                    rowErr.handleEndTime = { isErr: true, msg: "结束处理时间必须大于开始处理时间" };
+                    rowErr.handleEndTime = { isErr: true, msg: t("endTimePrecedeStartTime") };
+                    bodyErrorNumber++
                 }
             }
         }
         errData.body.push(rowErr);
     })
+
+    errData.isErr = (bodyErrorNumber > 0 || headerErrNumber > 0);
+    errData.isBodyErr = bodyErrorNumber > 0;
+    errData.isHeaderErr = headerErrNumber > 0;
+
     return errData;
 };
 
@@ -357,7 +394,7 @@ export function transEOToBackend(eo: ExecutionOrder) {
 };
 
 //生成水印文本
-export const generateMarkText = (voucherData: ExecutionOrder, row: ExecutionOrderRow) => {
+export const generateMarkText = (voucherData: ExecutionOrder | undefined, row: ExecutionOrderRow | undefined) => {
     let mark: MarkText[] = [];
     if (!voucherData || !row) {
         return mark;

@@ -47,8 +47,18 @@ function ExecutionOrderList() {
                 isOffline={isOffline}
             />
             {localOrRemote === "remote"
-                ? <RemoteEOList navigation={navigation} route={route} />
-                : <LocalEOList navigation={navigation} route={route} />
+                ? <RemoteEOList
+                    theme={theme}
+                    t={t}
+                    isOffline={isOffline === 1}
+                    navigation={navigation}
+                />
+                : <LocalEOList
+                    theme={theme}
+                    t={t}
+                    isOffline={isOffline === 1}
+                    navigation={navigation}
+                />
             }
             <ScHandSwitch
                 refreshDisplay={false}

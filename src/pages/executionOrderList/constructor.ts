@@ -11,6 +11,7 @@ import { simpCSCRepo } from "../../db/crud/csc";
 import { UDCRepo } from "../../db/crud/udc";
 import { simpEPCRepo } from "../../db/crud/epc";
 import { UDARepo } from "../../db/crud/uda";
+import { WorkOrderRow } from "../../dataType/types/workOrder";
 
 // Generate Execution Order default query fields
 export const eoQueryFields: QueryField[] = [
@@ -157,3 +158,7 @@ export const transEODetailToFronted = (eoDetail: ExecutionOrder) => {
     }
     return eoDetail;
 };
+
+export function worsSortByid(a: WorkOrderRow, b: WorkOrderRow) {
+    return b.id - a.id;
+}
