@@ -10,6 +10,7 @@ import { ErrMsg } from "./scInput";
 export interface EORowErrors {
     epa: ErrMsg;
     executionValue: ErrMsg;
+    riskLevel:ErrMsg;
     files: ErrMsg;
     issueOwner: ErrMsg;
     handleStartTime: ErrMsg;

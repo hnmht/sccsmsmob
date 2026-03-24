@@ -705,6 +705,8 @@
     "voucherBody": "表体",
     "voucherFooter": "表尾",
     "draft": "暂存",
+    "uploadingFiles": "正在上传文件...",
+    "uploadingVoucher": "正在上传单据...",
     
     "MenuDashboard": "首页",
     "MenuCalendar": "日程",

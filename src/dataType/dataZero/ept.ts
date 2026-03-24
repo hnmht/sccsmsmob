@@ -49,3 +49,7 @@ export function getEmptyEPT(): EPT {
     };
     return ept
 }
+
+export function isEPTLike(v: unknown): v is { id: number, allowAddRow: number; allowDelRow: number; body: EPTRow[] } {
+    return typeof v === "object" && v !== null && ("id" in v || "allowAddRow" in v || "allowDelRow" in v || "body" in v);
+}

@@ -148,6 +148,7 @@ export const checkEOErrors = (eoData: ExecutionOrder | undefined): EOErrors => {
         let rowErr: EORowErrors = {
             epa: noErr,
             executionValue: noErr,
+            riskLevel: noErr,
             files: noErr,
             issueOwner: noErr,
             handleStartTime: noErr,
@@ -250,6 +251,11 @@ export const checkEOErrors = (eoData: ExecutionOrder | undefined): EOErrors => {
             default:
                 break;
         }
+        // Check RiskLevel field
+        if (row.riskLevel.id === 0) {
+            rowErr.riskLevel = { isErr: true, msg: t("isRequireFile") };
+            bodyErrorNumber++
+        }
 
         // Check Row File        
         if (row.isRequireFile === 1) {
@@ -299,8 +305,8 @@ export const checkEOErrors = (eoData: ExecutionOrder | undefined): EOErrors => {
     return errData;
 };
 
-//表体行自动检查问题
-export const checkForProblem = (resultTypeId: ScDataTypeList, errorValue: any, value: any) => {
+// Check for any Issues
+export const checkForProblem = (resultTypeId: ScDataTypeList, errorValue: any, value: any): 0 | 1 => {
     switch (resultTypeId) {
         case 301:
         case 302:
@@ -321,7 +327,7 @@ export const checkForProblem = (resultTypeId: ScDataTypeList, errorValue: any, v
     }
 };
 
-//表体所有文件转换为[]pg.File格式
+// Convert all Voucher File within the entry to SCFile array
 export const transVoucherDataToFiles = (voucherData: ExecutionOrder) => {
     let files: ScFile[] = [];
     if (voucherData === undefined || voucherData.body.length <= 0) {
@@ -340,22 +346,20 @@ export const transVoucherDataToFiles = (voucherData: ExecutionOrder) => {
     return noDupFiles;
 };
 
-//转换数据到后端格式
+// Convert Execution Order to backend Execution Order
 export function transEOToBackend(eo: ExecutionOrder) {
-    // 拷贝数据
     const newEO = cloneDeep(eo);
     newEO.ept.body = [];
-
     newEO.body.map((row) => {
         switch (row.epa.resultType.id) {
             case 301:
                 row.executionValueDisp = row.executionValue;
                 break;
             case 306:
-                row.executionValueDisp = row.executionValue === "" ? "" : dayjs(row.executionValue, "YYYYMMDD").format("YYYY-MM-DD");
+                row.executionValueDisp = row.executionValue === "" ? "" : dayjs(row.executionValue).toISOString();
                 break;
             case 307:
-                row.executionValueDisp = row.executionValue === "" ? "" : dayjs(row.executionValue, "YYYYMMDDHHmm").format("YYYY-MM-DD HH:mm");
+                row.executionValueDisp = row.executionValue === "" ? "" : dayjs(row.executionValue).toISOString();
                 break;
             case 302:
                 row.executionValue = row.executionValue.toString();
@@ -363,12 +367,12 @@ export function transEOToBackend(eo: ExecutionOrder) {
                 row.errorValue = row.errorValue.toString();
                 break;
             case 401:
-                row.executionValueDisp = row.executionValue === 0 ? "" : row.executionValue === 1 ? "男" : "女";
+                row.executionValueDisp = row.executionValue === 0 ? "" : row.executionValue === 1 ? "male" : "female";
                 row.executionValue = row.executionValue.toString();
                 row.errorValue = row.errorValue.toString();
                 break;
             case 404:
-                row.executionValueDisp = row.executionValue === 0 ? "否" : row.executionValue === 1 ? "是" : "";
+                row.executionValueDisp = row.executionValue === 0 ? "N" : row.executionValue === 1 ? "Y" : "";
                 row.executionValue = row.executionValue.toString();
                 row.errorValue = row.errorValue.toString();
                 break;
@@ -393,22 +397,22 @@ export function transEOToBackend(eo: ExecutionOrder) {
     return newEO;
 };
 
-//生成水印文本
+// Generate watermark text
 export const generateMarkText = (voucherData: ExecutionOrder | undefined, row: ExecutionOrderRow | undefined) => {
     let mark: MarkText[] = [];
     if (!voucherData || !row) {
         return mark;
     }
-    //生成作者信息
+    // Generate Author information
     const { appInfo, user } = store.getState();
-    mark.push({ position: { x: 0, y: 0 }, text: `${appInfo.serverInfo.organization?.organizationName} | ${user.person.name} | 执行单`, textSize: 20, color: " rgb(92, 93, 114)" });
-    //生成现场信息
+    mark.push({ position: { x: 0, y: 0 }, text: `${appInfo.serverInfo.organization?.organizationName} | ${user.person.name} | ${t("eo")}`, textSize: 20, color: " rgb(92, 93, 114)" });
+    // Generate Construction Site Archive information
     if (voucherData.csa.name !== "") {
-        mark.push({ position: { x: 0, y: 0 }, text: `现场:${voucherData.csa.name}`, textSize: 20, color: " rgb(92, 93, 114)" });
+        mark.push({ position: { x: 0, y: 0 }, text: `${t("csa")}:${voucherData.csa.name}`, textSize: 20, color: " rgb(92, 93, 114)" });
     }
-    //生成执行项目
+    // Generate Execution Project Archive information
     if (row.epa.name !== "") {
-        mark.push({ position: { x: 0, y: 0 }, text: `执行项目:${row.epa.name}`, textSize: 20, color: " rgb(92, 93, 114)" });
+        mark.push({ position: { x: 0, y: 0 }, text: `${t("csa")}:${row.epa.name}`, textSize: 20, color: " rgb(92, 93, 114)" });
     }
     return mark;
 };

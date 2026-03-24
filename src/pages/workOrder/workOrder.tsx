@@ -51,7 +51,7 @@ function EditWorkOrder() {
     // Actions upon receiving values from  ScInput Components
     const handleGetValue = async  <T extends keyof InitialValueMap>(
         value: InitialValueMap[T],
-        itemkey: string,
+        itemKey: string,
         positionID: 0 | 1 | 2,
         rowIndex: number,
         errMsg: ErrMsg
@@ -67,13 +67,13 @@ function EditWorkOrder() {
             }
             switch (positionID) {
                 case 0:// Update header data
-                    newData[itemkey] = value;
+                    newData[itemKey] = value;
                     break;
                 case 1:// Update body data                                       
-                    newData.body[rowIndex][itemkey] = value;
+                    newData.body[rowIndex][itemKey] = value;
                     break;
                 case 2: // Update footer data
-                    newData[itemkey] = value;
+                    newData[itemKey] = value;
                     break;
                 default:
                     break;
@@ -530,7 +530,7 @@ function EditWorkOrder() {
                             t={t}
                         >
                             <ScInput
-                                dataType={510}
+                                dataType={ScDataTypeList.Person}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="creator"
@@ -542,7 +542,6 @@ function EditWorkOrder() {
                                 key="creator"
                                 positionID={2}
                                 rowIndex={-1}
-                                width={isOverSize ? "100%" : "40%"}
                             />
                             <ScInput
                                 dataType={307}

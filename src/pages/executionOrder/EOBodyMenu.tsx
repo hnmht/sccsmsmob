@@ -1,25 +1,27 @@
-import { useState } from "react";
-import { MD3Theme, Menu, Button } from "react-native-paper";
-import { WOErrors, WorkOrderRow } from "../../dataType/types/workOrder";
+import { MD3Theme } from "react-native-paper";
+import { Menu, Button } from "react-native-paper";
 import Icon from "@react-native-vector-icons/material-design-icons";
 import { TFunction } from "i18next";
+import { useState } from "react";
+
+import { EOErrors, ExecutionOrderRow } from "../../dataType/types/executionOrder";
 import { checkObjectError } from "../../components/tools/checkError";
 
-interface WoBodyMenuProps {
-    woErrors: WOErrors;
-    woRows: WorkOrderRow[];
+interface EOBodyMenuProps {
+    eoErrors: EOErrors;
+    eoRows: ExecutionOrderRow[];
     setCurrentRowIndex: (index: number) => void;
     theme: MD3Theme;
     t: TFunction;
 }
 
-function WOBodyMenu({ woErrors, woRows, setCurrentRowIndex, theme, t }: WoBodyMenuProps) {
+function EOBodyMenu({ eoErrors, eoRows, setCurrentRowIndex, theme, t }: EOBodyMenuProps) {
     const [rowMenuVisible, setRowMenuVisible] = useState<boolean>(false);
     const handleSelectRow = (index: number) => {
         setRowMenuVisible(false);
         setCurrentRowIndex(index);
-    }
-    return (woRows === undefined
+    };
+    return (eoRows === undefined
         ? null
         : <Menu
             visible={rowMenuVisible}
@@ -28,28 +30,31 @@ function WOBodyMenu({ woErrors, woRows, setCurrentRowIndex, theme, t }: WoBodyMe
                 < Button
                     onPress={() => setRowMenuVisible(true)}
                     icon="telescope"
-                    textColor={woErrors.isBodyErr ? theme.colors.error : theme.colors.primary}
-                    disabled={woRows.length <= 0}
+                    textColor={eoErrors.isBodyErr ? theme.colors.error : theme.colors.primary}
+                    disabled={eoRows.length <= 0}
                 >
                     {t("quickJump")}
                 </Button>
-            }>
-            {woRows.map((row, index) => {
-                const isErr = checkObjectError(woErrors.body[index]);
+            }
+        >
+            {eoRows.map((row, index) => {
+                const isErr = checkObjectError(eoErrors.body[index]);
                 return (
                     <Menu.Item
                         leadingIcon={() => isErr ? <Icon name="alert" size={24} color="red" /> : <Icon name="check" size={24} color="green" />}
                         key={row.rowNumber}
                         onPress={() => handleSelectRow(index)}
-                        title={`${t("rowTh", { rowNumber: row.rowNumber })} ${row.csa.name}`}
+                        title={`${t("rowTh", { rowNumber: row.rowNumber })} ${row.epa.name}`}
                         style={{ width: "90%" }}
                         titleStyle={{ width: "100%" }}
                     />
                 )
             })
+
             }
         </Menu>
-    );
+    )
 };
 
-export default WOBodyMenu;
+
+export default EOBodyMenu;

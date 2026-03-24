@@ -708,6 +708,8 @@
     "voucherBody":"Body",
     "voucherFooter":"Footer",
     "draft":"Draft",
+    "uploadingFiles":"Uploading files...",
+    "uploadingVoucher":"Uploading voucher...",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

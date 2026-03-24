@@ -1,5 +1,8 @@
 import { EpochTime } from "../../i18n/dayjs";
 import { ConstructionSite } from "../types/csa";
+import { CSC } from "../types/csc";
+import { SimpDept } from "../types/department";
+import { Person } from "../types/person";
 import { getEmptyCSC } from "./csc";
 import { getEmptySimpDept } from "./department";
 import { getEmptyPerson } from "./person";
@@ -38,4 +41,8 @@ export function getEmptyCSA(): ConstructionSite {
         dr: 0,
     }
     return csa
+}
+
+export function isCSALike(v: unknown): v is { id: number, respPerson: Person; respDept: SimpDept; csc: CSC } {
+    return typeof v === "object" && v !== null && ("id" in v || "respPerson" in v || "respDept" in v || "csc" in v);
 }

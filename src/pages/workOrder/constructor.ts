@@ -10,7 +10,13 @@ import { dayjs, EpochTime } from "../../i18n/dayjs";
 import { cloneDeep } from "lodash";
 
 // Generate Work Order data
-export const getInitialValue = async (oriWO: WorkOrder | undefined, isNew: boolean, isModify: boolean, person: Person, dept: SimpDept) => {
+export async function getInitialValue(
+    oriWO: WorkOrder | undefined,
+    isNew: boolean,
+    isModify: boolean,
+    person: Person,
+    dept: SimpDept
+) {
     let newWO = getEmptyWorkOrder(person, dept);
     const currentDay = dayjs(new Date()).toISOString();
     const emptyPerson = getEmptyPerson();
@@ -35,7 +41,7 @@ export const getInitialValue = async (oriWO: WorkOrder | undefined, isNew: boole
             newWO.confirmer = emptyPerson;
             newWO.confirmDate = EpochTime;
         }
-    } else { 
+    } else {
         if (!oriWO) {
             return undefined;
         } else {
@@ -58,7 +64,7 @@ export const getInitialValue = async (oriWO: WorkOrder | undefined, isNew: boole
 };
 
 // Check WorkOrder Data errors
-export const checkWOErrors = (woData: WorkOrder | undefined): WOErrors => {
+export function checkWOErrors(woData: WorkOrder | undefined): WOErrors {
     const noErr: ErrMsg = { isErr: false, msg: "" };
     const errData: WOErrors = {
         billDate: noErr,

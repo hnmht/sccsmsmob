@@ -39,3 +39,30 @@ export interface EPCache {
     newItems: ExecutionProject[];
     resultTs: string;
 }
+
+export function isEPALike(v: unknown): v is {
+    id: number,
+    defaultValue: any;
+    defaultValueDisp: any;
+    description: string;
+    isCheckError: 0 | 1;
+    errorValue: any;
+    errorValueDisp: string;
+    isRequireFile: 0 | 1;
+    isOnSitePhoto: 0 | 1;
+    riskLevel: RiskLevel;
+} {
+    return typeof v === "object" &&
+        v !== null &&
+        ("id" in v ||
+            "defaultValue" in v ||
+            "defaultValueDisp" in v ||
+            "description" in v ||
+            "isCheckError" in v ||
+            "errorValue" in v ||
+            "errorValueDisp" in v ||
+            "isRequireFile" in v ||
+            "isOnSitePhoto" in v ||
+            "riskLevel" in v
+        );
+}
