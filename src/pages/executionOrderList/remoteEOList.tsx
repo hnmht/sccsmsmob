@@ -19,7 +19,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface EODiagStatus {
     isOpen: boolean;
-    content: 0 | 1 | 2 | 3 | 4;//1 执行单（编辑或查看） 2 执行单过滤条件 3 指令单选择 4 指令单过滤条件
+    content: 0 | 1 | 2 | 3 | 4;//1 Edit EO 2 EO Filter Conditions 3 WO Selection 4 WO Filter Conditions
     selectedWOR: WorkOrderRow | undefined;
     selectedEO: ExecutionOrder | undefined;
     isNew: boolean;
@@ -53,16 +53,15 @@ function RemoteExecutionOrderList({
         isModify: false
     });
     const [refreshing, setRefreshing] = useState<boolean>(false);
-
     const user = useAppSelector(state => state.user);
-    //命令按钮位置
+    // Command button position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
-
 
     useEffect(() => {
         handleReqEOs(eoConditions);
     }, []);
-    //对话框关闭
+
+    // Close dialog
     const handleDiagClose = () => {
         setDiagStatus({
             isOpen: false,
@@ -74,22 +73,20 @@ function RemoteExecutionOrderList({
         });
     };
 
-    //向服务器请求数据
+    // Request EO list from server based on conditions
     const handleReqEOs = async (cons = eoConditions) => {
         setRefreshing(true);
-        //将查询条件转化为String
+        // Convert conditions to query string
         let queryString = transConditionsToString(cons);
         let eosRes = await reqGetEOList({ queryString: queryString });
         let newEos: ExecutionOrder[] = [];
         if (eosRes.status) {
             newEos = eosRes.data;
-        } else {
-            Alert.alert("提示", eosRes.msg);
         }
         setRemoteEOs(newEos);
         setRefreshing(false);
     };
-    //点击查询执行单按钮
+    // Actions after press the query button
     const handlePressQuery = () => {
         setDiagStatus({
             isOpen: true,
@@ -101,7 +98,7 @@ function RemoteExecutionOrderList({
         });
     };
 
-    //获取执行单查询条件
+    // Actions after press ok button in EO filter conditions dialog
     const handleEOQueryOk = (value: Condition[] = eoConditions) => {
         setEoConditions(value);
         setDiagStatus({
@@ -112,11 +109,11 @@ function RemoteExecutionOrderList({
             isNew: false,
             isModify: false
         });
-        //向服务器请求数据
+        // Request EO list with new conditions
         handleReqEOs(value);
     };
 
-    //点击参照指令单按钮
+    // Actions after press Add Ref button
     const handleAddRef = () => {
         setDiagStatus({
             isOpen: true,
@@ -128,7 +125,7 @@ function RemoteExecutionOrderList({
         });
     };
 
-    //参照指令单QueryPanel确定按钮点击
+    // Actions after press ok button in WO filter conditions dialog
     const handleWoQueryOk = (cons: Condition[] = woConditions) => {
         setWoConditions(cons);
         setDiagStatus({
@@ -140,37 +137,34 @@ function RemoteExecutionOrderList({
             isModify: false
         });
     };
-    //参照指令单按钮点击确定
+    // Actions after select a WO in WO selection dialog
     const handleWoReferOk = (item: WorkOrderRow) => {
         setDiagStatus({
             isOpen: false,
-            content: 0, //显示执行单编辑界面
+            content: 0,
             selectedWOR: item,
             selectedEO: undefined,
             isNew: true,
             isModify: false
         });
-        //导航到执行单编辑界面
+        // Navigate to EO edit page with the selected WO as reference
         navigation.navigate("ExecutionOrder", { isLocal: false, isNew: true, isModify: false, oriWOR: item, oriEO: undefined, onGoBack: () => handleReqEOs() });
     };
 
-    //增加
+    // Actions after press the add button
     const handleAdd = () => {
         navigation.navigate("ExecutionOrder", { isLocal: false, isNew: true, isModify: false, oriWOR: undefined, oriEO: undefined, onGoBack: () => handleReqEOs() });
     };
-    //卡片详情按钮点击
+    // Actions after press the view detail button in EO card
     const handleViewAction = async (item: ExecutionOrder) => {
         let res = await reqGetEODetail(item);
         if (res.status) {
             let eoDetail = transEODetailToFronted(res.data);
             navigation.navigate("ExecutionOrder", { isLocal: false, isNew: false, isModify: false, oriWOR: undefined, oriEO: eoDetail, onGoBack: () => { } });
-        } else {
-            Alert.alert("错误", res.msg);
-            return
         }
     };
 
-    //卡片编辑按钮点击
+    // Actions after press the edit button in EO card
     const handleEditAction = async (item: ExecutionOrder) => {
         let res = await reqGetEODetail(item);
         if (res.status) {
@@ -178,50 +172,47 @@ function RemoteExecutionOrderList({
             navigation.navigate("ExecutionOrder", { isLocal: false, isNew: false, isModify: true, oriWOR: undefined, oriEO: eoDetail, onGoBack: () => handleReqEOs() });
 
         } else {
-            Alert.alert("错误", res.msg);
+
             return
         }
     };
-    //卡片确认按钮点击
+    // Actions after press the confirm button in EO card
     const handleConfirm = async (item: ExecutionOrder) => {
         let res = await reqConfirmEO(item);
         if (res.status) {
-            Alert.alert("提示", "确认" + item.billNumber + "执行单成功");
-        } else {
-            Alert.alert("错误", "确认" + item.billNumber + "执行单失败:" + res.msg);
+            Alert.alert(t("tip"), t("confirmSuccessful"));
+        } else {            
             return
         }
-        //刷新数据
+        // refresh EO list
         handleReqEOs();
     };
 
-    //卡片取消确认按钮点击
+    // Actions after press the cancel confirm button in EO card
     const handleCancelConfirm = async (item: ExecutionOrder) => {
         let res = await reqUnConfirmEO(item);
         if (res.status) {
-            Alert.alert("提示", "取消确认" + item.billNumber + "执行单成功");
-        } else {
-            Alert.alert("错误", "取消确认" + item.billNumber + "执行单失败:" + res.msg);
-            return
+            Alert.alert(t("tip"), t("unconfirmSuccessful"));
+        }  else {
+            return;
         }
-        //刷新数据
+        // refresh EO list
         handleReqEOs();
     };
 
-    //卡片删除按钮点击
+    // Actions after press the delete button in EO card
     const handleDelete = async (item: ExecutionOrder) => {
         let res = await reqDeleteEO(item);
         if (res.status) {
-            Alert.alert("提示", "删除" + item.billNumber + "执行单成功");
+            Alert.alert(t("tip"), t("deleteSuccessful"));
         } else {
-            Alert.alert("错误", "删除" + item.billNumber + "执行单失败:" + res.msg);
-            return
+            return;
         }
-        //刷新数据
+        // Refresh EO list
         handleReqEOs();
     };
 
-    //对话框显示内容组件
+    // Content of the dialog, which is decided by diagStatus.content
     const DiagContent = ({ status }: { status: EODiagStatus }) => {
         const content = status.content;
         switch (content) {
@@ -229,7 +220,7 @@ function RemoteExecutionOrderList({
                 return null;
             case 2:
                 return <QueryPanel
-                    title="执行单过滤条件"
+                    title="eoFilterCondition"
                     queryFields={eoQueryFields}
                     initalConditions={eoConditions}
                     onOk={handleEOQueryOk}
@@ -239,7 +230,7 @@ function RemoteExecutionOrderList({
                 return <WORefer
                     isOffline={isOffline}
                     filterButtonDisp={true}
-                    title={"参照指令单(远程)"}
+                    title={"generateRefWO"}
                     conditions={woConditions}
                     cancelPressAction={handleDiagClose}
                     okPressAction={handleWoReferOk}
@@ -249,7 +240,7 @@ function RemoteExecutionOrderList({
                 />;
             case 4:
                 return <QueryPanel
-                    title="指令单过滤条件"
+                    title="woFilterCondition"
                     queryFields={woQueryFields}
                     initalConditions={woConditions}
                     onOk={handleWoQueryOk}
@@ -287,15 +278,15 @@ function RemoteExecutionOrderList({
                     rows={remoteEOs}
                     ItemElement={EOCard}
                     rowsPerPage={10}
-                    searchFields={["billdate", "billNumber", "creator.name", "department.name", "sceneitem.name", "eit.name", "starttime", "description"]}
+                    searchFields={["billDate", "billNumber", "creator.name", "department.name", "csa.name", "ept.name", "startTime", "description"]}
                     sortFunction={eosSortByID}
                     refreshing={refreshing}
                 />
             </View>
             <Surface style={{ minHeight: 40, flexDirection: buttonPosition === "right" ? "row" : "row-reverse", justifyContent: "flex-end", alignItems: "center" }}>
                 <IconButton icon="plus" iconColor={theme.colors.primary} onPress={handleAdd} />
-                <Button icon="link-plus" textColor={theme.colors.primary} onPress={handleAddRef}>参照新增</Button>
-                <Button onPress={handlePressQuery} icon="filter-variant">查询</Button>
+                <Button icon="link-plus" textColor={theme.colors.primary} onPress={handleAddRef}>{t("addReference")}</Button>
+                <Button onPress={handlePressQuery} icon="filter-variant">{t("query")}</Button>
             </Surface>
             <Modal
                 visible={diagStatus.isOpen}

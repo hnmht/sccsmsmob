@@ -11,7 +11,7 @@ interface EOCardContentProps {
     theme: MD3Theme;
 }
 
-const EOCardContent = ({ eo, isLocal, t, theme }: EOCardContentProps) => {
+function EOCardContent({ eo, isLocal, t, theme }: EOCardContentProps) {
     return (
         <Card.Content key={`cardcontent${eo.id}`} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center" }}>
             <Text variant="titleMedium" style={{ width: "100%" }}>{t("billNumber")} : {isLocal ? `LE${eo.id}` : eo.billNumber}</Text>

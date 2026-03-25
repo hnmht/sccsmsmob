@@ -30,7 +30,7 @@ import { isEPTLike } from "../../dataType/dataZero/ept";
 import { isCSALike } from "../../dataType/dataZero/csa";
 import { isEPALike } from "../../dataType/types/epa";
 
-const EditExecutionOrder = () => {
+function EditExecutionOrder() {
     const navigation = useBusinessNavigation();
     const route = useBusinessRoute<"ExecutionOrder">();
     const { isLocal, isNew, isModify, oriWOR, oriEO, onGoBack } = route.params ?? {};
@@ -47,7 +47,6 @@ const EditExecutionOrder = () => {
 
     const theme = useTheme();
     const dispatch = useAppDispatch();
-    const isOverSize = pubParams.screen.isOverSize;
     const row = voucherData ? voucherData.body[currentRowIndex] : undefined;
     const rowErrs = dataErrs ? dataErrs.body[currentRowIndex] : undefined;
     const isEdit = !(!isModify && !isNew);

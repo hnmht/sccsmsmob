@@ -96,61 +96,77 @@ function LocalEOList({
     const handleDetail = (item: ExecutionOrder) => {
         navigation.navigate("ExecutionOrder", { isLocal: true, isNew: false, isModify: false, oriWOR: undefined, oriEO: item, onGoBack: handleGetLocalEOs });
     };
-    //上传
+    // Actions after press upload button
     const handleUpload = async (item: ExecutionOrder) => {
         const thisEO = transEOToBackend(item);
-        //处理指令单文件
-        setOverlayStatus({ visible: true, description: "正在上传文件..." });
+        // Upload files first if there are files in the EO, then upload the EO
+        setOverlayStatus({ visible: true, description: t("uploadingFiles") });
         try {
+            // Get files array from EO
             const filesArr = transVoucherDataToFiles(thisEO);
-            if (filesArr.length > 0) { //如果存在文件则需要先上传文件
+            if (filesArr.length > 0) {
                 const getFilesHashRes = await reqGetFilesByHash(filesArr);
                 if (!getFilesHashRes.status) {
                     setOverlayStatus({ visible: false, description: "" });
                     return
                 }
-                //上传文件
+                // If there are files that have not obtained hash values, 
+                // it means that these files have not been uploaded to the server,
+                //  so upload these files first, 
+                // and then get the file list that the server returns after uploading,
+                //  and modify the file information in the EO body according to the returned file list.
+                //  If all files have obtained hash values, 
+                // it means that all files have been uploaded to the server, 
+                // so there is no need to upload files, 
+                // just modify the file information in the EO body according to the returned file list.
                 let willUploadFileNumber = 0;
                 let willUploadFiles = getFilesHashRes.data;
-                let formData = new FormData(); //准备formData
+                let formData = new FormData();
                 for (let i = 0; i < willUploadFiles.length; i++) {
                     if (willUploadFiles[i].id === 0) {
                         willUploadFileNumber++
                         let file = { uri: willUploadFiles[i].filePath, type: willUploadFiles[i].mime, name: willUploadFiles[i].originFileName };
                         formData.append("files", file);
-                        formData.append("filekey", i);
-                        formData.append("filehash", willUploadFiles[i].hash);
-                        formData.append("filename", willUploadFiles[i].originFileName);
-                        formData.append("filetype", willUploadFiles[i].fileType);
-                        formData.append("isimage", willUploadFiles[i].isImage);
-                        formData.append("model", willUploadFiles[i].model); //相机型号
-                        formData.append("DateTimeOriginal", willUploadFiles[i].dateTimeOriginal); //初始拍摄时间
-                        formData.append("latitude", willUploadFiles[i].latitude);//纬度
-                        formData.append("longitude", willUploadFiles[i].longitude);//经度 
-                        formData.append("source", willUploadFiles[i].source);// 来源
-                        //从fileArr中删除
+                        formData.append("fileKey", i);
+                        formData.append("hash", willUploadFiles[i].hash);
+                        formData.append("fileName", willUploadFiles[i].originFileName);
+                        formData.append("fileType", willUploadFiles[i].fileType);
+                        formData.append("isImage", willUploadFiles[i].isImage);
+                        formData.append("model", willUploadFiles[i].model);
+                        formData.append("DateTimeOriginal", willUploadFiles[i].dateTimeOriginal);
+                        formData.append("latitude", willUploadFiles[i].latitude);
+                        formData.append("longitude", willUploadFiles[i].longitude);
+                        formData.append("source", willUploadFiles[i].source);
+                        // Remove the file that needs to be uploaded from the willUploadFiles array,
+                        //  because after uploading, the server will return a new file list, 
+                        // and the file information in the EO body will be modified according to the returned file list, so there is no need to keep the file that needs to be uploaded in the willUploadFiles array, which can avoid confusion
                         willUploadFiles.splice(i, 1);
                         i--;
                     }
                 };
 
                 if (willUploadFileNumber > 0) {
-                    const uploadRes = await reqUploadFiles(formData, false);    //将未获取hash值的文件进行上传
+                    // Upload files that have not obtained hash values to the server, 
+                    // and get the file list returned by the server after uploading
+                    const uploadRes = await reqUploadFiles(formData, false);
                     if (!uploadRes.status) {
                         setOverlayStatus({ visible: false, description: "" });
                         return
                     }
-                    //根据返回的数据修改服务器返回的文件列表
+                    // modify the file information in the EO body according to the returned file list
                     const uploadFiles = uploadRes.data;
-                    //合并fileArr1 和 uploadFiles
+                    // combine the file that has obtained hash values with the file that has just been uploaded,
+                    //  to get the complete file list that the server returns
                     willUploadFiles = willUploadFiles.concat(uploadFiles);
                 }
-                //创建fileMap
+                // Create a map to store the file information returned by the server, 
+                // with the hash value as the key and the file information as the value,
+                //  which can be used to modify the file information in the EO body
                 const fileMap = new Map();
                 willUploadFiles.forEach(item => {
                     fileMap.set(item.hash, item);
                 });
-                //修改单据表体所有文件的id
+                // modify the file information in the EO body according to the file list returned by the server,
                 thisEO.body.map(row => {
                     row.files.map((rowFile) => {
                         if (rowFile.file.id === 0) {
@@ -159,14 +175,14 @@ function LocalEOList({
                     })
                 });
             }
-            setOverlayStatus({ visible: true, description: "正在上传单据..." });
+            setOverlayStatus({ visible: true, description: t("uploadingVoucher") });
 
             thisEO.id = 0
             delete thisEO.errData;
             let addRes = await reqAddEO(thisEO);
-            if (addRes.data.status === 0) {
+            if (addRes.status) {
                 EORepo.delVoucher(item);
-                Alert.alert("提示", "新增执行单成功,单据编号:" + addRes.data.billNumber);
+                Alert.alert(t("tip"), t("addSuccessful"));
             } else {
                 setOverlayStatus({ visible: false, description: "" });
                 return
@@ -177,15 +193,15 @@ function LocalEOList({
             return
         }
         setOverlayStatus({ visible: false, description: "" });
-        //如果指令单参照单据生成,则刷新worefs
+        // if the source type of the EO is not UA,
+        // update the local dynamic data to make the online data and local data consistent
         if (thisEO.sourceType !== "UA") {
             getAllDynamicDataOnline();
 
         }
-        //刷新数据
         handleGetLocalEOs();
     };
-    //指令单卡片
+    // Execution Order Card component
     const EOCard = ({ item }: { item: ExecutionOrder }) => {
         const eo = item;
         const canUpload: boolean = eo.errData?.isErr ?? false;
@@ -214,7 +230,7 @@ function LocalEOList({
                     rows={localEOs}
                     ItemElement={EOCard}
                     rowsPerPage={10}
-                    searchFields={["billdate", "billnumber", "createuser.name", "department.name", "sceneitem.name", "eit.name", "starttime", "description"]}
+                    searchFields={["billDate", "billNumber", "creator.name", "department.name", "csa.name", "ept.name", "startTime", "description"]}
                     sortFunction={eosSortByID}
                     refreshing={false}
                 />
@@ -229,7 +245,7 @@ function LocalEOList({
                 onDismiss={handleDialogClose}
             >
                 <WORefer
-                    title={"参照指令单(本地)"}
+                    title={"generateRefWO"}
                     isOffline={isOffline}
                     cancelPressAction={handleDialogClose}
                     okPressAction={handleWoReferOk}
