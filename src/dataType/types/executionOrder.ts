@@ -51,7 +51,7 @@ export interface ExecutionOrderRow {
     confirmer: Person;
     modifyDate: string;
     modifier: Person;
-    ts: string;
+    ts?: string;
     dr: 0 | 1;
 }
 
@@ -101,7 +101,7 @@ export interface ExecutionOrder {
     confirmer: Person;
     modifyDate: string;
     modifier: Person;
-    ts: string;
+    ts?: string;
     dr: 0 | 1;
     errData?:EOErrors;
 }

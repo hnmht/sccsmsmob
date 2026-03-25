@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Alert, Modal } from "react-native";
+import { View, Alert } from "react-native";
 import { Button, Card, IconButton, Surface, MD3Theme } from "react-native-paper";
 import { useAppSelector } from "../../store/hooks";
 import DocList from "../../components/DocList/DocList";
@@ -16,6 +16,7 @@ import { WorkOrderRow } from "../../dataType/types/workOrder";
 
 import { TFunction } from "i18next";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { ScComponentModal } from "../../components/ScComponentModal/ScComponentModal";
 
 interface EODiagStatus {
     isOpen: boolean;
@@ -181,7 +182,7 @@ function RemoteExecutionOrderList({
         let res = await reqConfirmEO(item);
         if (res.status) {
             Alert.alert(t("tip"), t("confirmSuccessful"));
-        } else {            
+        } else {
             return
         }
         // refresh EO list
@@ -193,7 +194,7 @@ function RemoteExecutionOrderList({
         let res = await reqUnConfirmEO(item);
         if (res.status) {
             Alert.alert(t("tip"), t("unconfirmSuccessful"));
-        }  else {
+        } else {
             return;
         }
         // refresh EO list
@@ -286,14 +287,13 @@ function RemoteExecutionOrderList({
             <Surface style={{ minHeight: 40, flexDirection: buttonPosition === "right" ? "row" : "row-reverse", justifyContent: "flex-end", alignItems: "center" }}>
                 <IconButton icon="plus" iconColor={theme.colors.primary} onPress={handleAdd} />
                 <Button icon="link-plus" textColor={theme.colors.primary} onPress={handleAddRef}>{t("addReference")}</Button>
-                <Button onPress={handlePressQuery} icon="filter-variant">{t("query")}</Button>
+                <Button onPress={handlePressQuery} icon="filter-variant">{t("filter")}</Button>
             </Surface>
-            <Modal
+            <ScComponentModal
                 visible={diagStatus.isOpen}
-                onDismiss={handleDiagClose}
             >
                 <DiagContent status={diagStatus} />
-            </Modal>
+            </ScComponentModal>
         </View>
     );
 };

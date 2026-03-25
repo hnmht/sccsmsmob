@@ -29,6 +29,7 @@ import { getDefaultExecutionOrderRow } from "../../dataType/dataZero/executionOr
 import { isEPTLike } from "../../dataType/dataZero/ept";
 import { isCSALike } from "../../dataType/dataZero/csa";
 import { isEPALike } from "../../dataType/types/epa";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function EditExecutionOrder() {
     const navigation = useBusinessNavigation();
@@ -83,7 +84,7 @@ function EditExecutionOrder() {
     ) => {
         if (voucherData === undefined || !isEdit) {
             return
-        }
+        }       
         // Update Execution Order data value
         setVoucherData((prevState: ExecutionOrder | undefined) => {
             if (prevState === undefined) {
@@ -363,8 +364,8 @@ function EditExecutionOrder() {
     const handleUpload = async () => {
         if (voucherData === undefined) {
             return
-        }
-        let newEO = cloneDeep(voucherData);
+        }  
+        let newEO = cloneDeep(voucherData);   
         if (isModify && deletedRows.length > 0) {
             newEO.body.push(...deletedRows);
         }
@@ -492,7 +493,7 @@ function EditExecutionOrder() {
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
             <ActivityOverlay
                 visible={overlayStatus.visible}
                 description={overlayStatus.description}
@@ -1099,7 +1100,7 @@ function EditExecutionOrder() {
                 </View>
                 : <ActivityIndicator animating={true} />
             }
-        </View >
+        </SafeAreaView >
     );
 };
 

@@ -5,6 +5,7 @@ import ImageCropPicker, { Image } from "react-native-image-crop-picker";
 import { useTranslation } from "react-i18next";
 import { reqGetFileByHash, reqUploadFiles } from "../../../api/file";
 import { readImageInfo } from "../../tools/file";
+import { createUploadFilePart } from "../../../utils/upload";
 import { requestPermissions } from "../../tools/permission";
 import { ErrMsg, ScInputProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
@@ -68,7 +69,11 @@ const ScAvatarUpload = ({
         let newAvatar = getFilesHashRes.data;
         // If the file does not exist, need upload it.
         if (newAvatar && newAvatar.id === 0) {
-            let uploadFile = { uri: image.path, type: file.mime, name: file.originFileName };
+            const uploadFile = createUploadFilePart(
+                image.path,
+                file.mime ?? "application/octet-stream",
+                file.originFileName ?? "unknown"
+            );
             formData.append("files", uploadFile);
             formData.append("fileKey", 0);
             formData.append("hash", file.hash);

@@ -79,6 +79,7 @@ service.interceptors.response.use(
         return response;
     },
     (err) => {
+        console.error("出错:",err);
         Alert.alert(
             i18n.t("error"),
             err?.message === "Network Error" ? "网络错误，请检查设备网络！" : "连接服务器失败，请稍后再试！"

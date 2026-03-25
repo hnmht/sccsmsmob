@@ -42,8 +42,7 @@ const ScFileUpload = (props: ScInputProps<ScDataTypeList.FileUpload>) => {
     const handleTransfer = async (items = files) => {
         if (!isEdit) {
             return
-        }
-
+        };
         let oldVoucherFiles: VoucherFile[] = initValue ? initValue : [];
         let voucherFiles = filesToVoucherFiles(oldVoucherFiles, items);
         setFiles(items);

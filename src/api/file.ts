@@ -6,7 +6,6 @@ export function reqUploadFiles(data: FormData, isLoading: boolean = true):Promis
     return request({
         url: "/file/receive",
         method: "post",
-        headers: { "Content-Type": "multipart/form-data" },
         data,
         isLoading
     });

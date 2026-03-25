@@ -342,7 +342,7 @@ export const transVoucherDataToFiles = (voucherData: ExecutionOrder) => {
             });
         }
     });
-    const noDupFiles = uniqBy(files, "filehash");
+    const noDupFiles = uniqBy(files, "hash");
     return noDupFiles;
 };
 
@@ -350,6 +350,7 @@ export const transVoucherDataToFiles = (voucherData: ExecutionOrder) => {
 export function transEOToBackend(eo: ExecutionOrder) {
     const newEO = cloneDeep(eo);
     newEO.ept.body = [];
+    delete newEO.ts;
     newEO.body.map((row) => {
         switch (row.epa.resultType.id) {
             case 301:
@@ -391,6 +392,7 @@ export function transEOToBackend(eo: ExecutionOrder) {
         }
         row.epa.defaultValue = "";
         row.epa.errorValue = "";
+        delete row.ts;
         return row;
     });
 

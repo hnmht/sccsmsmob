@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Alert, Modal } from "react-native";
+import { View, Alert } from "react-native";
 import { IconButton, Card, Button, Surface, MD3Theme } from "react-native-paper";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import ActivityOverlay from "../../components/ActivityOverlay/ActivityOverlay";
@@ -19,6 +19,8 @@ import { EORepo } from "../../db/crud/executionOrder";
 import { WorkOrderRow } from "../../dataType/types/workOrder";
 import { TFunction } from "i18next";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { ScComponentModal } from "../../components/ScComponentModal/ScComponentModal";
+import { createUploadFilePart } from "../../utils/upload";
 
 interface LocalEOListProps {
     t: TFunction;
@@ -99,6 +101,7 @@ function LocalEOList({
     // Actions after press upload button
     const handleUpload = async (item: ExecutionOrder) => {
         const thisEO = transEOToBackend(item);
+        // console.log("before uploadFile EO: ", thisEO);
         // Upload files first if there are files in the EO, then upload the EO
         setOverlayStatus({ visible: true, description: t("uploadingFiles") });
         try {
@@ -124,8 +127,12 @@ function LocalEOList({
                 let formData = new FormData();
                 for (let i = 0; i < willUploadFiles.length; i++) {
                     if (willUploadFiles[i].id === 0) {
-                        willUploadFileNumber++
-                        let file = { uri: willUploadFiles[i].filePath, type: willUploadFiles[i].mime, name: willUploadFiles[i].originFileName };
+                        willUploadFileNumber++;
+                        const file = createUploadFilePart(
+                            willUploadFiles[i].filePath ?? "",
+                            willUploadFiles[i].mime ?? "application/octet-stream",
+                            willUploadFiles[i].originFileName ?? "unknown"
+                        );
                         formData.append("files", file);
                         formData.append("fileKey", i);
                         formData.append("hash", willUploadFiles[i].hash);
@@ -138,16 +145,16 @@ function LocalEOList({
                         formData.append("longitude", willUploadFiles[i].longitude);
                         formData.append("source", willUploadFiles[i].source);
                         // Remove the file that needs to be uploaded from the willUploadFiles array,
-                        //  because after uploading, the server will return a new file list, 
+                        // because after uploading, the server will return a new file list, 
                         // and the file information in the EO body will be modified according to the returned file list, so there is no need to keep the file that needs to be uploaded in the willUploadFiles array, which can avoid confusion
                         willUploadFiles.splice(i, 1);
                         i--;
                     }
                 };
-
                 if (willUploadFileNumber > 0) {
                     // Upload files that have not obtained hash values to the server, 
                     // and get the file list returned by the server after uploading
+                    console.log("formData before upload: ", formData);
                     const uploadRes = await reqUploadFiles(formData, false);
                     if (!uploadRes.status) {
                         setOverlayStatus({ visible: false, description: "" });
@@ -156,12 +163,12 @@ function LocalEOList({
                     // modify the file information in the EO body according to the returned file list
                     const uploadFiles = uploadRes.data;
                     // combine the file that has obtained hash values with the file that has just been uploaded,
-                    //  to get the complete file list that the server returns
+                    // to get the complete file list that the server returns
                     willUploadFiles = willUploadFiles.concat(uploadFiles);
                 }
                 // Create a map to store the file information returned by the server, 
                 // with the hash value as the key and the file information as the value,
-                //  which can be used to modify the file information in the EO body
+                // which can be used to modify the file information in the EO body
                 const fileMap = new Map();
                 willUploadFiles.forEach(item => {
                     fileMap.set(item.hash, item);
@@ -179,6 +186,7 @@ function LocalEOList({
 
             thisEO.id = 0
             delete thisEO.errData;
+            console.log("Uploading EO data: ", thisEO);
             let addRes = await reqAddEO(thisEO);
             if (addRes.status) {
                 EORepo.delVoucher(item);
@@ -237,12 +245,11 @@ function LocalEOList({
             </View>
             <Surface style={{ minHeight: 40, flexDirection: buttonPosition === "right" ? "row" : "row-reverse", justifyContent: "flex-end", alignItems: "center" }}>
                 <IconButton icon="plus" iconColor={theme.colors.primary} onPress={handleAdd} />
-                <Button icon="link-plus" textColor={theme.colors.primary} onPress={() => setDiagStatus({ isOpen: true })} disabled={isOffline}>参照新增</Button>
-                <Button icon="refresh" textColor={theme.colors.primary} onPress={() => handleGetLocalEOs(true)}>刷新</Button>
+                <Button icon="link-plus" textColor={theme.colors.primary} onPress={() => setDiagStatus({ isOpen: true })} disabled={isOffline}>{t("addReference")}</Button>
+                <Button icon="refresh" textColor={theme.colors.primary} onPress={() => handleGetLocalEOs(true)}>{t("refresh")}</Button>
             </Surface>
-            <Modal
+            <ScComponentModal
                 visible={diagStatus.isOpen}
-                onDismiss={handleDialogClose}
             >
                 <WORefer
                     title={"generateRefWO"}
@@ -255,7 +262,7 @@ function LocalEOList({
                     theme={theme}
                     t={t}
                 />
-            </Modal>
+            </ScComponentModal>
         </View>
     );
 };

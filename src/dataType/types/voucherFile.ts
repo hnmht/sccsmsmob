@@ -10,6 +10,6 @@ export interface VoucherFile {
     creator: Person;
     modifyDate: string;
     modifier: Person;
-    ts: string;
+    ts?: string;
     dr: 0 | 1;
 }

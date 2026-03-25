@@ -1,6 +1,7 @@
 import { VoucherFile } from "../../../dataType/types/voucherFile";
 import { ScFile } from "../../../dataType/types/file";
 import { getEmptyVoucherFile } from "../../../dataType/dataZero/voucherFile";
+import { EpochTime, dayjs } from "../../../i18n/dayjs";
 
 type urlAndHash = {
     url: string;
@@ -38,6 +39,10 @@ export const filesToVoucherFiles = (voucherFiles: VoucherFile[], files: ScFile[]
         let voucherFileIndex = voucherFiles.findIndex(voucherFile => voucherFile.file.hash === files[i].hash);
         if (voucherFileIndex < 0) {
             let newVoucherFile: VoucherFile = getEmptyVoucherFile();
+            newVoucherFile.createDate = dayjs(new Date).toISOString();
+            newVoucherFile.modifyDate = EpochTime;
+            newVoucherFile.ts = EpochTime;
+            newVoucherFile.file = files[i];
             newVoucherFiles.push(newVoucherFile);
         } else {
             if (voucherFiles[voucherFileIndex].dr === 1) {
