@@ -23,7 +23,6 @@
     "@reduxjs/toolkit": "^2.11.0",
     "@types/lodash": "^4.17.21",
     "@zoontek/react-native-navigation-bar": "^1.0.2",
-    "axios": "^1.13.2",
     "base64-arraybuffer": "^1.0.2",
     "buffer": "^6.0.3",
     "dayjs": "^1.11.19",

@@ -20,7 +20,7 @@ import { WorkOrderRow } from "../../dataType/types/workOrder";
 import { TFunction } from "i18next";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ScComponentModal } from "../../components/ScComponentModal/ScComponentModal";
-import { createUploadFilePart } from "../../utils/upload";
+import { buildUploadFormData } from "../../utils/upload";
 
 interface LocalEOListProps {
     t: TFunction;
@@ -122,39 +122,11 @@ function LocalEOList({
                 // it means that all files have been uploaded to the server, 
                 // so there is no need to upload files, 
                 // just modify the file information in the EO body according to the returned file list.
-                let willUploadFileNumber = 0;
-                let willUploadFiles = getFilesHashRes.data;
-                let formData = new FormData();
-                for (let i = 0; i < willUploadFiles.length; i++) {
-                    if (willUploadFiles[i].id === 0) {
-                        willUploadFileNumber++;
-                        const file = createUploadFilePart(
-                            willUploadFiles[i].filePath ?? "",
-                            willUploadFiles[i].mime ?? "application/octet-stream",
-                            willUploadFiles[i].originFileName ?? "unknown"
-                        );
-                        formData.append("files", file);
-                        formData.append("fileKey", i);
-                        formData.append("hash", willUploadFiles[i].hash);
-                        formData.append("fileName", willUploadFiles[i].originFileName);
-                        formData.append("fileType", willUploadFiles[i].fileType);
-                        formData.append("isImage", willUploadFiles[i].isImage);
-                        formData.append("model", willUploadFiles[i].model);
-                        formData.append("DateTimeOriginal", willUploadFiles[i].dateTimeOriginal);
-                        formData.append("latitude", willUploadFiles[i].latitude);
-                        formData.append("longitude", willUploadFiles[i].longitude);
-                        formData.append("source", willUploadFiles[i].source);
-                        // Remove the file that needs to be uploaded from the willUploadFiles array,
-                        // because after uploading, the server will return a new file list, 
-                        // and the file information in the EO body will be modified according to the returned file list, so there is no need to keep the file that needs to be uploaded in the willUploadFiles array, which can avoid confusion
-                        willUploadFiles.splice(i, 1);
-                        i--;
-                    }
-                };
+                const { formData, uploadedFileNumber: willUploadFileNumber, existingFiles } = buildUploadFormData(getFilesHashRes.data);
+                let willUploadFiles = existingFiles;
                 if (willUploadFileNumber > 0) {
                     // Upload files that have not obtained hash values to the server, 
                     // and get the file list returned by the server after uploading
-                    console.log("formData before upload: ", formData);
                     const uploadRes = await reqUploadFiles(formData, false);
                     if (!uploadRes.status) {
                         setOverlayStatus({ visible: false, description: "" });
@@ -186,7 +158,7 @@ function LocalEOList({
 
             thisEO.id = 0
             delete thisEO.errData;
-            console.log("Uploading EO data: ", thisEO);
+            console.log("before addEO EO: ", thisEO);
             let addRes = await reqAddEO(thisEO);
             if (addRes.status) {
                 EORepo.delVoucher(item);

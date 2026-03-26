@@ -1,6 +1,6 @@
 import { store } from "../../store";
 import { t } from "i18next";
-import { dayjs } from "../../i18n/dayjs";
+import { dayjs, EpochTime } from "../../i18n/dayjs";
 import { cloneDeep, uniqBy } from "lodash";
 import { mailRegex } from "../../utils/regex";
 import { WorkOrderRow } from "../../dataType/types/workOrder";
@@ -349,6 +349,9 @@ export const transVoucherDataToFiles = (voucherData: ExecutionOrder) => {
 // Convert Execution Order to backend Execution Order
 export function transEOToBackend(eo: ExecutionOrder) {
     const newEO = cloneDeep(eo);
+    if (newEO.sourceRowTs === "") {
+        newEO.sourceRowTs = EpochTime;
+    }
     newEO.ept.body = [];
     delete newEO.ts;
     newEO.body.map((row) => {

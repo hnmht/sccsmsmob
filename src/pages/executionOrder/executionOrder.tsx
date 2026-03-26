@@ -30,6 +30,7 @@ import { isEPTLike } from "../../dataType/dataZero/ept";
 import { isCSALike } from "../../dataType/dataZero/csa";
 import { isEPALike } from "../../dataType/types/epa";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { buildUploadFormData } from "../../utils/upload";
 
 function EditExecutionOrder() {
     const navigation = useBusinessNavigation();
@@ -365,11 +366,13 @@ function EditExecutionOrder() {
         if (voucherData === undefined) {
             return
         }  
+        
         let newEO = cloneDeep(voucherData);   
         if (isModify && deletedRows.length > 0) {
             newEO.body.push(...deletedRows);
         }
         const thisEO = transEOToBackend(newEO);
+        
         // Upload files and EO data one by one, and set the overlay status to show the uploading process
         setOverlayStatus({ visible: true, description: t("uploadingFiles") });
         try {
@@ -386,30 +389,8 @@ function EditExecutionOrder() {
                 // upload files that have no hash value returned from the server, 
                 // and get the file info including id and hash value after successful upload,
                 //  then update the file list in the EO body to replace the file with id 0 with the file info returned from the server
-                let willUploadFileNumber = 0;
-                let willUploadFiles = getFilesHashRes.data;
-                let formData = new FormData(); //准备formData
-                for (let i = 0; i < willUploadFiles.length; i++) {
-                    if (willUploadFiles[i].id === 0) {
-                        willUploadFileNumber++
-                        let file = { uri: willUploadFiles[i].filePath, type: willUploadFiles[i].mime, name: willUploadFiles[i].originFileName };
-                        formData.append("files", file);
-                        formData.append("fileKey", i);
-                        formData.append("hash", willUploadFiles[i].hash);
-                        formData.append("fileName", willUploadFiles[i].originFileName);
-                        formData.append("fileType", willUploadFiles[i].fileType);
-                        formData.append("isImage", willUploadFiles[i].isImage);
-                        formData.append("model", willUploadFiles[i].model);
-                        formData.append("DateTimeOriginal", willUploadFiles[i].dateTimeOriginal);
-                        formData.append("latitude", willUploadFiles[i].latitude);
-                        formData.append("longitude", willUploadFiles[i].longitude);
-                        formData.append("source", willUploadFiles[i].source);
-                        // Remove the file with id 0 from the willUploadFiles list, 
-                        // and it will be replaced with the file info returned from the server after successful upload
-                        willUploadFiles.splice(i, 1);
-                        i--;
-                    }
-                };
+                const { formData, uploadedFileNumber: willUploadFileNumber, existingFiles } = buildUploadFormData(getFilesHashRes.data);
+                let willUploadFiles = existingFiles;
 
                 if (willUploadFileNumber > 0) {
                     // Upload files to server

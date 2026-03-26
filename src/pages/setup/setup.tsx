@@ -3,7 +3,6 @@ import { View, Alert, StyleSheet, KeyboardAvoidingView, Clipboard ,Platform} fro
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Button, useTheme, IconButton, TextInput } from "react-native-paper";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
 
 import { ResSuccessCode, APIResponse, ServerStatus } from "../../dataType/types/response";
 import { saveGlobalPath, saveServerAddr } from "../../db/crud/appInfo";
@@ -42,9 +41,12 @@ function Setup() {
         const url: string = text + "/ping";
 
         try {
-            const response = await axios.post<APIResponse<ServerStatus>>(url);
-            if (response.data.resKey === ResSuccessCode && text !== undefined) {
-                const serverData = response.data.data;
+            const response = await fetch(url, {
+                method: "POST",
+            });
+            const responseData = await response.json() as APIResponse<ServerStatus>;
+            if (responseData.resKey === ResSuccessCode && text !== undefined) {
+                const serverData = responseData.data;
                 // Write Server address into database
                 saveServerAddr(text);
                 saveGlobalPath(serverData.apiPath);
@@ -71,7 +73,7 @@ function Setup() {
                 // Inform the user
                 Alert.alert(
                     t("error"),
-                    t("serverConnectFailed", { msg: response.data.msg }),
+                    t("serverConnectFailed", { msg: responseData.msg }),
                     [{
                         text: t("ok")
                     }]
@@ -79,7 +81,7 @@ function Setup() {
                 return
             }
         }
-        catch (err) {
+        catch {
             setIsLoading(false);
             Alert.alert(
                 t("error"),
