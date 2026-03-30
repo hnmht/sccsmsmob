@@ -85,7 +85,6 @@ const QueryPanel = ({ title = "queryConditions", queryFields, initalConditions, 
             }
             // Change value
             newConditions[rowIndex].value = getEmptyByType(value.inputType);
-
             newConditions[rowIndex].field = value;
             return newConditions;
         })
@@ -216,7 +215,5 @@ const QueryPanel = ({ title = "queryConditions", queryFields, initalConditions, 
         </View>
     );
 };
-
-
 
 export default memo(QueryPanel);

@@ -353,7 +353,9 @@ export function transEOToBackend(eo: ExecutionOrder) {
         newEO.sourceRowTs = EpochTime;
     }
     newEO.ept.body = [];
-    delete newEO.ts;
+    if (newEO.ts == "") {
+        delete newEO.ts;
+    }
     newEO.body.map((row) => {
         switch (row.epa.resultType.id) {
             case 301:
@@ -395,7 +397,9 @@ export function transEOToBackend(eo: ExecutionOrder) {
         }
         row.epa.defaultValue = "";
         row.epa.errorValue = "";
-        delete row.ts;
+        if (row.ts == '') {
+            delete row.ts;
+        }
         return row;
     });
 

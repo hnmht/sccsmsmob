@@ -60,7 +60,7 @@ export function generateEOConditions(): Condition[] {
 export const woQueryFields: QueryField[] = [
     { id: 1, value: "h.billdate", label: "billDate", inputType: 306, resultField: "" },
     { id: 2, value: "h.billnumber", label: "billNumber", inputType: 301, resultField: "" },
-    { id: 3, value: "h.dept_id", label: "deptID", inputType: 520, resultField: "id" },
+    { id: 3, value: "h.deptid", label: "deptID", inputType: 520, resultField: "id" },
     { id: 4, value: "b.executorid", label: "executor", inputType: 510, resultField: "id" },
     { id: 5, value: "b.csaid", label: "csa", inputType: 570, resultField: "id" },
     { id: 6, value: "b.creatorid", label: "creator", inputType: 510, resultField: "id" },

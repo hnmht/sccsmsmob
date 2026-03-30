@@ -178,6 +178,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     const handleShotImage = async () => {
         let currentLoacation = { longitude: 0.01, latitude: 0.01 };
         let fileArr = [];
+
         Geolocation.getCurrentPosition(
             (position) => {
                 currentLoacation = {
@@ -190,7 +191,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
             },
             {
                 enableHighAccuracy: true,
-                timeout: 2000,
+                timeout: 5000,
             }
         );
         try {

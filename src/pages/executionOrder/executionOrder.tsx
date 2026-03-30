@@ -1,14 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { View, ScrollView, Alert } from "react-native";
-import { Text, Button, ActivityIndicator, Menu, useTheme, Surface } from "react-native-paper";
+import { Text, Button, ActivityIndicator, useTheme, Surface } from "react-native-paper";
 import { dayjs } from "../../i18n/dayjs";
 import { cloneDeep } from "lodash";
-
 import { ScVoucherHeader, ScVoucherBody, ScVoucherFooter } from "../../components/ScVoucher";
 import ScInput from "../../components/ScInput";
 import ActivityOverlay from "../../components/ActivityOverlay/ActivityOverlay";
-import { pubParams } from "../../components/pub/pubParams";
-
 import { getAllDynamicDataOnline } from "../../store/pub";
 import { updateDynamicWORefs } from "../../store/slice/dynamicData";
 import { reqGetFilesByHash, reqUploadFiles } from "../../api/file";
@@ -474,15 +471,14 @@ function EditExecutionOrder() {
     };
 
     return (
-        <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
+        <SafeAreaView edges={["top"]} style={{ flex: 1 }}>            
+            <Surface key="voucherTitle" style={{ height: 42, alignItems: "center", justifyContent: "center" }}>
+                <Text variant="titleLarge" maxFontSizeMultiplier={1.2}>{t("MenuEO")}</Text>
+            </Surface>
             <ActivityOverlay
                 visible={overlayStatus.visible}
                 description={overlayStatus.description}
             />
-            <View key="voucherTitle" style={{ height: 42, alignItems: "center", justifyContent: "center" }}>
-                <Text variant="titleLarge" maxFontSizeMultiplier={1.2}>{t("MenuEO")}</Text>
-            </View>
-
             {voucherData !== undefined
                 ? <View style={{ flex: 1 }}>
                     <ScrollView>

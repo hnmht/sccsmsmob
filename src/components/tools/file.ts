@@ -77,9 +77,28 @@ const buildTextBlock = (
     }));
 };
 const estimateTextWidth = (texts: string[], fontSize: number) => {
-    const maxLength = Math.max(...texts.map(t => t.length));
-    // 中文 ≈ fontSize，英文 ≈ 0.6 * fontSize
-    return maxLength * fontSize;
+    if (!texts.length) {
+        return 0;
+    }
+
+    const getCharWidth = (char: string) => {
+        if (/\s/.test(char)) {
+            return fontSize * 0.35;
+        }
+        if (/[\u3000-\u303F\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF]/.test(char)) {
+            return fontSize;
+        }
+        if (/[A-Z0-9]/.test(char)) {
+            return fontSize * 0.68;
+        }
+        return fontSize * 0.6;
+    };
+
+    return Math.max(
+        ...texts.map(text =>
+            Array.from(text).reduce((total, char) => total + getCharWidth(char), 0)
+        )
+    );
 };
 // Add Water Mark in an image
 export const imageAddWaterMark = async (file: Image, markTexts: MarkText[], currentLocation: Location): Promise<ScFile> => {
@@ -106,11 +125,7 @@ export const imageAddWaterMark = async (file: Image, markTexts: MarkText[], curr
     ];
     imageInfo.longitude = currentLocation.longitude;
     imageInfo.latitude = currentLocation.latitude;
-
-
-    const blockHeight =
-        infoTexts.length * markFontOptions.rowHeight;
-
+    const blockHeight = infoTexts.length * markFontOptions.rowHeight;
     const blockWidth = estimateTextWidth(
         infoTexts,
         markFontOptions.fontSize

@@ -29,6 +29,7 @@ export const allCompareTypes: ScDataTypeList[] = [
     ScDataTypeList.PPE,
     ScDataTypeList.AvatarUpload,
     ScDataTypeList.FileUpload,
+    ScDataTypeList.VoucherStatus
 ];
 
 export const containComparisonTypes: ScDataTypeList[] =[
@@ -58,6 +59,7 @@ export const nullComparisonTypes: ScDataTypeList[] = [
     ScDataTypeList.PPE,
     ScDataTypeList.AvatarUpload,
     ScDataTypeList.FileUpload,
+    ScDataTypeList.VoucherStatus
 ];
 
 export const equal: Comparison = {
