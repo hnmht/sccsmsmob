@@ -43,6 +43,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     const theme = useTheme();
     const dispatch = useAppDispatch();
     const imageUrls = filesToUrls(files);
+    const location = useAppSelector(state => state.location.current);
     // Button Position
     const { buttonPosition, swapPosition, orderPosition } = useAppSelector(state => state.swapPosition);
     // Actions after 
@@ -176,24 +177,8 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     }
     // Actions after tapping "Shoting Picture" button
     const handleShotImage = async () => {
-        let currentLoacation = { longitude: 0.01, latitude: 0.01 };
+        let currentLoacation = { longitude: location ? location.longitude : 0.01, latitude: location ? location.latitude : 0.01 };
         let fileArr = [];
-
-        Geolocation.getCurrentPosition(
-            (position) => {
-                currentLoacation = {
-                    longitude: position.coords.longitude,
-                    latitude: position.coords.latitude
-                }
-            },
-            (error) => {
-                console.error(error);
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 5000,
-            }
-        );
         try {
             const result = await ImageCropPicker.openCamera({
                 compressImageMaxHeight: 1024,

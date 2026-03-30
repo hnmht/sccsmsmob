@@ -28,10 +28,14 @@ import { isCSALike } from "../../dataType/dataZero/csa";
 import { isEPALike } from "../../dataType/types/epa";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { buildUploadFormData } from "../../utils/upload";
+import { startLocationWatch, stopLocationWatch } from "../../components/tools/location";
+
 
 function EditExecutionOrder() {
     const navigation = useBusinessNavigation();
     const route = useBusinessRoute<"ExecutionOrder">();
+    const theme = useTheme();
+    const dispatch = useAppDispatch();
     const { isLocal, isNew, isModify, oriWOR, oriEO, onGoBack } = route.params ?? {};
     const [overlayStatus, setOverlayStatus] = useState({ visible: false, description: "" });
     const [voucherData, setVoucherData] = useState<ExecutionOrder | undefined>((undefined));
@@ -44,8 +48,6 @@ function EditExecutionOrder() {
     const [currentRowIndex, setCurrentRowIndex] = useState(0);
     const dataErrs = useMemo(() => checkEOErrors(voucherData), [voucherData]);
 
-    const theme = useTheme();
-    const dispatch = useAppDispatch();
     const row = voucherData ? voucherData.body[currentRowIndex] : undefined;
     const rowErrs = dataErrs ? dataErrs.body[currentRowIndex] : undefined;
     const isEdit = !(!isModify && !isNew);
@@ -60,6 +62,14 @@ function EditExecutionOrder() {
         }
         initVoucher();
     }, [oriWOR, isModify, oriEO, isNew]);
+
+    // Start location watch when component is mounted, and stop location watch when component is unmounted
+    useEffect(() => {
+        startLocationWatch(dispatch);
+        return () => {
+            stopLocationWatch();
+        };
+    }, []);   
 
     // Actions after press cancel button
     const handleCancel = () => {
@@ -82,7 +92,7 @@ function EditExecutionOrder() {
     ) => {
         if (voucherData === undefined || !isEdit) {
             return
-        }       
+        }
         // Update Execution Order data value
         setVoucherData((prevState: ExecutionOrder | undefined) => {
             if (prevState === undefined) {
@@ -362,14 +372,14 @@ function EditExecutionOrder() {
     const handleUpload = async () => {
         if (voucherData === undefined) {
             return
-        }  
-        
-        let newEO = cloneDeep(voucherData);   
+        }
+
+        let newEO = cloneDeep(voucherData);
         if (isModify && deletedRows.length > 0) {
             newEO.body.push(...deletedRows);
         }
         const thisEO = transEOToBackend(newEO);
-        
+
         // Upload files and EO data one by one, and set the overlay status to show the uploading process
         setOverlayStatus({ visible: true, description: t("uploadingFiles") });
         try {
@@ -471,7 +481,7 @@ function EditExecutionOrder() {
     };
 
     return (
-        <SafeAreaView edges={["top"]} style={{ flex: 1 }}>            
+        <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
             <Surface key="voucherTitle" style={{ height: 42, alignItems: "center", justifyContent: "center" }}>
                 <Text variant="titleLarge" maxFontSizeMultiplier={1.2}>{t("MenuEO")}</Text>
             </Surface>
