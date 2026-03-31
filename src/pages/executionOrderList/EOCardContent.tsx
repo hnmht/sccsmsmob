@@ -15,17 +15,23 @@ function EOCardContent({ eo, isLocal, t, theme }: EOCardContentProps) {
     return (
         <Card.Content key={`cardcontent${eo.id}`} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center" }}>
             <Text variant="titleMedium" style={{ width: "100%" }}>{t("billNumber")} : {isLocal ? `LE${eo.id}` : eo.billNumber}</Text>
-            <Text variant="titleSmall" style={{ width: "100%" }}>{t("billDate")} : {DateTimeFormat(eo.billDate, "LL")}</Text>
+            <Text variant="titleMedium" style={{ width: "100%" }}>{t("billDate")} : {DateTimeFormat(eo.billDate, "LL")}</Text>
             <Text variant="titleMedium" style={{ width: "100%" }}>{t("csa")} : {eo.csa.name}</Text>
             <Text variant="titleMedium" style={{ width: "100%" }}>{t("ept")} : {eo.ept.name}</Text>
-            <Text variant="titleSmall" style={{ width: "100%" }}>{t("startTime")} : {DateTimeFormat(eo.startTime, "LLL")}</Text>
-            <Text variant="titleSmall" style={{ width: "100%" }}>{t("endTime")} : {DateTimeFormat(eo.endTime, "LLL")}</Text>
-            <Text variant="bodyMedium" style={{ width: "100%" }}>{t("status")} : {VoucherStatus[eo.status]}</Text>
-            <Text variant="bodyMedium" style={{ width: "100%" }}>{t("executor")} : {eo.creator.name}</Text>
-            <Text variant="bodyMedium" style={{ width: "100%" }}>{t("department")} : {eo.department.name}</Text>
-            <Text variant="bodyMedium" style={{ width: "100%" }}>{t("description")} : {eo.description}</Text>
-            <Text variant="titleSmall" style={{ width: "100%" }}>{t("sourceBillNumber")}: {eo.sourceBillNumber}</Text>
-            <Text variant="titleSmall" style={{ width: "100%" }}>{t("sourceRowNumber")}: {eo.sourceRowNumber}</Text>
+            <Text variant="titleMedium" style={{ width: "100%" }}>{t("startTime")} : {DateTimeFormat(eo.startTime, "LLL")}</Text>
+            <Text variant="titleMedium" style={{ width: "100%" }}>{t("endTime")} : {DateTimeFormat(eo.endTime, "LLL")}</Text>
+            <Text variant="titleMedium" style={{ width: "100%" }}>{t("status")} : {VoucherStatus[eo.status]}</Text>
+            <Text variant="titleMedium" style={{ width: "100%" }}>{t("executor")} : {eo.creator.name}</Text>
+            <Text variant="titleMedium" style={{ width: "100%" }}>{t("department")} : {eo.department.name}</Text>
+            <Text variant="titleMedium" style={{ width: "100%" }}>{t("description")} : {eo.description}</Text>
+            <Text variant="titleMedium" style={{ width: "100%" }}>{t("sourceType")} : {eo.sourceType}</Text>
+            {eo.sourceType !== "UA"
+                ? <>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("sourceBillNumber")} : {eo.sourceBillNumber}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("sourceRowNumber")} : {eo.sourceRowNumber}</Text>
+                </>
+                :null
+            }       
         </Card.Content>
     );
 };

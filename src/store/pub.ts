@@ -1,5 +1,4 @@
 import RNFS from "react-native-fs";
-import Geolocation, { GeolocationResponse } from '@react-native-community/geolocation';
 import { reqUnReadComments, reqUserEORefs, reqUserWORefs } from "../api/message";
 import { reqGetCSOs } from "../api/cso";
 import { sortBy } from "lodash";

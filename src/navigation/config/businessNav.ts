@@ -18,6 +18,16 @@ export interface ExecutionOrderParams {
     onGoBack: (shouldRefresh: boolean) => void;
 }
 
+export interface ExecutionOrderReviewParams {
+    isLocal: boolean;
+    isNew: boolean;
+    isModify: boolean;
+    oriWOR: WorkOrderRow | undefined;
+    oriEO: ExecutionOrder | undefined;
+    startTime: string;
+    onGoBack: (shouldRefresh: boolean) => void;
+}
+
 export interface IssueResolutionFormParams {
     isLocal: boolean;
     isNew: boolean,

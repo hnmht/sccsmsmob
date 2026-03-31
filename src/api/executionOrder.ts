@@ -1,4 +1,4 @@
-import { EOCommentsParams, EOReviewsParams, ExecutionOrder, ExecutionOrderComment, ExecutionOrderReview, ReferExecutionOrder } from "../dataType/types/executionOrder";
+import { EOCommentsParams, EOListPaging, EOReviewsParams, ExecutionOrder, ExecutionOrderComment, ExecutionOrderReview, ReferExecutionOrder } from "../dataType/types/executionOrder";
 import { PagingQueryParams, QueryParams } from "../dataType/types/public";
 import { APIResponse } from "../dataType/types/response";
 import request from "../utils/request";
@@ -59,7 +59,7 @@ export function reqGetEOList(data:QueryParams, isLoading:boolean = true) :Promis
 }
 
 // Get Execution Order list by pagination
-export function reqGetEOPaginationList(data:PagingQueryParams, isLoading:boolean = true) :Promise<APIResponse<ExecutionOrder[]>> {
+export function reqGetEOPaginationList(data:PagingQueryParams, isLoading:boolean = true) :Promise<APIResponse<EOListPaging>> {
     return request({
         url: "/eo/listpage",
         method: 'post',

@@ -707,6 +707,7 @@
     "draft": "暂存",
     "uploadingFiles": "正在上传文件...",
     "uploadingVoucher": "正在上传单据...",
+    "issueNumber": "问题数量",
     
     "MenuDashboard": "首页",
     "MenuCalendar": "日程",

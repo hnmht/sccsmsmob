@@ -4,7 +4,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
-import { ExecutionOrderParams, IssueResolutionFormParams, WorkOrderParams } from './businessNav';
+import { ExecutionOrderParams, ExecutionOrderReviewParams, IssueResolutionFormParams, WorkOrderParams } from './businessNav';
 // AuthStack 
 export type AuthStackParmList = {
     Login: undefined;
@@ -24,7 +24,7 @@ export type BusinessNavParamList = {
     WorkOrderList: undefined;
     ExecutionOrder: ExecutionOrderParams;
     ExecutionOrderList: undefined;
-    ExecutionOrderReview: undefined;
+    ExecutionOrderReview: ExecutionOrderReviewParams;
     ExecutionOrderReviewList: undefined;
     IssueResolutionForm: IssueResolutionFormParams;
     IssueResolutionFormList: undefined;

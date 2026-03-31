@@ -710,6 +710,7 @@
     "draft":"Draft",
     "uploadingFiles":"Uploading files...",
     "uploadingVoucher":"Uploading voucher...",
+    "issueNumber":"Issue Number",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",
