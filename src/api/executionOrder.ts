@@ -1,4 +1,4 @@
-import { EOCommentsParams, EOListPaging, EOReviewsParams, ExecutionOrder, ExecutionOrderComment, ExecutionOrderReview, ReferExecutionOrder } from "../dataType/types/executionOrder";
+import { EOCommentsParams, EOListPaging, EOReviewsParams, ExecutionOrder, EOCommentRecord, EOReviewedRecord, ReferExecutionOrder } from "../dataType/types/executionOrder";
 import { PagingQueryParams, QueryParams } from "../dataType/types/public";
 import { APIResponse } from "../dataType/types/response";
 import request from "../utils/request";
@@ -89,7 +89,7 @@ export function reqReferEO(data:QueryParams, isLoading:boolean = true) :Promise<
 }
 
 // Add Execution Order comment
-export function reqAddEOComment(data:ExecutionOrderComment, isLoading :boolean= true) : Promise<APIResponse<ExecutionOrderComment>> {
+export function reqAddEOComment(data:EOCommentRecord, isLoading :boolean= true) : Promise<APIResponse<EOCommentRecord>> {
     return request({
         url: "/eo/addcomment",
         method: 'post',
@@ -99,7 +99,7 @@ export function reqAddEOComment(data:ExecutionOrderComment, isLoading :boolean= 
 }
 
 // Add Execution Order Review Record
-export function reqAddEOReview(data:ExecutionOrderReview, isLoading:boolean = true) : Promise<APIResponse<ExecutionOrderReview>> {
+export function reqAddEOReview(data:EOReviewedRecord, isLoading:boolean = true) : Promise<APIResponse<EOReviewedRecord>> {
     return request({
         url: "/eo/addreview",
         method: 'post',
@@ -109,7 +109,7 @@ export function reqAddEOReview(data:ExecutionOrderReview, isLoading:boolean = tr
 }
 
 // Get the Execution Order Review Record
-export function reqGetEOReviews(data:EOReviewsParams, isLoading:boolean = true) : Promise<APIResponse<ExecutionOrderReview[]>> {
+export function reqGetEOReviews(data:EOReviewsParams, isLoading:boolean = true) : Promise<APIResponse<EOReviewsParams>> {
     return request({
         url: "/eo/reviews",
         method: 'post',
@@ -119,7 +119,7 @@ export function reqGetEOReviews(data:EOReviewsParams, isLoading:boolean = true) 
 }
 
 // Get the Execution Order Comments list
-export function reqGetEOComments(data:EOCommentsParams, isLoading :boolean= true): Promise<APIResponse<ExecutionOrderComment[]>> {
+export function reqGetEOComments(data:EOCommentsParams, isLoading :boolean= true): Promise<APIResponse<EOCommentsParams>> {
     return request({
         url: "/eo/comments",
         method: 'post',

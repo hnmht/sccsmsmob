@@ -3,7 +3,7 @@ import { useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
-import { useBusinessNavigation, useBusinessRoute } from "../../navigation/config/screenParams";
+import { useBusinessNavigation } from "../../navigation/config/screenParams";
 import { useAppSelector } from "../../store/hooks";
 import ScSegmentLocalOrRemote from "../../components/ScSegmentLocalOrRemote/ScDegmentLocalOrRemote";
 import ScHandSwitch from "../../components/ScHandSwitch/ScHandSwitch";
@@ -16,7 +16,7 @@ function ExecutionOrderList() {
     const theme = useTheme();
     const { t } = useTranslation();
     const navigation = useBusinessNavigation();
-    const route = useBusinessRoute();
+
     const isOffline = useAppSelector(state => state.appInfo.isOffline);
     const [localOrRemote, setLocalOrRemote] = useState<"local" | "remote">(isOffline === 1 ? "local" : "remote");
 

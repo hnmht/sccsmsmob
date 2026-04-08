@@ -4,7 +4,7 @@ import { TFunction } from "i18next";
 
 interface ScFUnctionTitleProps {
     title: string;
-    icon: "bookmark-multiple" | "run-fast" | "clipboard-text-search" | "bell-check" | "book-open-outline" | "folder-open-outline" | "google-classroom" | "face-mask-outline";
+    icon: "bookmark-multiple" | "run-fast" | "clipboard-text-search" | "bell-check" | "book-open-outline" | "folder-open-outline" | "google-classroom" | "face-mask-outline" | "playlist-star";
     theme: MD3Theme;
     t: TFunction
 }

@@ -132,7 +132,7 @@ export interface ReferExecutionOrder {
     executor: Person;
 }
 // Execution Order Comment Record 
-export interface ExecutionOrderComment {
+export interface EOCommentRecord {
     id: number;
     hid: number;
     bid: number;
@@ -151,7 +151,7 @@ export interface ExecutionOrderComment {
     dr: 0 | 1;
 }
 // Execution Order Review Record 
-export interface ExecutionOrderReview {
+export interface EOReviewedRecord {
     id: number;
     hid: number;
     billNumber: string;
@@ -160,19 +160,20 @@ export interface ExecutionOrderReview {
     consumeSeconds: number;
     createDate: string;
     creator: Person;
-    ts: string;
-    dr: 0 | 1;
+    ts?: string;
+    dr?: 0 | 1;
 }
 
 // Execution Order Comments Params
 export interface EOCommentsParams {
     hid: number;
-    comments: ExecutionOrderComment[];
+    comments: EOCommentRecord[];
 }
+
 // Execution Order Reviews Params
 export interface EOReviewsParams {
     hid: number;
-    reviews: ExecutionOrderReview[];
+    reviews: EOReviewedRecord[];
 }
 // Execution Order List Params 
 export interface EOListPaging {

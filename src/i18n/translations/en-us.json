@@ -711,6 +711,8 @@
     "uploadingFiles":"Uploading files...",
     "uploadingVoucher":"Uploading voucher...",
     "issueNumber":"Issue Number",
+    "read":"Read",
+    "unread":"Unread",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

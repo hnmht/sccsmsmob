@@ -73,7 +73,7 @@ const ScPersonSelect = (props: ScInputProps<ScDataTypeList.Person>) => {
                 id={`textinput${itemKey}${positionID}${rowIndex}`}
                 mode="outlined"
                 keyboardType="default"
-                label={label}
+                label={t(itemShowName)}
                 placeholder={isEdit ? t(placeholder) : ""}
                 editable={false}
                 disabled={!isEdit}

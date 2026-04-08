@@ -3,7 +3,7 @@ import { View, Alert } from "react-native";
 import { Button, Card, Text, IconButton, useTheme, Surface } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { dayjs } from "../../i18n/i18n";
+import { dayjs,DateTimeFormat } from "../../i18n/dayjs";
 import ScFunctionTitle from "../../components/ScFunctionTitle/ScFunctionTitle";
 import DocListPaging from "../../components/DocList/DocListPaging";
 import { QueryPanel, transConditionsToString } from "../../components/QueryPanel";
@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 import ScHandSwitch from "../../components/ScHandSwitch/ScHandSwitch";
 import { ScComponentModal } from "../../components/ScComponentModal/ScComponentModal";
 
-const RemoteExecuteDocList = () => {
+function ExecutionOrderReviewList() {
     const navigation = useBusinessNavigation();
     const [eosPaging, setEosPaging] = useState<EOListPaging>({ eos: [], count: 0, page: 0, perPage: 10 });
     const [page, setPage] = useState<number>(0);
@@ -147,7 +147,7 @@ const RemoteExecuteDocList = () => {
                     <Text variant="titleMedium" style={{ width: "100%", color: eo.issueNumber > 0 ? theme.colors.error : theme.colors.onSurface }}>{t("issueNumber")}: {eo.issueNumber}</Text>
                     {eo.reviewedNumber > 0
                         ? <>
-                            <Text variant="titleMedium" style={{ width: "100%", color: "green" }}>{t("reviewRecords")} : {t("timesAndSeconds", { times: eo.reviewedNumber ,seconds:eo.reviewedSeconds})}</Text>
+                            <Text variant="titleMedium" style={{ width: "100%", color: "green" }}>{t("reviewRecords")} : {t("timesAndSeconds", { times: eo.reviewedNumber, seconds: eo.reviewedSeconds })}</Text>
                         </>
                         : null
                     }
@@ -200,4 +200,4 @@ const RemoteExecuteDocList = () => {
     );
 };
 
-export default RemoteExecuteDocList;
+export default ExecutionOrderReviewList;
