@@ -17,7 +17,7 @@ import { cloneDeep } from "lodash";
 
 const searchFields = ["code", "name", "deptName", "mobile", "email", "description"];
 
-const AddressBook = () => {
+function AddressBook() {
     const theme = useTheme();
     const isOffLine = useAppSelector(state => state.appInfo.isOffline);
     const [keyWord, setKeyWord] = useState("");
@@ -78,7 +78,6 @@ const AddressBook = () => {
                 {filteredPersons
                     .sort((a: Person, b: Person) => a.name.localeCompare(b.name))
                     .map(person => {
-                        console.log("fileUrl type:", typeof person.avatar.fileUrl, person.avatar.fileUrl);
                         return (person.status === 0
                             ? <Card key={person.id} style={{ marginTop: 2, marginBottom: 2 }}>
                                 <Card.Title

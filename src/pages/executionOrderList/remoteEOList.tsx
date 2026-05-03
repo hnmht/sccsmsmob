@@ -190,8 +190,8 @@ function RemoteExecutionOrderList({
     };
 
     // Actions after press the cancel confirm button in EO card
-    const handleCancelConfirm = async (item: ExecutionOrder) => {
-        let res = await reqUnConfirmEO(item);
+    const handleUnConfirm = async (item: ExecutionOrder) => {
+        const res = await reqUnConfirmEO(item);
         if (res.status) {
             Alert.alert(t("tip"), t("unconfirmSuccessful"));
         } else {
@@ -203,7 +203,7 @@ function RemoteExecutionOrderList({
 
     // Actions after press the delete button in EO card
     const handleDelete = async (item: ExecutionOrder) => {
-        let res = await reqDeleteEO(item);
+        const res = await reqDeleteEO(item);
         if (res.status) {
             Alert.alert(t("tip"), t("deleteSuccessful"));
         } else {
@@ -262,7 +262,7 @@ function RemoteExecutionOrderList({
             <Card key={eo.id} style={{ marginTop: 2, marginBottom: 2 }}>
                 <EOCardContent eo={eo} isLocal={false} t={t} theme={theme} />
                 <Card.Actions style={{ flexDirection: buttonPosition === "right" ? "row" : "row-reverse" }}>
-                    <IconButton key="cancelConfirm" onPress={() => handleCancelConfirm(eo)} icon="arrow-left-top" disabled={stopDisable} iconColor={theme.colors.primary} size={20} mode="contained" />
+                    <IconButton key="cancelConfirm" onPress={() => handleUnConfirm(eo)} icon="arrow-left-top" disabled={stopDisable} iconColor={theme.colors.primary} size={20} mode="contained" />
                     <IconButton key="confirm" onPress={() => handleConfirm(eo)} icon="play" disabled={startDisable} iconColor={theme.colors.primary} size={20} mode="contained" />
                     <IconButton key="delete" onPress={() => handleDelete(eo)} icon="delete-outline" disabled={delDisable} iconColor={theme.colors.primary} size={20} mode="contained" />
                     <IconButton key="edit" onPress={() => handleEditAction(eo)} icon="pencil-outline" disabled={editDisable} iconColor={theme.colors.primary} size={20} mode="contained" />

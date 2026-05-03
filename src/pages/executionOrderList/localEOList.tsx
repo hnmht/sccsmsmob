@@ -69,7 +69,7 @@ function LocalEOList({
         setDiagStatus({
             isOpen: false
         });
-        // Navigate to eh ExecutionOrder page
+        // Navigate to edit ExecutionOrder page
         navigation.navigate("ExecutionOrder", { isLocal: false, isNew: true, isModify: false, oriWOR: item, oriEO: undefined, onGoBack: handleGetLocalEOs });
     };
     // Actions after press add button

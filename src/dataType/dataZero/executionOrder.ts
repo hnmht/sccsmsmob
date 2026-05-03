@@ -1,7 +1,7 @@
 
 import { dayjs, EpochTime } from "../../i18n/dayjs"
 import { SimpDept } from "../types/department";
-import { ExecutionOrder, ExecutionOrderComment, ExecutionOrderRow } from "../types/executionOrder";
+import { ExecutionOrder, EOCommentRecord, ExecutionOrderRow } from "../types/executionOrder";
 import { Person } from "../types/person";
 import { getEmptyCSA } from "./csa";
 import { getEmptyEP } from "./epa"
@@ -88,7 +88,7 @@ export function getEmptyExecutionOrder(person: Person, dept: SimpDept, currentDa
 }
 
 // Generate empty comment
-export function getEmptyEOComment(author:Person,hid:number,bid:number,billNumber:string,rowNumber:number,toPerson:Person):ExecutionOrderComment {
+export function getEmptyEOComment(author:Person,hid:number,bid:number,billNumber:string,rowNumber:number,toPerson:Person):EOCommentRecord {
     const currentDay = dayjs(new Date()).toISOString();
     return {
         id:0,

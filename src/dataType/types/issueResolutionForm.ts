@@ -4,6 +4,16 @@ import { Person } from "./person";
 import { SimpDept } from "./department";
 import { RiskLevel } from "./riskLevel";
 import { VoucherFile } from "./voucherFile";
+import { ErrMsg } from "./scInput";
+
+// Issue Resolution Form Errors
+export interface IRFErrors {
+    department: ErrMsg;
+    handler: ErrMsg;
+    startTime: ErrMsg;
+    endTime: ErrMsg;
+    isErr?: boolean;
+}
 
 // Issue Resolution Form 
 export interface IssueResolutionForm {
@@ -41,4 +51,5 @@ export interface IssueResolutionForm {
     modifier: Person;
     ts: string;
     dr: 0 | 1;
+    errData?: IRFErrors;
 }

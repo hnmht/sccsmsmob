@@ -1,4 +1,5 @@
-import { ExecutionOrder, ExecutionOrderRow } from "../../dataType/types/executionOrder";
+import { ExecutionOrder, ExecutionOrderRow, ReferExecutionOrder } from "../../dataType/types/executionOrder";
+import { IssueResolutionForm } from "../../dataType/types/issueResolutionForm";
 import { WorkOrder, WorkOrderRow } from "../../dataType/types/workOrder";
 
 export interface WorkOrderParams {
@@ -32,6 +33,7 @@ export interface IssueResolutionFormParams {
     isLocal: boolean;
     isNew: boolean,
     isModify: boolean,
-    oriEOR: ExecutionOrderRow;
+    oriEOR: ReferExecutionOrder | undefined;
+    oriIRF: IssueResolutionForm | undefined;
     onGoBack: (shouldRefresh: boolean) => void;
 }
