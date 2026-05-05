@@ -224,14 +224,14 @@ function LocalIRFList({
                 />
             </View>
             <Surface style={{ minHeight: 40, flexDirection: buttonPosition === "right" ? "row" : "row-reverse", justifyContent: "flex-end", alignItems: "center" }}>
-                <Button icon="link-plus" textColor={theme.colors.primary} onPress={() => setDiagStatus({ isOpen: true })} disabled={isOffline}>{t("addReference")}</Button>
+                <Button icon="link-plus" textColor={theme.colors.primary} onPress={() => setDiagStatus({ isOpen: true })} disabled={!isOffline}>{t("addReference")}</Button>
                 <Button icon="refresh" textColor={theme.colors.primary} onPress={handleGetLocalIRFs}>{t("refresh")}</Button>
             </Surface>
             <ScComponentModal
                 visible={diagStatus.isOpen}
             >
                 <EORefer
-                    title={"generateRefEO"}
+                    title={"generateRefEOR"}
                     isOffline={isOffline}
                     cancelPressAction={handleDialogClose}
                     okPressAction={handleEOReferOk}

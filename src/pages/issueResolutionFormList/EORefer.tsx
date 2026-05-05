@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
-import { Text, IconButton, AnimatedFAB, Card, MD3Theme } from "react-native-paper";
-import { DateTimeFormat, dayjs } from "../../i18n/dayjs"
+import { Text, IconButton, Card, MD3Theme } from "react-native-paper";
+import { DateTimeFormat } from "../../i18n/dayjs"
 
 import DocList from "../../components/DocList/DocList";
 import { transConditionsToString } from "../../components/QueryPanel";
@@ -44,7 +44,7 @@ function EORefer({
         async function reqData() {
             setRefreshing(true);
             let newRows: ReferExecutionOrder[] = [];
-            if (isOffline) {
+            if (!isOffline) {
                 let querystring = transConditionsToString(conditions);
                 const res = await reqReferEO({ queryString: querystring });
                 if (res.status) {
@@ -64,21 +64,21 @@ function EORefer({
         return (
             <Card key={eor.id} style={{ marginTop: 2, marginBottom: 2 }}>
                 <TouchableOpacity onPress={() => okPressAction(eor)} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", margin: 4 }}>
-                    <Text variant="titleMedium" style={{ width: "100%", color: theme.colors.primary }}>现场: {eor.csa.name}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>执行项目: {eor.epa.name}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>项目值: {eor.executionValueDisp}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%", color: theme.colors.primary }}>{t("csa")} : {eor.csa.name}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("epa")} : {eor.epa.name}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("executionValue")} : {eor.executionValueDisp}</Text>
                     <View style={{ width: "100%", height: 24, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-start" }}>
-                        <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>风险等级:{eor.riskLevel.name} </Text>
+                        <Text variant="bodyMedium" maxFontSizeMultiplier={1.4} selectable>{t("riskLevel")} : {eor.riskLevel.name} </Text>
                         <View style={{ height: "100%", width: 48, backgroundColor: eor.riskLevel.color, borderRadius: 8 }}></View>
                     </View>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>说明: {eor.description}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>指定处理人: {eor.executor.name}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%", color: theme.colors.primary }}>处理开始时间: {DateTimeFormat(eor.handleStartTime, "LLL")}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%", color: theme.colors.primary }}>处理结束时间: {DateTimeFormat(eor.handleEndTime, "LLL")}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>单据编号: {eor.billNumber}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>行号: {eor.rowNumber}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>单据日期: {dayjs(eor.billDate).format("YYYY-MM-DD")}</Text>
-                    <Text variant="bodyMedium" style={{ width: "100%" }}>制单人: {eor.executor.name}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("description")} : {eor.description}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("issueOwner")} : {eor.issueOwner.name}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%", color: theme.colors.primary }}>{t("handleStartTime")} : {DateTimeFormat(eor.handleStartTime, "LLL")}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%", color: theme.colors.primary }}>{t("handleEndTime")} : {DateTimeFormat(eor.handleEndTime, "LLL")}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("billNumber")} : {eor.billNumber}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("rowNumber")} : {eor.rowNumber}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("billDate")} : {DateTimeFormat(eor.billDate,"LL")}</Text>
+                    <Text variant="bodyMedium" style={{ width: "100%" }}>{t("executor")} : {eor.executor.name}</Text>
                 </TouchableOpacity>
             </Card>
         );
@@ -96,7 +96,7 @@ function EORefer({
                 backgroundColor: theme.colors.background
             }}>
                 <View style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <Text variant="titleMedium">{title}</Text>
+                    <Text variant="titleMedium">{t(title)}</Text>
                     {filterButtonDisp
                         ? <IconButton icon="filter-variant" iconColor={theme.colors.primary} onPress={filterAction} />
                         : null
@@ -108,7 +108,7 @@ function EORefer({
                     rows={rows}
                     ItemElement={EORCard}
                     rowsPerPage={10}
-                    searchFields={["billdate", "billnumber", "eit.name", "createuser.name", "confirmuser.name", "department.name", "starttime", "endtime"]}
+                    searchFields={["handleStartTime", "handleEndTime","csa.name","billDate", "billnNumber", "epa.name", "executor.name", "department.name"]}
                     sortFunction={reoSortByID}
                     refreshing={refreshing}
                 />

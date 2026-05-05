@@ -217,7 +217,7 @@ function LocalEOList({
             </View>
             <Surface style={{ minHeight: 40, flexDirection: buttonPosition === "right" ? "row" : "row-reverse", justifyContent: "flex-end", alignItems: "center" }}>
                 <IconButton icon="plus" iconColor={theme.colors.primary} onPress={handleAdd} />
-                <Button icon="link-plus" textColor={theme.colors.primary} onPress={() => setDiagStatus({ isOpen: true })} disabled={isOffline}>{t("addReference")}</Button>
+                <Button icon="link-plus" textColor={theme.colors.primary} onPress={() => setDiagStatus({ isOpen: true })} disabled={!isOffline}>{t("addReference")}</Button>
                 <Button icon="refresh" textColor={theme.colors.primary} onPress={() => handleGetLocalEOs(true)}>{t("refresh")}</Button>
             </Surface>
             <ScComponentModal
