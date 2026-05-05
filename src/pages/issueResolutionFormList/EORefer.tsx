@@ -77,7 +77,7 @@ function EORefer({
                     <Text variant="titleSmall" style={{ width: "100%", color: theme.colors.primary }}>{t("handleEndTime")} : {DateTimeFormat(eor.handleEndTime, "LLL")}</Text>
                     <Text variant="titleSmall" style={{ width: "100%" }}>{t("billNumber")} : {eor.billNumber}</Text>
                     <Text variant="titleSmall" style={{ width: "100%" }}>{t("rowNumber")} : {eor.rowNumber}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("billDate")} : {DateTimeFormat(eor.billDate,"LL")}</Text>
+                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("billDate")} : {DateTimeFormat(eor.billDate, "LL")}</Text>
                     <Text variant="bodyMedium" style={{ width: "100%" }}>{t("executor")} : {eor.executor.name}</Text>
                 </TouchableOpacity>
             </Card>
@@ -108,7 +108,7 @@ function EORefer({
                     rows={rows}
                     ItemElement={EORCard}
                     rowsPerPage={10}
-                    searchFields={["handleStartTime", "handleEndTime","csa.name","billDate", "billnNumber", "epa.name", "executor.name", "department.name"]}
+                    searchFields={["handleStartTime", "handleEndTime", "csa.name", "billDate", "billnNumber", "epa.name", "executor.name", "department.name"]}
                     sortFunction={reoSortByID}
                     refreshing={refreshing}
                 />

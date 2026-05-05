@@ -11,8 +11,8 @@ import { ScFile } from "../../dataType/types/file";
 export const getInitialValue = async (
     isNew: boolean,
     isModify: boolean,
-    oriEOR: ReferExecutionOrder,
-    oriIRF: IssueResolutionForm
+    oriEOR: ReferExecutionOrder | undefined,
+    oriIRF: IssueResolutionForm | undefined
 ) => {
     const { user } = store.getState();
     const { person, department } = user;
@@ -58,10 +58,7 @@ export const getInitialValue = async (
 };
 
 // Check Issue Resolution Form errors
-export const checkDDErrors = (irfData: IssueResolutionForm) => {
-    if (irfData === undefined) {
-        return undefined;
-    }
+export const checkIRFErrors = (irfData: IssueResolutionForm | undefined) => {
     const noErr: ErrMsg = { isErr: false, msg: "" };
     let errData: IRFErrors = {
         department: noErr,
@@ -70,6 +67,10 @@ export const checkDDErrors = (irfData: IssueResolutionForm) => {
         endTime: noErr,
         isErr: false
     };
+
+    if (irfData === undefined) {
+        return errData;
+    }
 
     let errorNumber = 0;
 
@@ -121,7 +122,7 @@ export const convertIRFToFiles = (voucherData: IssueResolutionForm) => {
 };
 
 //Generate watermark text
-export const generateMarkText = (voucherData: IssueResolutionForm) => {
+export const generateMarkText = (voucherData: IssueResolutionForm | undefined) => {
     let mark: MarkText[] = [];
     if (!voucherData) {
         return mark;

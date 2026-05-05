@@ -12,7 +12,7 @@ export interface IRFErrors {
     handler: ErrMsg;
     startTime: ErrMsg;
     endTime: ErrMsg;
-    isErr?: boolean;
+    isErr: boolean;
 }
 
 // Issue Resolution Form 
