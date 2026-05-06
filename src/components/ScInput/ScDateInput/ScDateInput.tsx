@@ -10,6 +10,7 @@ import { useAppSelector } from "../../../store/hooks";
 import { ScInputProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
 import { ScComponentModal } from "../../ScComponentModal/ScComponentModal";
+import ScDateDetail from "./ScDateDetail";
 
 
 const zeroValue = dayjs(new Date()).toDate();
@@ -133,6 +134,17 @@ const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.Date>) => {
                     </View>
                 </SafeAreaView>
             </ScComponentModal>
+            {
+                isEdit
+                    ? null
+                    : <ScDateDetail
+                        currentItem={DateTimeFormat(dateValue, "LLL")}
+                        visible={detailOpen}
+                        backAction={() => setDetailOpen(false)}
+                        t={t}
+                        theme={theme}
+                    />
+            }
         </View>
     );
 };

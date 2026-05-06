@@ -3,7 +3,7 @@ import { ScrollView, View } from "react-native";
 import { ScDetailProps } from "../../../dataType/types/scInput";
 import { ScDataTypeList } from "../../../dataType/types/scDataType";
 
-const ScDateTimeDetail = ({ visible, currentItem, backAction, t, theme }: ScDetailProps<ScDataTypeList.DateTime>) => {
+const ScDateDetail = ({ visible, currentItem, backAction, t, theme }: ScDetailProps<ScDataTypeList.Date>) => {
     return (
         <Portal>
             <Dialog visible={visible} onDismiss={backAction}>
@@ -26,4 +26,4 @@ const ScDateTimeDetail = ({ visible, currentItem, backAction, t, theme }: ScDeta
     );
 };
 
-export default ScDateTimeDetail; 
+export default ScDateDetail; 

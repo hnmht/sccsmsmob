@@ -122,7 +122,7 @@ function EditIRF() {
         setOverlayStatus({ visible: true, description: t("uploadingFiles") });
         try {
             const filesArr = convertIRFToFiles(thisIRF);
-            if (filesArr.length > 0) { //如果存在文件则需要先上传文件
+            if (filesArr.length > 0) { 
                 const getFilesHashRes = await reqGetFilesByHash(filesArr);
                 if (!getFilesHashRes.status) {
                     setOverlayStatus({ visible: false, description: "" });
@@ -438,7 +438,7 @@ function EditIRF() {
                                 dataType={520}
                                 allowNull={false}
                                 isEdit={isEdit}
-                                itemShowName="处理部门"
+                                itemShowName="department"
                                 itemKey="department"
                                 initValue={voucherData.department}
                                 errInfo={dataErrs.department}
