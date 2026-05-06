@@ -12,6 +12,7 @@ export const swapPositonSlice = createSlice({
             state.swapPosition = action.payload.swapPosition;
             state.hiddenPosition = action.payload.hiddenPosition;
             state.orderPosition = action.payload.orderPosition;
+            state.bottomDistance = action.payload.bottomDistance;
         },
         changeSwapPosition: (state) => {
             let currentPosition = state.buttonPosition;
@@ -22,10 +23,13 @@ export const swapPositonSlice = createSlice({
         },
         changeOrderVisible: (state) => {
             state.orderVisible = !state.orderVisible;
-        }
+        },
+        setBottomDistance: (state, action) => {
+            state.bottomDistance = action.payload;
+        },
     }
 });
 
-export const { setSwapPosition, changeSwapPosition, changeOrderVisible } = swapPositonSlice.actions;
+export const { setSwapPosition, changeSwapPosition, changeOrderVisible,setBottomDistance } = swapPositonSlice.actions;
 export default swapPositonSlice.reducer;
 

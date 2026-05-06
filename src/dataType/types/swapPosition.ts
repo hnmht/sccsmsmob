@@ -10,4 +10,5 @@ export interface SwapPosition {
     swapPosition:position;
     hiddenPosition:position;
     orderPosition:position;
+    bottomDistance:number;
 }

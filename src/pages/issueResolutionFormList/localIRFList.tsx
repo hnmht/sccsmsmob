@@ -21,7 +21,7 @@ import { IRFRepo } from "../../db/crud/issueResolutionForm";
 import { ReferExecutionOrder } from "../../dataType/types/executionOrder";
 import { getLocalEOR, updateEoRefStatus } from "../../db/crud/executionOrderRef";
 import { cloneDeep } from "lodash";
-import { convertIRFToFiles } from "../issueResolutionForm/construction";
+import { convertIRFToFiles } from "../issueResolutionForm/constructor";
 import { buildUploadFormData } from "../../utils/upload";
 import { ScComponentModal } from "../../components/ScComponentModal/ScComponentModal";
 
