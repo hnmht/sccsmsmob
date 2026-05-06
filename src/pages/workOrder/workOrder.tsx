@@ -8,7 +8,6 @@ import { multiSortByArr } from "../../components/tools/sort";
 import { getInitialValue, checkWOErrors, transWOToBackend } from "./constructor";
 import { reqEditWO, reqAddWO } from "../../api/workOrder";
 import { cloneDeep } from "lodash";
-import { pubParams } from "../../components/pub/pubParams";
 import { useAppSelector } from "../../store/hooks";
 import { useBusinessNavigation, useBusinessRoute } from "../../navigation/config/screenParams";
 import { getDefaultWorkOrderRow } from "../../dataType/dataZero/workOrder";
@@ -34,7 +33,6 @@ function EditWorkOrder() {
     const [currentRowIndex, setCurrentRowIndex] = useState(0);
     const isEdit = !(!isModify && !isNew);
     const canTempSave = isLocal ? true : isModify ? false : true;
-    const isOverSize = pubParams.screen.isOverSize;
     // Command Button Position
     const { buttonPosition } = useAppSelector(state => state.swapPosition);
     // Check VoucherData Errors
@@ -544,7 +542,7 @@ function EditWorkOrder() {
                                 rowIndex={-1}
                             />
                             <ScInput
-                                dataType={307}
+                                dataType={309}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="createDate"
@@ -556,7 +554,7 @@ function EditWorkOrder() {
                                 key="createDate"
                                 positionID={2}
                                 rowIndex={-1}
-                                width={isOverSize ? "100%" : "60%"}
+                                width={"100%"}
                             />
                             <ScInput
                                 dataType={510}
@@ -571,10 +569,10 @@ function EditWorkOrder() {
                                 key="modifier"
                                 positionID={2}
                                 rowIndex={-1}
-                                width={isOverSize ? "100%" : "40%"}
+                                width={"100%"}
                             />
                             <ScInput
-                                dataType={307}
+                                dataType={309}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="modifyDate"
@@ -586,7 +584,7 @@ function EditWorkOrder() {
                                 key="modifyDate"
                                 positionID={2}
                                 rowIndex={-1}
-                                width={isOverSize ? "100%" : "60%"}
+                                width={"100%"}
                             />
                             <ScInput
                                 dataType={510}
@@ -601,10 +599,10 @@ function EditWorkOrder() {
                                 key="confirmer"
                                 positionID={2}
                                 rowIndex={-1}
-                                width={isOverSize ? "100%" : "40%"}
+                                width={"100%"}
                             />
                             <ScInput
-                                dataType={307}
+                                dataType={309}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="confirmDate"
@@ -616,7 +614,7 @@ function EditWorkOrder() {
                                 key="confirmDate"
                                 positionID={2}
                                 rowIndex={-1}
-                                width={isOverSize ? "100%" : "60%"}
+                                width={"100%"}
                             />
                         </ScVoucherFooter>
                     </ScrollView>

@@ -25,7 +25,7 @@ function ScVoucherHeader({
     const [headerCollapse, setHeaderCollapse] = useState(true);
     return (
         <>
-            <Surface key="voucherHeadDivider" style={{ flexDirection: buttonPosition === "right" ? "row" : "row-reverse", alignItems: "center" }}>
+            <Surface key="voucherHeadDivider" style={{ flexDirection: buttonPosition === "right" ? "row" : "row-reverse", alignItems: "center",  marginBottom: 16, backgroundColor: theme.colors.surfaceVariant }}>
                 <Text variant="bodyMedium" style={{ paddingRight: 4 }}>{t(title)}</Text>
                 {
                     isHeaderErr ? <Icon name="alert" size={24} color="red" /> : <Icon name="check" size={24} color="green" />
@@ -38,7 +38,7 @@ function ScVoucherHeader({
                     onPress={() => setHeaderCollapse(!headerCollapse)}
                 />
             </Surface>
-            <ScCollapse key="voucherHeader" expanded={headerCollapse} style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", alignContent: "flex-start" }}>
+            <ScCollapse key="voucherHeader" expanded={headerCollapse} style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", alignContent: "flex-start", padding: 4 }}>
                 {children}
             </ScCollapse>
         </>

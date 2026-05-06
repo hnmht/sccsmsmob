@@ -341,7 +341,7 @@ function EditExecutionOrder() {
             return
         }
         let newVoucherData = cloneDeep(voucherData);
-        // Record errors before saving,so that can recommend if can upload or not
+        // Record errors before saving, so that can recommend if can upload or not
         newVoucherData.errData = dataErrs;
         // Temporary save the data to the local database.
         if (isModify) { // in edit mode
@@ -992,7 +992,7 @@ function EditExecutionOrder() {
                                 rowIndex={-1}
                             />
                             <ScInput
-                                dataType={ScDataTypeList.DateTime}
+                                dataType={ScDataTypeList.DateTimeDisp}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="createDate"
@@ -1020,7 +1020,7 @@ function EditExecutionOrder() {
                                 rowIndex={-1}
                             />
                             <ScInput
-                                dataType={ScDataTypeList.DateTime}
+                                dataType={ScDataTypeList.DateTimeDisp}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="modifyDate"
@@ -1048,7 +1048,7 @@ function EditExecutionOrder() {
                                 rowIndex={-1}
                             />
                             <ScInput
-                                dataType={ScDataTypeList.DateTime}
+                                dataType={ScDataTypeList.DateTimeDisp}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="confirmDate"

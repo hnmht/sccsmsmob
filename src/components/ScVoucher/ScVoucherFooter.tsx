@@ -25,7 +25,7 @@ function ScVoucherFooter({
     
     return (
         <>
-            <Surface key="voucherFooterDivider" style={{ flexDirection: buttonPosition === "right" ? "row" : "row-reverse", alignItems: "center" }}>
+            <Surface key="voucherFooterDivider" style={{ flexDirection: buttonPosition === "right" ? "row" : "row-reverse", alignItems: "center",marginBottom: 16, backgroundColor: theme.colors.surfaceVariant }}>
                 <Text variant="bodyMedium" style={{ paddingRight: 4 }}>{t(title)}</Text>
                 {
                     isFooterErr ? <Icon name="alert" size={24} color="red" /> : <Icon name="check" size={24} color="green" />
@@ -38,7 +38,7 @@ function ScVoucherFooter({
                     onPress={() => setFooterCollapse(!footerCollapse)}
                 />
             </Surface>
-            <ScCollapse expanded={footerCollapse} style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", alignContent: "flex-start" }}>
+            <ScCollapse expanded={footerCollapse} style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", alignContent: "flex-start", padding: 4 }}>
                 {children}
             </ScCollapse>
         </>

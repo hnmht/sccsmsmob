@@ -508,9 +508,8 @@ function EditIRF() {
                                 key="description"
                                 positionID={0}
                                 rowIndex={-1}
-                                textLines={4}
+                                textLines={1}
                                 width="100%"
-                                height={136}
                             />
                             <ScInput
                                 dataType={902}
@@ -568,7 +567,7 @@ function EditIRF() {
                                 width="100%"
                             />
                             <ScInput
-                                dataType={307}
+                                dataType={309}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="createDate"
@@ -598,7 +597,7 @@ function EditIRF() {
                                 width="100%"
                             />
                             <ScInput
-                                dataType={307}
+                                dataType={309}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="modifyDate"
@@ -628,7 +627,7 @@ function EditIRF() {
                                 width="100%"
                             />
                             <ScInput
-                                dataType={307}
+                                dataType={309}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="confirmDate"

@@ -6,6 +6,8 @@ export enum ScDataTypeList {
     Email = 305,
     Date = 306,
     DateTime = 307,
+    DateDisp = 308,
+    DateTimeDisp = 309,
 
     Gender = 401,
     SwitchYesOrNo = 402,

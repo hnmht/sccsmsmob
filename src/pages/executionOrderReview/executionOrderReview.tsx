@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-import { View, ScrollView, BackHandler, Alert, Modal } from "react-native";
+import { useState, useEffect } from "react";
+import { View, ScrollView, BackHandler, Alert } from "react-native";
 import { Text, Button, ActivityIndicator, AnimatedFAB, useTheme } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 import { dayjs } from "../../i18n/dayjs";
@@ -18,7 +18,6 @@ import EOReviewBodyMenu from "./EOReviewBodyMenu";
 import ScHandSwitch from "../../components/ScHandSwitch/ScHandSwitch";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScComponentModal } from "../../components/ScComponentModal/ScComponentModal";
-
 
 interface EOReviewModelStatus {
     isOpen: boolean;
@@ -693,7 +692,7 @@ function ExecutionOrderReview() {
                                 width={"100%"}
                             />
                             <ScInput
-                                dataType={307}
+                                dataType={309}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="createDate"
@@ -721,7 +720,7 @@ function ExecutionOrderReview() {
                                 width={"100%"}
                             />
                             <ScInput
-                                dataType={307}
+                                dataType={309}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="modifyDate"
@@ -749,7 +748,7 @@ function ExecutionOrderReview() {
                                 width={"100%"}
                             />
                             <ScInput
-                                dataType={307}
+                                dataType={309}
                                 allowNull={true}
                                 isEdit={false}
                                 itemShowName="confirmDate"

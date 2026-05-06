@@ -35,6 +35,8 @@ import ScAvatarUpload from "./ScAvatarUpload/ScAvatarUpload"; //901 头像上传
 import ScFileUpload from "./ScFileUpload/ScFileUpload"; //902 文件上传
 import { ScInputUnionProps } from "../../dataType/types/scInput";
 import { ScDataTypeList } from "../../dataType/types/scDataType";
+import ScDateDisplay from "./ScDateDisplay/ScDateDisplay";
+import ScDateTimeDisp from "./ScDateTImeDisp/ScDateTimeDisp";
 
 const ScInput: React.FC<ScInputUnionProps> = (props) => {
     const { dataType } = props;
@@ -56,9 +58,13 @@ const ScInput: React.FC<ScInputUnionProps> = (props) => {
 
         case ScDataTypeList.Date:
             return <ScDateInput {...props} />;
+        case ScDataTypeList.DateDisp:
+            return <ScDateDisplay {...props} />;
 
         case ScDataTypeList.DateTime:
             return <ScDateTimeInput {...props} />;
+        case ScDataTypeList.DateTimeDisp:
+            return <ScDateTimeDisp {...props} />;
 
         case ScDataTypeList.Gender:
             return <ScSelectGender {...props} />;

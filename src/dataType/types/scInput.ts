@@ -48,6 +48,8 @@ export type InitialValueMap = {
     [ScDataTypeList.Email]: string;
     [ScDataTypeList.Date]: string;
     [ScDataTypeList.DateTime]: string;
+    [ScDataTypeList.DateDisp]:string;
+    [ScDataTypeList.DateTimeDisp]:string;
 
     [ScDataTypeList.Gender]: 0 | 1 | 2;
     [ScDataTypeList.SwitchYesOrNo]: 0 | 1;

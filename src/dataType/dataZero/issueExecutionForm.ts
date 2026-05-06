@@ -12,7 +12,7 @@ export function getEmptyIssueExecutionOrder(person: Person, dept: SimpDept, curr
     const emptyPerson = getEmptyPerson();
     return {
         id: 0,
-        billNumber: "string",
+        billNumber: "",
         billDate: currentDay,
         csa: getEmptyCSA(),
         epa: getEmptyEP(),

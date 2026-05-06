@@ -53,7 +53,7 @@ function ScVoucherBody<T>({
     };
     return (
         <>
-            <Surface key="voucherBodyDivider" style={{ flexDirection: buttonPosition === "right" ? "row" : "row-reverse", alignItems: "center" }}>
+            <Surface key="voucherBodyDivider" style={{ flexDirection: buttonPosition === "right" ? "row" : "row-reverse", alignItems: "center",marginBottom: 16, backgroundColor: theme.colors.surfaceVariant }}>
                 <Text variant="bodyMedium" style={{ paddingRight: 4 }}>{t(title)}</Text>
                 {
                     isBodyErr ? <Icon name="alert" size={24} color="red" /> : <Icon name="check" size={24} color="green" />
@@ -103,7 +103,7 @@ function ScVoucherBody<T>({
                     </View>
                     <Text>{totalRows === 0 ? "0/0" : `${currentRowIndex + 1}/${totalRows}`}</Text>
                 </View>
-                <View key={`voucherBodyRow${currentRowIndex}`} style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                <View key={`voucherBodyRow${currentRowIndex}`} style={{ flexDirection: "row", flexWrap: "wrap",padding:4 }}>
                     {children}
                 </View>
             </View>

@@ -137,7 +137,7 @@ const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.DateTime>) => {
                 isEdit
                     ? null
                     : <ScDateTimeDetail
-                        currentItem={DateTimeFormat(dateValue, "LLL")}
+                        currentItem={dateDisplay}
                         visible={detailOpen}
                         backAction={() => setDetailOpen(false)}
                         t={t}
