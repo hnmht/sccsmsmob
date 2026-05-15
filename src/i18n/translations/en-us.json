@@ -713,6 +713,7 @@
     "issueNumber":"Issue Number",
     "read":"Read",
     "unread":"Unread",
+    "dragToReposition":"Drag to reposition",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

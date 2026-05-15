@@ -56,7 +56,7 @@ function ExecutionOrderReview() {
     const { t } = useTranslation();
 
     // Command button position
-    const { buttonPosition, orderPosition, orderVisible } = useAppSelector(state => state.swapPosition);
+    const { buttonPosition, orderPosition, orderVisible, bottomDistance } = useAppSelector(state => state.swapPosition);
 
     useEffect(() => {
         function initVoucher() {
@@ -172,7 +172,7 @@ function ExecutionOrderReview() {
         };
         const addRes = await reqAddEOReview(reviewRecord);
         if (addRes.status) {
-            Alert.alert(t("tip"), t("reviewedSeconds", { count: reviewRecord.consumeSeconds }) );
+            Alert.alert(t("tip"), t("reviewedSeconds", { count: reviewRecord.consumeSeconds }));
         } else {
             return
         }
@@ -772,7 +772,7 @@ function ExecutionOrderReview() {
                                 visible={true}
                                 onPress={handleOpenReviewsList}
                                 animateFrom={buttonPosition}
-                                style={{ bottom: 224, position: "absolute", ...orderPosition }}
+                                style={{ bottom: bottomDistance + 96, position: "absolute", ...orderPosition }}
                             />
                             <AnimatedFAB
                                 icon="message-text-outline"
@@ -781,7 +781,7 @@ function ExecutionOrderReview() {
                                 visible={true}
                                 onPress={handleOpenCommentsList}
                                 animateFrom={buttonPosition}
-                                style={{ bottom: 144, position: "absolute", ...orderPosition }}
+                                style={{ bottom: bottomDistance + 16, position: "absolute", ...orderPosition }}
                             />
                         </>
                         : null

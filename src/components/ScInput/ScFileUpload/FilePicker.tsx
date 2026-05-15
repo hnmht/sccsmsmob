@@ -22,6 +22,7 @@ import { pubParams } from "../../pub/pubParams";
 import { requestPermissions } from "../../tools/permission";
 import { MarkText } from "../../../dataType/types/scInput";
 import { useTranslation } from "react-i18next";
+import ScHandSwitch from "../../ScHandSwitch/ScHandSwitch";
 
 const allowFileTypes = [types.plainText, types.pdf, types.zip, types.csv, types.doc,
 types.docx, types.ppt, types.pptx, types.xls, types.xlsx, "application/rar"];
@@ -45,11 +46,8 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     const imageUrls = filesToUrls(files);
     const location = useAppSelector(state => state.location.current);
     // Button Position
-    const { buttonPosition, swapPosition, orderPosition } = useAppSelector(state => state.swapPosition);
-    // Actions after 
-    const handleSwapPosition = () => {
-        dispatch(changeSwapPosition());
-    };
+    const { buttonPosition, orderPosition, bottomDistance, orderVisible } = useAppSelector(state => state.swapPosition);
+
     // Check Permissions
     useEffect(() => {
         const checkPermission = async () => {
@@ -336,66 +334,60 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                 enablePreload={false}
             />
         }
-        {isEdit
-            ? <>
-                {isOnSitePhoto
-                    ? null
-                    : <>
-                        <AnimatedFAB
-                            icon="paperclip"
-                            label={t("selectFile")}
-                            extended={false}
-                            visible={true}
-                            onPress={handlePickFile}
-                            animateFrom={buttonPosition}
-                            style={{ bottom: 336, position: "absolute", ...orderPosition }}
-                        />
-                        <AnimatedFAB
-                            icon="image"
-                            label={t("choosePhoto")}
-                            extended={false}
-                            visible={true}
-                            onPress={handleChooseImage}
-                            animateFrom={buttonPosition}
-                            style={{ bottom: 272, position: "absolute", ...orderPosition }}
-                        />
-                    </>
-                }
-                <AnimatedFAB
-                    icon="camera-outline"
-                    label={t("takePhoto")}
-                    extended={false}
-                    visible={true}
-                    onPress={handleShotImage}
-                    animateFrom={buttonPosition}
-                    style={{ bottom: 208, position: "absolute", ...orderPosition }}
-                />
-                <AnimatedFAB
-                    icon="check"
-                    label={t("ok")}
-                    extended={false}
-                    visible={true}
-                    onPress={() => onOk(files)}
-                    animateFrom={buttonPosition}
-                    style={{ bottom: 144, position: "absolute", ...orderPosition }}
-                />
-            </>
+        {orderVisible
+            ? isEdit
+                ? <>
+                    {isOnSitePhoto
+                        ? null
+                        : <>
+                            <AnimatedFAB
+                                icon="paperclip"
+                                label={t("selectFile")}
+                                extended={false}
+                                visible={true}
+                                onPress={handlePickFile}
+                                animateFrom={buttonPosition}
+                                style={{ bottom: bottomDistance + 208, position: "absolute", ...orderPosition }}
+                            />
+                            <AnimatedFAB
+                                icon="image"
+                                label={t("choosePhoto")}
+                                extended={false}
+                                visible={true}
+                                onPress={handleChooseImage}
+                                animateFrom={buttonPosition}
+                                style={{ bottom: bottomDistance + 144, position: "absolute", ...orderPosition }}
+                            />
+                        </>
+                    }
+                    <AnimatedFAB
+                        icon="camera-outline"
+                        label={t("takePhoto")}
+                        extended={false}
+                        visible={true}
+                        onPress={handleShotImage}
+                        animateFrom={buttonPosition}
+                        style={{ bottom: bottomDistance + 80, position: "absolute", ...orderPosition }}
+                    />
+                    <AnimatedFAB
+                        icon="check"
+                        label={t("ok")}
+                        extended={false}
+                        visible={true}
+                        onPress={() => onOk(files)}
+                        animateFrom={buttonPosition}
+                        style={{ bottom: bottomDistance + 16, position: "absolute", ...orderPosition }}
+                    />
+                </>
+                : null
             : null
         }
-        <AnimatedFAB
-            icon="keyboard-return"
-            label={t("back")}
-            extended={false}
-            visible={true}
-            onPress={onCancel}
-            animateFrom={buttonPosition}
-            style={{ bottom: 64, position: "absolute", ...orderPosition }}
-        />
-        <IconButton
-            icon="swap-horizontal"
-            iconColor={theme.colors.primary}
-            onPress={handleSwapPosition}
-            style={{ bottom: 160, position: "absolute", ...swapPosition }}
+        <ScHandSwitch
+            refreshDisplay={false}
+            docRefresh={() => { }}
+            cancelAction={onCancel}
+            theme={theme}
+            t={t}
         />
     </View>
     );
