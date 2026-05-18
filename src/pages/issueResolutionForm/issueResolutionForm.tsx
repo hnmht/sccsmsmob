@@ -118,6 +118,11 @@ function EditIRF() {
         }
         let thisIRF = cloneDeep(voucherData);
 
+        delete thisIRF.errData;
+        if (thisIRF.ts === "") {
+            delete thisIRF.ts;
+        };
+
         // Upload files 
         setOverlayStatus({ visible: true, description: t("uploadingFiles") });
         try {

@@ -45,7 +45,7 @@ export function getEmptyWorkOrder(person: Person, dept: SimpDept): WorkOrder {
     return {
         id: 0,
         billNumber: "",
-        billDate: currentDay,
+        billDate: dayjs().startOf("day").toISOString(),
         department: dept,
         description: "",
         status: 0,

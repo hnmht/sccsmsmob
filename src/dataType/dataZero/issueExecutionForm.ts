@@ -1,4 +1,4 @@
-import { EpochTime } from "../../i18n/dayjs";
+import { EpochTime,dayjs } from "../../i18n/dayjs";
 import { SimpDept } from "../types/department";
 import { IssueResolutionForm } from "../types/issueResolutionForm";
 import { Person } from "../types/person";
@@ -13,7 +13,7 @@ export function getEmptyIssueExecutionOrder(person: Person, dept: SimpDept, curr
     return {
         id: 0,
         billNumber: "",
-        billDate: currentDay,
+        billDate: dayjs().startOf("day").toISOString(),
         csa: getEmptyCSA(),
         epa: getEmptyEP(),
         executionValue: "0",

@@ -119,6 +119,10 @@ function LocalIRFList({
     const handleUpload = async (item: IssueResolutionForm) => {
         let thisIRF = cloneDeep(item);
         thisIRF.id = 0;
+        delete thisIRF.errData;
+        if (thisIRF.ts === ""){
+            delete thisIRF.ts;
+        }        
         // Upload files first if there are files in the IRF, then upload the IRF
         setOverlayStatus({ visible: true, description: t("uploadingFiles") });
         try {

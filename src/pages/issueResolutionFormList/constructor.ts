@@ -80,7 +80,7 @@ export function generateIRFConditions() {
             logic: "and",
             field: irfQueryFields[0],
             compare: greaterThanEqual,
-            value: dayjs().weekday(0).toISOString(),
+            value: dayjs().weekday(0).startOf("day").toISOString(),
             isNecessary: true
         },
         {

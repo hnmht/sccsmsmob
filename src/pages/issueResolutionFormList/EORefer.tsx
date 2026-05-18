@@ -96,7 +96,7 @@ function EORefer({
                 backgroundColor: theme.colors.background
             }}>
                 <View style={{ padding: 4, minHeight: 40, width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <Text variant="titleMedium">{t(title)}</Text>
+                    <Text variant="titleMedium" style={{width:"80%"}}>{t(title)}</Text>
                     {filterButtonDisp
                         ? <IconButton icon="filter-variant" iconColor={theme.colors.primary} onPress={filterAction} />
                         : null

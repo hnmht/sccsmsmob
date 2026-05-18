@@ -58,7 +58,7 @@ const ScDateTimeInput = (props: ScInputProps<ScDataTypeList.Date>) => {
             return
         }
         setVisible(false);
-        let scFormatValue = dayjs(newValue).toISOString();
+        let scFormatValue = dayjs(newValue).startOf("day").toISOString();
         pickDone(scFormatValue, itemKey, positionID, rowIndex, errInfo);
     };
     return (

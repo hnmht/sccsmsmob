@@ -55,7 +55,7 @@ export function getEmptyExecutionOrder(person: Person, dept: SimpDept, currentDa
     return {
         id: 0, 
         billNumber: "",
-        billDate: currentDay,
+        billDate: dayjs().startOf("day").toISOString(),
         department: dept,
         description: "",
         status: 0,

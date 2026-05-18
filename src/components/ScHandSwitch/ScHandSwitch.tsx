@@ -60,7 +60,7 @@ function ScHandSwitch(props: ScHandSwitchProps) {
 
     return (
         <>
-            {isOffline === 0 && refreshDisplay
+            {isOffline === 0 && refreshDisplay && orderVisible
                 ? <AnimatedFAB
                     icon="refresh"
                     label={t("refresh")}

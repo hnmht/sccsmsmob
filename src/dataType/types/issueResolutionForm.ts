@@ -49,7 +49,7 @@ export interface IssueResolutionForm {
     confirmer: Person;
     modifyDate: string;
     modifier: Person;
-    ts: string;
+    ts?: string;
     dr: 0 | 1;
     errData?: IRFErrors;
 }

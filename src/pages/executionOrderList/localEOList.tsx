@@ -158,7 +158,7 @@ function LocalEOList({
 
             thisEO.id = 0
             delete thisEO.errData;
-            console.log("before addEO EO: ", thisEO);
+            
             let addRes = await reqAddEO(thisEO);
             if (addRes.status) {
                 EORepo.delVoucher(item);
