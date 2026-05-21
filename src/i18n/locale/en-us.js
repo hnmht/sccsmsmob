@@ -1,4 +1,5 @@
-import dayjs from "dayjs"
+import dayjs from "dayjs";
+
 const locale = {
     name: 'en-US',
     weekdays: 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_'),
@@ -30,7 +31,7 @@ const locale = {
         LL: 'D MMMM YYYY',
         LLL: 'D MMMM YYYY HH:mm',
         LLLL: 'dddd, D MMMM YYYY HH:mm',
-        LLLLL: 'MM/YYYY'
+        llll: 'MMMM'
     },
     ordinal: (n) => {
         const s = ['th', 'st', 'nd', 'rd']

@@ -5,12 +5,14 @@ import { Person } from "./person";
 
 // User Event
 export interface Event {
+    date: string;
     id: number;
+    title: string;
     csa: ConstructionSite;
     ept: EPT;
     start: string;
     end: string;
-    status: 0 | 1;
+    status: 0 | 2 | 1 | 3 | 4;
     editable: boolean;
     allDay: boolean;
     backgroundColor: string;
@@ -28,6 +30,7 @@ export interface Event {
 // user Event Params
 export interface UserEvents {
     userID: number;
+    person:Person;
     start: string;
     end: string;
     resultNumber: number;

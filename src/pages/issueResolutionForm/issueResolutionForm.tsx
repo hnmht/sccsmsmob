@@ -332,7 +332,7 @@ function EditIRF() {
                                 itemShowName="eoDescription"
                                 errInfo={{ isErr: false, msg: "" }}
                                 itemKey="eoDescription"
-                                placeholder={"请输入说明"}
+                                placeholder={"descriptionPlaceholder"}
                                 initValue={voucherData.eoDescription}
                                 pickDone={handleGetValue}
                                 isBackendTest={false}

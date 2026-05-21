@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 const locale = {
     name: 'zh-CN',
@@ -23,12 +23,12 @@ const locale = {
         L: 'YYYY/MM/DD',
         LL: 'YYYY-M-D',
         LLL: 'YYYY-M-D HH:mm',
-        LLLL: 'YYYY-M-D ddddAh:mm',
-        LLLLL: 'YYYY年MM月',
+        LLLL: 'YYYY-M-D ddddAh:mm',       
         l: 'YYYY/M/D',
         ll: 'YYYY年M月D日',
         lll: 'YYYY年M月D日 HH:mm',
-        llll: 'YYYY年M月D日dddd HH:mm'
+        // llll: 'YYYY年M月D日dddd HH:mm'
+        llll: 'M月'
     },
     relativeTime: {
         future: '%s内',

@@ -90,7 +90,6 @@ export default async function request<T = any>(config: CustomRequestConfig): Pro
         }
         return res;
     } catch (err: any) {
-        console.error("出错:", err);
         Alert.alert(
             i18n.t("error"),
             err?.name === "AbortError" || err?.message === "Network Error" || err?.message === "Network request failed"

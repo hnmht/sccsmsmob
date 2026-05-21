@@ -1,6 +1,6 @@
 import i18n, { ResourceLanguage } from "i18next";
 import { initReactI18next } from "react-i18next";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import weekday from "dayjs/plugin/weekday";
 import quarterOfYear from "dayjs/plugin/quarterOfYear";
 import customParseFormat from "dayjs/plugin/customParseFormat";

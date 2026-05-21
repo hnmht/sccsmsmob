@@ -6,7 +6,6 @@ export const EpochTime = dayjs.utc('1970-01-01 00:00:00').toISOString();
 
 export const DateTimeFormat = (date: Dayjs | Date | string = dayjs(new Date()), formats: string = "L") => {
     if (!dayjs(date).isValid()) {
-        console.error("Invalid Date")
         return dayjs().format(formats);
     }
     return dayjs(date).format(formats);
