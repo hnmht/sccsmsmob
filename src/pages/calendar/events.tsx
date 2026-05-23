@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { useTheme, Text, IconButton, Surface, MD3Theme } from "react-native-paper";
+import { Text, IconButton, Surface, MD3Theme } from "react-native-paper";
 import { DateTimeFormat, dayjs } from "../../i18n/dayjs";
 import { Calendar } from "../../dataType/types/calendar";
 import { VoucherStatus } from "../../constant/voucherStatus";

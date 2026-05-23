@@ -712,6 +712,7 @@
     "unread": "未读",
     "dragToReposition": "拖拽以调整位置",
     "offlineRequestUnavailable": "离线状态下无法请求数据",
+    "riskDistribution":"风险分布",
     
     "MenuDashboard": "首页",
     "MenuCalendar": "日程",

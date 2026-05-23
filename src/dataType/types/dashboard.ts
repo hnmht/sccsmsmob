@@ -109,3 +109,11 @@ export interface RiskTrendData {
     endDate: string;
     riskTrends: RiskCount[];
 }
+
+// Date Interval
+export interface DateInterval {
+    id:string;
+    label:string;
+    startDate:string;
+    endDate:string;
+}

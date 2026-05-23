@@ -715,6 +715,7 @@
     "unread":"Unread",
     "dragToReposition":"Drag to reposition",
     "offlineRequestUnavailable":"Offline data requests are unavailable",
+    "riskDistribution": "Risk Distribution",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",
