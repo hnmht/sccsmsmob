@@ -21,8 +21,11 @@ function Stats({
     theme,
     t
 }: StatsProps) {
+    const screen = useWindowDimensions();
+    const rowWidth = screen.width - itemSpace * 2;
+    const itemWidth = rowWidth / 2;
     return (
-        <Surface style={{ display: "flex", width: "100%", marginTop: 8, borderRadius: 8 }}>
+        <Surface style={{ display: "flex", width: itemWidth, marginTop: 8, marginLeft: itemSpace / 2, marginRight: itemSpace / 2, paddingLeft: itemSpace, borderRadius: 8 }}>
             <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 4, marginRight: 8,marginLeft:8 }}>
                 <Text variant="titleMedium" maxFontSizeMultiplier={1.0}>{t(title)}</Text>
             </View>
