@@ -18,8 +18,6 @@ import IssueRank from "./issueRank";
 import Reviewed from "./reviewed";
 import BeReviewed from "./beReviewed";
 
-
-
 function Dashboard() {
     const theme = useTheme();
     const { t } = useTranslation();
@@ -118,9 +116,7 @@ function Dashboard() {
                 </ScrollView>
                 : <ActivityIndicator color={theme.colors.primary} animating={true} />
             }
-
         </SafeAreaView>
-
     );
 };
 

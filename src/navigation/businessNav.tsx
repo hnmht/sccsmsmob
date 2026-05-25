@@ -10,7 +10,7 @@ import ExecutionOrderReview from "../pages/executionOrderReview/executionOrderRe
 import ExecutionOrderReviewList from "../pages/executionOrderReviewList/executionOrderReviewList";
 import IssueResolutionForm from "../pages/issueResolutionForm/issueResolutionForm";
 import IssueResolutionFormList from "../pages/issueResolutionFormList/issueResolutionFormList";
-import LookupDocument from "../pages/lookupDocument/lookupDocument";
+import DocumentSearch from "../pages/documentSearch/documentSearch";
 import ReceivedTraining from "../pages/receivedTraining/receivedTraining";
 import PPEReport from "../pages/ppeReport/ppeReport";
 import { BusinessNavParamList } from "./config/screenParams";
@@ -66,9 +66,9 @@ const BusinessNav = () => {
                 component={IssueResolutionFormList}
             />
             <BusinessStack.Screen
-                name="LookupDocument"
+                name="DocumentSearch"
                 options={{ headerShown: false, title: t("MenuDocumentFind") }}
-                component={LookupDocument}
+                component={DocumentSearch}
             />
             <BusinessStack.Screen
                 name="ReceivedTraining"

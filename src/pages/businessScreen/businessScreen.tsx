@@ -95,7 +95,7 @@ const BusinessScreen = () => {
                     title="MenuDocumentFind"
                     iconColor={theme.colors.primary}
                     textColor={theme.colors.primary}
-                    onTouch={() => navigation.navigate("LookupDocument")}
+                    onTouch={() => navigation.navigate("DocumentSearch")}
                     disabled={false}
                 />
                 : null

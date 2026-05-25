@@ -28,7 +28,7 @@ export type BusinessNavParamList = {
     ExecutionOrderReviewList: undefined;
     IssueResolutionForm: IssueResolutionFormParams;
     IssueResolutionFormList: undefined;
-    LookupDocument: undefined;
+    DocumentSearch: undefined;
     ReceivedTraining: undefined;
     PPEReport: undefined;
 }
