@@ -11,7 +11,7 @@ interface EventsProps {
     t: TFunction
 }
 
-const Events = ({ events, theme, t }: EventsProps) => {
+const Events = ({ events, theme, t }: EventsProps) => {    
     return (
         <>
             {events.length > 0
@@ -29,7 +29,7 @@ const Events = ({ events, theme, t }: EventsProps) => {
                                             <Text variant="titleLarge" style={{ color: theme.colors.primary }}>{DateTimeFormat(event.start, "LT") + "-" + DateTimeFormat(event.end, "LT")}</Text>
                                             <IconButton icon="circle" iconColor={event.backgroundColor} />
                                         </View>
-                                        <Text style={{ color: event.backgroundColor }}>{event.title}</Text>
+                                        <Text>{event.title}</Text>
                                         <Text>{t("status")} : {t(VoucherStatus[event.status])}</Text>
                                         <Text>{t("creator")} : {event.creator.name}</Text>
                                         <Text>{t("hDescription")} : {event.hDescription}</Text>

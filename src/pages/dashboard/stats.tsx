@@ -1,6 +1,6 @@
 import { TFunction } from "i18next";
 import { View, useWindowDimensions } from "react-native";
-import { Chip, MD3Theme, Surface, Text } from "react-native-paper";
+import {  MD3Theme, Surface, Text } from "react-native-paper";
 const itemSpace = 8;
 interface StatsProps {
     title: string;

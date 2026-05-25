@@ -17,6 +17,13 @@ export function transEventsToCalendar(events: Event[]): Calendar[] {
     let newMap = new Map<string, Event[]>();
     events.forEach(event => {
         let startDate = dayjs(event.start).format("YYYY-MM-DD");
+        if (event.billType === "WO") {
+            event.title = `${i18n.t("executeInstruction")} : ${event.csa.name}<${event.ept.name}>`
+        }
+
+        if (event.billType === "EO") {
+            event.title = `${i18n.t("handleIssue")} : ${event.csa.name}<${event.epaName}>`
+        }
         if (newMap.has(startDate)) {
             let oldValues = newMap.get(startDate);
             if (oldValues === undefined) {
