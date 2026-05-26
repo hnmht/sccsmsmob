@@ -37,7 +37,7 @@ export function generateRTRConditions() {
             field: { id: 3, value: "b.studentid", label: "student", inputType: 510, resultField: "id" },
             compare: equal,
             value: currentPerson,
-            isNecessary: true
+            isNecessary: false
         }
     ];
     return conditions;
