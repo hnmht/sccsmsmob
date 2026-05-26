@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { Card, Text, TextInput, useTheme } from "react-native-paper";
+import { cloneDeep } from "lodash"
 import PersonAvatar from "../../components/PersonAvatar/PersonAvatar";
 import Icon from '@react-native-vector-icons/material-design-icons';
 import { matchSorter } from "match-sorter";
@@ -13,7 +14,6 @@ import ScHandSwitch from "../../components/ScHandSwitch/ScHandSwitch";
 import { useTranslation } from "react-i18next";
 import { useBusinessNavigation } from "../../navigation/config/screenParams";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { cloneDeep } from "lodash";
 
 const searchFields = ["code", "name", "deptName", "mobile", "email", "description"];
 

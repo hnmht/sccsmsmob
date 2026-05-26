@@ -84,7 +84,7 @@ export interface TaughtLessonsReport {
     creatorName: string;
 }
 // Recireved Training Report
-export interface RecivedTrainingReport {
+export interface ReceivedTrainingReport {
     hid: number;
     bid: number;
     billNumber: string;

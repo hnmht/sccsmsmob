@@ -1,4 +1,6 @@
 import { QueryParams } from "../dataType/types/public";
+import { APIResponse } from "../dataType/types/response";
+import { ReceivedTrainingReport } from "../dataType/types/trainingRecord";
 import request from "../utils/request";
 
 // Get Training Record List
@@ -22,7 +24,7 @@ export function reqGetTaughtLessonsReport(data: QueryParams, isLoading: boolean 
 }
 
 // Get Recived Training Report
-export function reqGetRecivedTrainingReport(data: QueryParams, isLoading: boolean = true) {
+export function reqGetReceivedTrainingReport(data: QueryParams, isLoading: boolean = true) :Promise<APIResponse<ReceivedTrainingReport[]>> {
     return request({
         url: "/tr/rtrep",
         method: 'post',

@@ -41,6 +41,13 @@ const locale = {
     inputMask: {
         L: 'MM/DD/YYYY',
         LLLL: "MM/DD/YYYY HH:mm"
+    },
+    numberFormats: {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 5,
+        style: "decimal",
+        currency: "USD",
+        useGrouping: true,
     }
 }
 

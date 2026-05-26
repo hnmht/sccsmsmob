@@ -23,7 +23,7 @@ const locale = {
         L: 'YYYY/MM/DD',
         LL: 'YYYY-M-D',
         LLL: 'YYYY-M-D HH:mm',
-        LLLL: 'YYYY-M-D ddddAh:mm',       
+        LLLL: 'YYYY-M-D ddddAh:mm',
         l: 'YYYY/M/D',
         ll: 'YYYY年M月D日',
         lll: 'YYYY年M月D日 HH:mm',
@@ -63,6 +63,13 @@ const locale = {
     inputMask: {
         L: 'YYYY/MM/DD',
         LLLL: "YYYY-MM-DD HH:mm"
+    },
+    numberFormats: {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 5,
+        style: "decimal",
+        currency: "CNY",
+        useGrouping: true,
     }
 }
 
