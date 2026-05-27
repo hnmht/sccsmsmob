@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ScrollView, View, TouchableOpacity, Alert } from "react-native";
-import { Button, AnimatedFAB, useTheme, Text, Card, IconButton, Divider } from "react-native-paper";
-import Geolocation from "@react-native-community/geolocation";
+import { Button, AnimatedFAB, useTheme, Text, Card, Divider } from "react-native-paper";
 import ImageViewer from "react-native-image-zoom-viewer";
 import ImageCropPicker from "react-native-image-crop-picker";
 import { pick, types, keepLocalCopy, FileToCopy } from "@react-native-documents/picker";
@@ -11,11 +10,8 @@ import { ScFile } from "../../../dataType/types/file";
 import { uniqBy, cloneDeep } from "lodash";
 
 import { DateTimeFormat, dayjs } from "../../../i18n/dayjs";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { changeSwapPosition } from "../../../store/slice/swapPosition";
-
+import { useAppSelector } from "../../../store/hooks";
 import { fileMaxSize } from "../../../../app.json";
-
 import { filesToUrls, fileIcon } from "./constructions";
 import { readImageInfo, imageAddWaterMark, parseFileName } from "../../tools/file";
 import { pubParams } from "../../pub/pubParams";
@@ -42,12 +38,10 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     const [displayList, setDisplayList] = useState(true);
     const { t } = useTranslation();
     const theme = useTheme();
-    const dispatch = useAppDispatch();
     const imageUrls = filesToUrls(files);
     const location = useAppSelector(state => state.location.current);
     // Button Position
     const { buttonPosition, orderPosition, bottomDistance, orderVisible } = useAppSelector(state => state.swapPosition);
-
     // Check Permissions
     useEffect(() => {
         const checkPermission = async () => {
@@ -184,6 +178,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                 compressImageQuality: 0.8,
                 cropping: false,
                 includeExif: true,
+                
             });
             const fileInfo = await imageAddWaterMark(result, markTexts, currentLoacation);
             fileInfo.source = "mobileShoot";
@@ -251,49 +246,6 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
         } catch (err) {
             Alert.alert(t("error"), t("fileDownloadFailedError", { errMsg: err }), [{ text: t("ok") }]);
         }
-        /*const fileExist = await exists(path);
-         const resp = downloadFile({
-            fromUrl: item.fileUrl,
-            toFile: path
-        });
-        resp.promise
-            .then(async res => {
-                if (res && res.statusCode === 200 && res.bytesWritten > 0) {
-                    await getFSInfo().then(response => {
-                        const deviceSpace = response.freeSpace * 0.001;
-                        if (deviceSpace > res.bytesWritten) {
-                            Alert.alert(
-                                t("tip"),
-                                t("fileDownloadComplete", { path: path }),
-                                [
-                                    {
-                                        text: t("ok")
-                                    }
-                                ]
-                            );
-                        } else {
-                            Alert.alert(t("error"), t("fileDownloadFailedSpace"), [{
-                                text: t("ok")
-                            }]);
-                        }
-                    });
-                } else {
-                    Alert.alert(t("error"), t("fileDownloadFailedUnknown"), [{ text: t("ok") }]);
-                }
-            })
-            .catch(err => {
-                if (fileExist) {
-                    Alert.alert(
-                        t("tip"),
-                        t("fileDownloadFailedExist", { path: path }),
-                        [{
-                            text: t("ok"),
-                            onPress: () => { return }
-                        }]);
-                } else {
-                    Alert.alert(t("error"), t("fileDownloadFailedError", { errMsg: err }), [{ text: t("ok") }]);
-                }
-            }) */
     };
 
     return (<View style={{ backgroundColor: theme.colors.background, flex: 1 }}>

@@ -421,7 +421,7 @@ export const generateMarkText = (voucherData: ExecutionOrder | undefined, row: E
     }
     // Generate Execution Project Archive information
     if (row.epa.name !== "") {
-        mark.push({ position: { x: 0, y: 0 }, text: `${t("csa")}:${row.epa.name}`, textSize: 20, color: " rgb(92, 93, 114)" });
+        mark.push({ position: { x: 0, y: 0 }, text: `${t("epa")}:${row.epa.name}`, textSize: 20, color: " rgb(92, 93, 114)" });
     }
     return mark;
 };

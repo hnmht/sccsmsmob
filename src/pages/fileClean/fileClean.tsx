@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { Text, Button, Card, useTheme, Divider } from "react-native-paper";
-import { ScrollView, View, PermissionsAndroid, Platform, Alert } from "react-native";
+import { ScrollView, View, Platform, Alert } from "react-native";
 import RNFS from "react-native-fs";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
-import { dayjs } from "../../i18n/dayjs";
+import { DateTimeFormat, dayjs } from "../../i18n/dayjs";
 import ActivityOverlay from "../../components/ActivityOverlay/ActivityOverlay";
+import { requestPermissions } from "../../components/tools/permission";
 
 import { IRFRepo } from "../../db/crud/issueResolutionForm";
 import { EORepo } from "../../db/crud/executionOrder";
@@ -14,6 +17,7 @@ import { WorkOrder } from "../../dataType/types/workOrder";
 import { ExecutionOrder } from "../../dataType/types/executionOrder";
 import type { IssueResolutionForm } from "../../dataType/types/issueResolutionForm";
 import { useSettingNavigation } from "../../navigation/config/screenParams";
+
 
 const externalDir = `${RNFS.ExternalDirectoryPath}/Pictures`;
 const cacheDir = RNFS.CachesDirectoryPath;
@@ -40,72 +44,45 @@ const calculationFiles = (files: RNFS.ReadDirItem[]) => {
 
 function FileCleaning() {
     const theme = useTheme();
+    const { t } = useTranslation()
     const navigation = useSettingNavigation();
     const [externalFileInfo, setExternalFileInfo] = useState({ number: 0, size: 0 });
     const [cacheFileInfo, setCacheFileInfo] = useState({ number: 0, size: 0 });
     const [overlayStatus, setOverlayStatus] = useState({ visible: false, description: "" });
     const [wos, setWos] = useState<WorkOrder[]>([]);
-    const [eds, setEds] = useState<ExecutionOrder[]>([]);
-    const [dds, setDds] = useState<IssueResolutionForm[]>([]);
-    const cacheCleanDisabled = cacheFileInfo.number === 0 || (eds.length + dds.length) > 0;
-    //授权
+    const [eos, setEos] = useState<ExecutionOrder[]>([]);
+    const [irfs, setIrfs] = useState<IssueResolutionForm[]>([]);
+    const cacheCleanDisabled = cacheFileInfo.number === 0 || (eos.length + irfs.length) > 0;
+    const isAndroid = Platform.OS === "android";
+    // Check Permissions
     useEffect(() => {
-        const checkPermisson = async () => {
-            if (Platform.OS === "web") {
-                return
-            }
-            try {
-                if (Platform.OS === "android") {
-                    const readMediaGranted = await PermissionsAndroid.check("android.permission.READ_MEDIA_IMAGES");
-                    const readStorageGranted = await PermissionsAndroid.check("android.permission.READ_EXTERNAL_STORAGE");
-                    const writeStorageGranted = await PermissionsAndroid.check("android.permission.WRITE_EXTERNAL_STORAGE");
-                    const mediaLocationGranted = await PermissionsAndroid.check("android.permission.ACCESS_MEDIA_LOCATION");
-
-                    if (Platform.Version >= 33) {
-                        if (!readMediaGranted || !mediaLocationGranted) {
-                            Alert.alert(
-                                "提示",
-                                `现场管理系统还未填写带有附件的执行单和问题处理单,无需清理!`,
-                                [
-                                    {
-                                        text: "确定",
-                                        onPress: () => navigation.goBack(),
-                                        style: "cancel"
-                                    },
-                                ],
-                            );
+        const checkPermission = async () => {
+            const res = await requestPermissions();
+            if (!res) {
+                Alert.alert(
+                    t("error"),
+                    t("insufficientPermission"),
+                    [
+                        {
+                            text: t("ok"),
+                            onPress: navigation.goBack
                         }
-                    } else {
-                        if (!readStorageGranted || !writeStorageGranted) {
-                            Alert.alert(
-                                "提示",
-                                `现场管理系统还未填写带有附件的执行单和问题处理单,无需清理!`,
-                                [
-                                    {
-                                        text: "确定",
-                                        onPress: () => navigation.goBack(),
-                                        style: "cancel"
-                                    }
-                                ],
-                            );
-                        }
-                    }
-                }
-            } catch (err) {
-                console.error(err);
+                    ]
+                )
             }
-        };
-        checkPermisson();
+        }
+        checkPermission();
     }, []);
 
+    // Get local vouchers
     useEffect(() => {
         function getLocalData() {
             const newWOs = WORepo.getAllVouchers();
             const newDDs = IRFRepo.getAllVouchers();
-            const newEDs = EORepo.getAllVouchers();
+            const newEOs = EORepo.getAllVouchers();
             setWos(newWOs);
-            setEds(newEDs);
-            setDds(newDDs);
+            setEos(newEOs);
+            setIrfs(newDDs);
         }
         getLocalData();
     }, []);
@@ -126,9 +103,9 @@ function FileCleaning() {
         getFilesInfo();
     }, []);
 
-    //清理原始照片
+    // Actions after cleaning original photos, including deleting files and refreshing file info
     const handleCleanNativePicture = async () => {
-        setOverlayStatus({ visible: true, description: "正在删除原始图片..." });
+        setOverlayStatus({ visible: true, description: t("deletingOriginalPhotos") });
         let dirs = await RNFS.readDir(externalDir);
         dirs.forEach(async (file) => {
             if (file.isFile()) {
@@ -140,26 +117,27 @@ function FileCleaning() {
         setExternalFileInfo(fileInfo);
         setOverlayStatus({ visible: false, description: "" });
     };
-    //清理原始照片提示
+
+    // Delete all original photos alert
     const handleCleanNativePictureAlert = () => {
-        Alert.alert("警告", "本操作将删除所有原始照片,且不可恢复,是否继续！", [
+        Alert.alert(t("tip"), t("cleanOriginalPhotosTip"), [
             {
-                text: "取消",
+                text: t("cancel"),
                 onPress: () => { return }
             },
             {
-                text: "确定",
+                text: t("ok"),
                 onPress: () => handleCleanNativePicture()
             }
         ]);
     };
 
-    //清理单据附件
+    // Actions after cleaning attachment files, including deleting files and refreshing file info
     const handleCleanVoucherFile = async () => {
-        setOverlayStatus({ visible: true, description: "正在删除单据附件..." });
-        //删除cache中image_cache文件夹
+        setOverlayStatus({ visible: true, description: t("deletingAttachments") });
+        // delete cacheDir/image_cache file generated by react-native-image-crop-picker, if it exists, to avoid affecting the calculation of cache file info and leaving empty folders in cacheDir after deleting attachments
         await RNFS.unlink(`${cacheDir}/image_cache`);
-        //删除文件
+        // Delete all files in cacheDir, including attachments and image_cache, but keep folders, then refresh file info
         let dirs = await RNFS.readDir(cacheDir);
         dirs.forEach(async (file) => {
             if (file.isFile()) {
@@ -172,117 +150,112 @@ function FileCleaning() {
         setOverlayStatus({ visible: false, description: "" });
     };
 
-    //删除全部本地单据提示
+    // Delete all local vouchers alert
     const handleDelAllLocalVoucherPress = async () => {
-        Alert.alert("警告", "本操作将删除所有本地单据,且不可恢复,是否继续！", [
+        Alert.alert(t("tip"), t("deleteLocalReceiptsTip"), [
             {
-                text: "取消",
+                text: t("cancel"),
                 onPress: () => { return }
             },
             {
-                text: "确定",
+                text: t("ok"),
                 onPress: () => handleDelAllLocalVoucher()
             }
         ]);
     };
 
-    //删除所有本地单据
+    // Delete all local vouchers, including local WOs, EDs and DDs, then refresh local vouchers and file info
     const handleDelAllLocalVoucher = () => {
-        setOverlayStatus({ visible: true, description: "正在删除本地单据..." });
+        setOverlayStatus({ visible: true, description: t("deletingLocalReceipts") });
         if (wos.length > 0) {
-            WORepo.delAllVouchers(); //删除所有本地指令单
+            WORepo.delAllVouchers(); 
         }
-        if (eds.length > 0) {
-            EORepo.delAllVouchers(); //删除所有本地执行单
+        if (eos.length > 0) {
+            EORepo.delAllVouchers(); 
         }
-        if (dds.length > 0) {
-            IRFRepo.delAllVouchers(); //删除所有本地问题处理单
+        if (irfs.length > 0) {
+            IRFRepo.delAllVouchers(); 
         }
-
-        //刷新本地单据
+        // Refresh local vouchers
         const newWOs = WORepo.getAllVouchers();
         const newDDs = IRFRepo.getAllVouchers();
-        const newEDs = EORepo.getAllVouchers();
+        const newEOs = EORepo.getAllVouchers();
         setWos(newWOs);
-        setEds(newEDs);
-        setDds(newDDs);
+        setEos(newEOs);
+        setIrfs(newDDs);
         setOverlayStatus({ visible: false, description: "" });
     }
-    //逐个删除本地指令单
-    const handleDeleteLocalWO = (wo: WorkOrder) => {
-        //删除指令单
-        WORepo.delVoucher(wo);
-        //重新获取本地指令单
+    // Delete local WO one by one, then refresh local WOs
+    const handleDeleteLocalWO = (wo: WorkOrder) => {        
+        WORepo.delVoucher(wo);        
         const newWOs = WORepo.getAllVouchers();
         setWos(newWOs);
     };
-    //逐个删除本地执行单
-    const handleDeleteLocalED = (ed: ExecutionOrder) => {
-        //删除执行单
-        EORepo.delVoucher(ed);
-
-        //重新获取本地执行单
-        const newEDs = EORepo.getAllVouchers();
-        setEds(newEDs);
+    // Delete local EO one by one, then refresh local EOs
+    const handleDeleteLocalEO = (eo: ExecutionOrder) => {
+        EORepo.delVoucher(eo);
+        const newEOs = EORepo.getAllVouchers();
+        setEos(newEOs);
     };
-    //逐个删除本地问题处理单
-    const handleDeleteLocalDD = (dd: IssueResolutionForm) => {
-        //删除
-        IRFRepo.delVoucher(dd);
-        //重新获取本地单据
+    // Delete local IRF one by one, then refresh local IRFs
+    const handleDeleteLocalDD = (irf: IssueResolutionForm) => {
+        IRFRepo.delVoucher(irf);
         const newDDs = IRFRepo.getAllVouchers();
-        setDds(newDDs);
+        setIrfs(newDDs);
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
             <ActivityOverlay
                 visible={overlayStatus.visible}
                 description={overlayStatus.description}
-            // closeAction={() => setOverlayStatus({ visible: false, goBackDisabled: false, description: "" })}
             />
             <ScrollView>
-                <Card style={{ marginHorizontal: 4, marginTop: 16, marginBottom: 8 }}>
-                    <Card.Title
-                        title={"原始照片"}
-                        titleMaxFontSizeMultiplier={maxScale}
-                    />
-                    <Card.Content>
-                        <Text variant="bodyMedium" maxFontSizeMultiplier={maxScale} style={{ width: "100%", color: theme.colors.primary }}>
-                            使用相机拍摄照片时,原始照片被存储到手机中(上传照片为处理后的照片),本功能可删除这些照片,释放手机存储空间.
-                        </Text>
-                        <Text maxFontSizeMultiplier={maxScale}>{`存放位置：${externalDir}`}</Text>
-                        <Text maxFontSizeMultiplier={maxScale}>{`文件数量: ${externalFileInfo.number}`}</Text>
-                        <Text maxFontSizeMultiplier={maxScale}>{`占用空间：${externalFileInfo.size}M`}</Text>
-                    </Card.Content>
-                    <Card.Actions>
-                        <Button
-                            mode="text"
-                            disabled={externalFileInfo.number === 0}
-                            textColor={theme.colors.error}
-                            onPress={handleCleanNativePictureAlert}
-                        >
-                            全部删除
-                        </Button>
-                    </Card.Actions>
-                </Card>
+                {isAndroid
+                    ? <Card style={{ marginHorizontal: 4, marginTop: 16, marginBottom: 8 }}>
+                        <Card.Title
+                            title={t("originalPhotos")}
+                            titleMaxFontSizeMultiplier={maxScale}
+                        />
+                        <Card.Content>
+                            <Text variant="bodyMedium" maxFontSizeMultiplier={maxScale} style={{ width: "100%", color: theme.colors.primary }}>
+                                {t("cleanupOrginalPhotosDesc")}
+                            </Text>
+                            <Text maxFontSizeMultiplier={maxScale}>{`${t("filePath")} : ${externalDir}`}</Text>
+                            <Text maxFontSizeMultiplier={maxScale}>{`${t("numberOfFiles")} : ${externalFileInfo.number}`}</Text>
+                            <Text maxFontSizeMultiplier={maxScale}>{`${t("storageUsed")} : ${externalFileInfo.size}M`}</Text>
+                        </Card.Content>
+                        <Card.Actions>
+                            <Button
+                                mode="text"
+                                disabled={externalFileInfo.number === 0}
+                                textColor={theme.colors.error}
+                                onPress={handleCleanNativePictureAlert}
+                            >
+                                {t("deleteAll")}
+                            </Button>
+                        </Card.Actions>
+                    </Card>
+                    : null
+                }
+
                 <Card style={{ marginHorizontal: 4, marginTop: 8, marginBottom: 8 }}>
                     <Card.Title
-                        title={"本地单据"}
+                        title={"localReceipts"}
                         titleMaxFontSizeMultiplier={1.5}
                     />
                     <Card.Content>
                         <Text maxFontSizeMultiplier={maxScale} variant="bodyMedium" style={{ width: "100%", color: theme.colors.primary }}>
-                            前登录用户及其他用户在本机暂存未上传单据.
+                            {t("localReceiptsDesc")}.
                         </Text>
                         <Divider />
                         {wos.length > 0
                             ? <>
-                                <Text maxFontSizeMultiplier={maxScale} variant="titleMedium">指令单</Text>
+                                <Text maxFontSizeMultiplier={maxScale} variant="titleMedium">{t("wo")}</Text>
                                 {wos.map(wo => {
                                     return (
                                         <View key={wo.id} style={{ display: "flex", width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                            <Text maxFontSizeMultiplier={maxScale}>{dayjs(wo.billDate).format("YY-MM-DD")}</Text>
+                                            <Text maxFontSizeMultiplier={maxScale}>{DateTimeFormat(wo.billDate,"LL")}</Text>
                                             <Text maxFontSizeMultiplier={maxScale}>{`LW${wo.id}`}</Text>
                                             <Text maxFontSizeMultiplier={maxScale}>{wo.creator.name}</Text>
                                             <Button
@@ -290,7 +263,7 @@ function FileCleaning() {
                                                 textColor={theme.colors.error}
                                                 onPress={() => handleDeleteLocalWO(wo)}
                                             >
-                                                删除
+                                                {t("delete")}
                                             </Button>
                                         </View>
                                     )
@@ -299,21 +272,21 @@ function FileCleaning() {
                             </>
                             : null
                         }
-                        {eds.length > 0
+                        {eos.length > 0
                             ? <>
-                                <Text variant="titleMedium">执行单</Text>
-                                {eds.map(ed => {
+                                <Text variant="titleMedium">{t("eo")}</Text>
+                                {eos.map(eo => {
                                     return (
-                                        <View key={ed.id} style={{ display: "flex", width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                            <Text maxFontSizeMultiplier={maxScale}>{dayjs(ed.billDate).format("YY-MM-DD")}</Text>
-                                            <Text maxFontSizeMultiplier={maxScale}>{`LE${ed.id}`}</Text>
-                                            <Text maxFontSizeMultiplier={maxScale}>{ed.creator.name}</Text>
+                                        <View key={eo.id} style={{ display: "flex", width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                            <Text maxFontSizeMultiplier={maxScale}>{DateTimeFormat(eo.billDate,"LL")}</Text>
+                                            <Text maxFontSizeMultiplier={maxScale}>{`LE${eo.id}`}</Text>
+                                            <Text maxFontSizeMultiplier={maxScale}>{eo.creator.name}</Text>
                                             <Button
                                                 mode="text"
                                                 textColor={theme.colors.error}
-                                                onPress={() => handleDeleteLocalED(ed)}
+                                                onPress={() => handleDeleteLocalEO(eo)}
                                             >
-                                                删除
+                                                {t("delete")}
                                             </Button>
                                         </View>
                                     )
@@ -322,21 +295,21 @@ function FileCleaning() {
                             </>
                             : null
                         }
-                        {dds.length > 0
+                        {irfs.length > 0
                             ? <>
-                                <Text variant="titleMedium">问题处理单</Text>
-                                {dds.map(dd => {
+                                <Text variant="titleMedium">{t("irf")}</Text>
+                                {irfs.map(irf => {
                                     return (
-                                        <View key={dd.id} style={{ display: "flex", width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                            <Text maxFontSizeMultiplier={maxScale}>{dayjs(dd.billDate).format("YY-MM-DD")}</Text>
-                                            <Text maxFontSizeMultiplier={maxScale}>{`LD${dd.id}`}</Text>
-                                            <Text maxFontSizeMultiplier={maxScale}>{dd.creator.name}</Text>
+                                        <View key={irf.id} style={{ display: "flex", width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                            <Text maxFontSizeMultiplier={maxScale}>{DateTimeFormat(irf.billDate,"LL")}</Text>
+                                            <Text maxFontSizeMultiplier={maxScale}>{`LD${irf.id}`}</Text>
+                                            <Text maxFontSizeMultiplier={maxScale}>{irf.creator.name}</Text>
                                             <Button
                                                 mode="text"
                                                 textColor={theme.colors.error}
-                                                onPress={() => handleDeleteLocalDD(dd)}
+                                                onPress={() => handleDeleteLocalDD(irf)}
                                             >
-                                                删除
+                                                {t("delete")}
                                             </Button>
                                         </View>
                                     )
@@ -349,29 +322,29 @@ function FileCleaning() {
                     <Card.Actions>
                         <Button
                             mode="text"
-                            disabled={(wos.length + eds.length + dds.length) === 0}
+                            disabled={(wos.length + eos.length + irfs.length) === 0}
                             textColor={theme.colors.error}
                             onPress={handleDelAllLocalVoucherPress}
                         >
-                            全部删除
+                            {t("deleteAll")}
                         </Button>
                     </Card.Actions>
                 </Card>
                 <Card style={{ marginHorizontal: 4, marginTop: 8, marginBottom: 8 }}>
                     <Card.Title
-                        title={"单据附件"}
+                        title={t("attachments")}
                         titleMaxFontSizeMultiplier={1.5}
                     />
                     <Card.Content>
                         <Text maxFontSizeMultiplier={maxScale} variant="bodyMedium" style={{ width: "100%", color: theme.colors.primary }}>
-                            清理执行单和问题处理单上传以后,留存在本机的单据附件.
+                            {t("deleteAttachmentsDesc")}
                         </Text>
                         <Text maxFontSizeMultiplier={maxScale} variant="bodyMedium" style={{ width: "100%", color: theme.colors.error }}>
-                            全部删除本地执行单和问题处理单后才能清理
+                            {t("deleteAttachmentsWarn")}
                         </Text>
-                        <Text maxFontSizeMultiplier={maxScale}>{`存放位置：${cacheDir}`}</Text>
-                        <Text maxFontSizeMultiplier={maxScale}>{`文件数量: ${cacheFileInfo.number}`}</Text>
-                        <Text maxFontSizeMultiplier={maxScale}>{`占用空间：${cacheFileInfo.size}M`}</Text>
+                        <Text maxFontSizeMultiplier={maxScale}>{`${t("filePath")} : ${cacheDir}`}</Text>
+                        <Text maxFontSizeMultiplier={maxScale}>{`${t("numberOfFiles")} : ${cacheFileInfo.number}`}</Text>
+                        <Text maxFontSizeMultiplier={maxScale}>{`${t("storageUsed")} : ${cacheFileInfo.size}M`}</Text>
                     </Card.Content>
                     <Card.Actions>
                         <Button
@@ -380,75 +353,16 @@ function FileCleaning() {
                             disabled={cacheCleanDisabled}
                             onPress={handleCleanVoucherFile}
                         >
-                            全部删除
+                            {t("deleteAll")}
                         </Button>
                     </Card.Actions>
                 </Card>
             </ScrollView>
             <View style={{ width: "100%", alignItems: "center", justifyContent: "center", margin: 8 }}>
-                <Button mode="elevated" onPress={() => navigation.goBack()} style={{ width: "40%" }} >返回</Button>
+                <Button mode="elevated" onPress={() => navigation.goBack()} style={{ width: "40%" }} >{t("back")}</Button>
             </View>
-        </View>
+        </SafeAreaView>
     )
 };
 
 export default FileCleaning;
-
-
-/* async function checkPermisson() {
-    if (Platform.OS === "web") {
-        return
-    }
-    try {
-        if (Platform.OS === "android") {
-            // const cameraGranted = await PermissionsAndroid.check('android.permission.CAMERA');
-            // const locationGranted = await PermissionsAndroid.check("android.permission.ACCESS_FINE_LOCATION");
-            // const mediaLocationGranted = await PermissionsAndroid.check("android.permission.ACCESS_MEDIA_LOCATION");
-            const readMediaGranted = await PermissionsAndroid.check("android.permission.READ_MEDIA_IMAGES");
-            const readStorageGranted = await PermissionsAndroid.check("android.permission.READ_EXTERNAL_STORAGE");
-            const writeStorageGranted = await PermissionsAndroid.check("android.permission.WRITE_EXTERNAL_STORAGE");
-            let reqPermissons = {};
-
-            if (Platform.Version >= 33) {
-                if (!readMediaGranted || !mediaLocationGranted) {
-                    reqPermissons = await PermissionsAndroid.requestMultiple([
-                        // PermissionsAndroid.PERMISSIONS.CAMERA,
-                        // PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                        PermissionsAndroid.PERMISSIONS.ACCESS_MEDIA_LOCATION,
-                        PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-                    ]);
-                }
-            } else {
-                if (!readStorageGranted || !writeStorageGranted)
-                    reqPermissons = await PermissionsAndroid.requestMultiple(
-                        [
-                            // PermissionsAndroid.PERMISSIONS.CAMERA,
-                            // PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-                            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-                        ]
-                    );
-            }
-            let denyNumber = 0;
-            for (let key in reqPermissons) {
-                if (reqPermissons[key] !== "granted") {
-                    denyNumber++
-                }
-            }
-
-            if (denyNumber > 0) {
-                Alert.alert(
-                    "错误",
-                    "组件需要的权限没有正确获取,界面将关闭!",
-                    [{
-                        text: "确定",
-                        onPress: () => onCancel()
-                    }]
-                )
-            }
-        }
-    } catch (err) {
-        console.error(err);
-    }
-}
-checkPermisson(); */

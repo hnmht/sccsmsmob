@@ -13,7 +13,7 @@ export function reqGetPPEIFList(data: QueryParams, isLoading: boolean = true) {
     });
 }
 // Get PPE Issuance Form Report
-export function reqGetPPEIFReport(data: QueryParams, isLoading: boolean = true) :Promise<APIResponse<PPEIssuanceFormReport[]>> {
+export function reqGetPPEIFReport(data: QueryParams, isLoading: boolean = true): Promise<APIResponse<PPEIssuanceFormReport[]>> {
     return request({
         url: "/ppeif/rep",
         method: 'post',

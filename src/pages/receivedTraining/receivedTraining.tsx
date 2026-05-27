@@ -30,7 +30,7 @@ function ReciveTraining() {
     const [remoteDocs, setRemoteDocs] = useState<ReceivedTrainingReport[]>([]);
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
-    //合计内容计算
+    // Total
     const compuRes = useMemo(
         () => {
             let sumClasshour = 0;

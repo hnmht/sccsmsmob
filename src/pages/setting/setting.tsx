@@ -145,11 +145,7 @@ const Setting = () => {
     const handleAbout = () => {
         settingNav.navigate("About");
     };
-    // Navigate to Prvacy Policy page
-    const handlePrivacy = () => {
-        settingNav.navigate("Privacy");
-    };
-
+   
     // Naviagte to Change Password page
     const handleChangePassword = () => {
         settingNav.navigate("ChangePassword");
@@ -236,16 +232,6 @@ const Setting = () => {
                         titleMaxFontSizeMultiplier={1.2}
                     />
                     <Divider />
-                    <List.Item
-                        title={t("privacyPolicy")}
-                        left={() => <List.Icon icon="alert-circle-outline" color={theme.colors.primary} />}
-                        right={() => <IconButton iconColor={theme.colors.primary} icon="chevron-right" size={24} style={{ padding: 0, margin: 0 }} />}
-                        style={{ paddingLeft: 16, height: 64, alignItems: "center", justifyContent: "center" }}
-                        onPress={handlePrivacy}
-                        titleMaxFontSizeMultiplier={1.2}
-                    />
-                    <Divider />
-
                 </List.Section>
                 <View style={{ alignContent: "center", alignItems: "center", marginTop: 20, marginBottom: 20 }}>
                     <Button

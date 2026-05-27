@@ -19,7 +19,7 @@ import { formatNumber } from "../../i18n/helper";
 import { ScComponentModal } from "../../components/ScComponentModal/ScComponentModal";
 import ScHandSwitch from "../../components/ScHandSwitch/ScHandSwitch";
 
-function ppeReport() {
+function PPEReport() {
     const navigation = useBusinessNavigation();
     const theme = useTheme();
     const { t } = useTranslation();
@@ -127,9 +127,8 @@ function ppeReport() {
                 theme={theme}
                 t={t}
             />
-
         </SafeAreaView>
     );
 };
 
-export default ppeReport;
+export default PPEReport;

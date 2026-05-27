@@ -45,7 +45,6 @@ export type SettingNavParamList = {
     Setting: undefined;
     Profile: undefined;
     About: undefined;
-    Privacy: undefined;
     ChangePassword: undefined;
     FileClean: undefined;
 }

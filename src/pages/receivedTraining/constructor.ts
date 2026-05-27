@@ -43,10 +43,4 @@ export function generateRTRConditions() {
     return conditions;
 };
 
-/* //排序函数
-export function sortByid(a, b) {
-    return b.id - a.id;
-};
- */
-
 
