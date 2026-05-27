@@ -26,13 +26,11 @@ function Splash() {
         let userInfo = queryUserInfo();
         // Write UserInfo to Redux
         dispatch(setUserInfoFromDb(userInfo));
-        // const endTime:any = new Date();
-        // console.log("time:", endTime - startTime, "ms")
         // Check if appInfo.serverAddr is empty
         if (appInfo.serverAddr === "") {
             // If it is empty, it means the inital login setup is incomplete,
-            // and the user should be directed to the SignPrivacy page.
-            navigation.replace("SignPrivacy");
+            // and the user should be directed to the Setup page.
+            navigation.replace("AuthStack", { screen: "Setup" });
         } else {
             // If it is not empty, then navigate to the Login page.       
             navigation.replace("AuthStack", { screen: "Login" });

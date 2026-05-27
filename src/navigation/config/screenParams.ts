@@ -77,7 +77,6 @@ export type RootStackParamList = {
     BottomNav: NavigatorScreenParams<BottomNavParamList>;
     AuthStack: NavigatorScreenParams<AuthStackParmList>;
     Splash: undefined;
-    SignPrivacy: undefined;
 }
 
 export function useRootNavigation<T extends keyof RootStackParamList>() {
