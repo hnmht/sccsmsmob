@@ -636,7 +636,7 @@
     "serverConnectFailed": "Failed to connect to the server: {{ msg }}",
     "serverUnableConnect": "Unable to connect the server, Please check you network or re-enter the URL!",
     "tipInputAddress": "Enter the server address, such as http://43.128.109.151:9033 , if you do not know the server address, please consult your system administrator.",
-    "tipDownloadBackend": "Note: You need to deploy the server yourself before using this app! Server installer download address: https://github.com/hnmht ",
+    "tipDownloadBackend": "Note: You need to deploy the server yourself before using this app! Server installer download address: ",
     "copyURL": "Copy URL",
     "serverAddressPlaceholder": "Please enter the server address",
     "requestingPublicKey": "Requesting public key from the server...",
@@ -732,6 +732,9 @@
     "deleteAttachmentsDesc":"Attachments remaining on the local device after the Execution Order and Issue Resolution Form have been uploaded.",
     "deleteAttachmentsWarn":"Warning: All local Execution Order and Issue Resolution Form must be deleted before attachments can be cleared.",
     "deletingAttachments":"Deleting attachments...",
+
+    "cannotOpenMailClient":"Cannot to open email client.",
+    "cannotOpenBrowser":"Cannot to open browser.",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

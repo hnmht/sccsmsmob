@@ -633,7 +633,7 @@
     "serverConnectFailed": "连接服务器失败: {{ msg }}.",
     "serverUnableConnect": "无法连接到服务器,请检查网络或者重新输入!",
     "tipInputAddress": "输入服务器地址,如 http://43.128.109.151:9033,如果您不知道服务器地址,请咨询系统管理人员.",
-    "tipDownloadBackend": " 注意:使用本APP前需要自行部署服务器! 服务器安装程序下载地址: https://github.com/hnmht ",
+    "tipDownloadBackend": " 注意:使用本APP前需要自行部署服务器! 服务器安装程序下载地址: ",
     "copyURL": "复制网址",
     "serverAddressPlaceholder": "请输入服务器地址",
     "requestingPublicKey": "正在向服务器请求公玥...",

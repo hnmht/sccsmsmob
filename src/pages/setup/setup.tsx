@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Alert, StyleSheet, KeyboardAvoidingView, Clipboard ,Platform} from "react-native";
+import { View, Alert, StyleSheet, KeyboardAvoidingView, Linking ,Platform} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Button, useTheme, IconButton, TextInput } from "react-native-paper";
 import { useTranslation } from "react-i18next";
@@ -99,10 +99,15 @@ function Setup() {
     };
 
     // Actions after press copy press
-    const handleCopyPress = () => {
-        Clipboard.setString("https://github.com/hnmht");
-        console.log(Clipboard.getString());
-    };
+      const handleWebsitePress = async () => {
+          const url = "https://github.com/hnmht";
+          const supported = await Linking.canOpenURL(url);
+          if (supported) {
+              await Linking.openURL(url);
+          } else {
+              Alert.alert(t("tip"), t("cannotOpenBrowser"));
+          }
+      }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -138,9 +143,14 @@ function Setup() {
                 <Text variant="titleMedium" style={{ width: "90%", color: theme.colors.error }}>
                     {t("tipDownloadBackend")}
                 </Text>
-                <Button mode="text" onPress={handleCopyPress} style={{ marginBottom: 8 }}>{t("copyURL")}</Button>
+                <Text 
+                variant="bodyMedium"
+                onPress={handleWebsitePress}
+                 style={{ color: theme.colors.primary, textDecorationLine: "underline", fontWeight: "bold" }}
+                 >
+                    https://github.com/hnmht
+                </Text>
             </View>
-
         </SafeAreaView>
     );
 }

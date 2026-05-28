@@ -1,8 +1,10 @@
+import { ServerInfo } from "../dataType/types/appInfo";
 import { FrontDBInfo } from "../dataType/types/public";
+import { APIResponse } from "../dataType/types/response";
 import request from "../utils/request";
 
 // Get Public System Information
-export function reqPubSysInfo(isLoading: boolean = true) {
+export function reqPubSysInfo(isLoading: boolean = true): Promise<APIResponse<ServerInfo>> {
     return request({
         url: "/pub/sysinfo",
         method: "post",
