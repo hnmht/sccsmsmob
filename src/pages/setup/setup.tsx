@@ -43,7 +43,7 @@ function Setup() {
         try {
             const response = await fetch(url, {
                 method: "POST",
-            });
+            });      
             const responseData = await response.json() as APIResponse<ServerStatus>;
             if (responseData.resKey === ResSuccessCode && text !== undefined) {
                 const serverData = responseData.data;
@@ -81,7 +81,7 @@ function Setup() {
                 return
             }
         }
-        catch {
+        catch (error) {
             setIsLoading(false);
             Alert.alert(
                 t("error"),

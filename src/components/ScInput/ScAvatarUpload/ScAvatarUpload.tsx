@@ -113,7 +113,7 @@ const ScAvatarUpload = ({
         }).then(image => {
             handleFileSelect(image);
         }).catch(err => {
-            console.log(t("error"), err)
+            console.error(t("error"), err)
         })
 
     };

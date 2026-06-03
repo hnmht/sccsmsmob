@@ -75,7 +75,7 @@ export const getEORefsDataWithImage = async () => {
                 const filePath = `${RNFS.DownloadDirectoryPath}/${eorRefs[i].eoFiles[ii].file.minioFileName}`;
                 const fileExist = await RNFS.exists(filePath);
                 if (!fileExist) {
-                    await downLoadDDFile({
+                    await downLoadEOFile({
                         fromUrl: eorRefs[i].eoFiles[ii].file.fileUrl,
                         toFile: filePath
                     });
@@ -87,7 +87,7 @@ export const getEORefsDataWithImage = async () => {
     store.dispatch(setDynamicEORefs(eorRefs));
 };
 
-// Download File
-const downLoadDDFile = async (options: RNFS.DownloadFileOptions) => {
+// Download Execution Order File
+const downLoadEOFile = async (options: RNFS.DownloadFileOptions) => {
     await RNFS.downloadFile(options).promise;
 }; 

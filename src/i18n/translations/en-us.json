@@ -732,9 +732,11 @@
     "deleteAttachmentsDesc":"Attachments remaining on the local device after the Execution Order and Issue Resolution Form have been uploaded.",
     "deleteAttachmentsWarn":"Warning: All local Execution Order and Issue Resolution Form must be deleted before attachments can be cleared.",
     "deletingAttachments":"Deleting attachments...",
-
     "cannotOpenMailClient":"Cannot to open email client.",
     "cannotOpenBrowser":"Cannot to open browser.",
+    "requestReturnError":"The Request returned an error",
+    "uploadTimeOut":"Upload timed out. Please try again later.",
+    "networkError":"Network error. Please check you connection.",
 
     "MenuDashboard": "Dashboard",
     "MenuCalendar": "Calendar",

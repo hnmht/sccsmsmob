@@ -1,6 +1,6 @@
 
 export type ImageCheckResult =
-    | { isImage: true; type: 'gif' | 'jpg' | 'png' }
+    | { isImage: true; type: '.gif' | '.jpg' | '.png' }
     | { isImage: false; type: 'none' }
 
 const MAGIC = {
@@ -43,7 +43,7 @@ export function checkIsImage(buf: Uint8Array | ArrayBuffer | null): ImageCheckRe
         matchBytes(bytes, 0, MAGIC.gif87a) ||
         matchBytes(bytes, 0, MAGIC.gif89a)
     ) {
-        return { isImage: true, type: 'gif' }
+        return { isImage: true, type: '.gif' }
     }
 
     // JPEG: FF D8 FF at start, JFIF / Exif at offset 6
@@ -52,12 +52,12 @@ export function checkIsImage(buf: Uint8Array | ArrayBuffer | null): ImageCheckRe
         (matchBytes(bytes, 6, MAGIC.jpegJFIF) ||
             matchBytes(bytes, 6, MAGIC.jpegEXIF))
     ) {
-        return { isImage: true, type: 'jpg' }
+        return { isImage: true, type: '.jpg' }
     }
 
     // PNG: bytes 0–7
     if (matchBytes(bytes, 0, MAGIC.png)) {
-        return { isImage: true, type: 'png' }
+        return { isImage: true, type: '.png' }
     }
 
     return { isImage: false, type: 'none' }

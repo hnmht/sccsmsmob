@@ -60,7 +60,6 @@ const localTables: string[] = [
 
 // Initialize Local Data
 export const initLoaclData = async (newDbid: string) => {
-    console.log("NewDbID:", newDbid);
     // Get existing dbid
     let dbid = getLocalDBID();
     if (dbid === "") {//if no dbid exists, save the new one

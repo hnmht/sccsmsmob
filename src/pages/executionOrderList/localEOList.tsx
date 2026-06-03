@@ -101,7 +101,6 @@ function LocalEOList({
     // Actions after press upload button
     const handleUpload = async (item: ExecutionOrder) => {
         const thisEO = transEOToBackend(item);
-        // console.log("before uploadFile EO: ", thisEO);
         // Upload files first if there are files in the EO, then upload the EO
         setOverlayStatus({ visible: true, description: t("uploadingFiles") });
         try {

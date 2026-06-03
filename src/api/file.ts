@@ -6,12 +6,11 @@ import { i18n } from "../i18n/i18n";
 import { ResSuccessCode } from "../dataType/types/response";
 import { Alert } from "react-native";
 // Upload Files
-export function reqUploadFiles(data: FormData, _isLoading: boolean = true):Promise<APIResponse<ScFile[]>> {
+export function reqUploadFiles(data: FormData, _isLoading: boolean = true): Promise<APIResponse<ScFile[]>> {
     const { appInfo, user } = store.getState();
     const url = `${appInfo.serverAddr}${appInfo.globalPath}/file/receive`;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
-    console.log("[upload] start", { url });
 
     return fetch(url, {
         method: "POST",
@@ -27,9 +26,9 @@ export function reqUploadFiles(data: FormData, _isLoading: boolean = true):Promi
             clearTimeout(timeout);
             const res = await resp.json() as APIResponse<ScFile[]>;
             res.status = res.resKey === ResSuccessCode;
-            console.log("[upload] done", { httpStatus: resp.status, resKey: res.resKey, fileCount: res.data?.length ?? 0 });
+            // console.log("[upload] done", { httpStatus: resp.status, resKey: res.resKey, fileCount: res.data?.length ?? 0 });
             if (!res.status) {
-                Alert.alert(i18n.t("error"), res.msg || "请求返回错误");
+                Alert.alert(i18n.t("error"), res.msg || i18n.t("requestReturnError"));
             }
             return res;
         })
@@ -38,13 +37,13 @@ export function reqUploadFiles(data: FormData, _isLoading: boolean = true):Promi
             console.error("[upload] failed", { name: err?.name, message: err?.message });
             Alert.alert(
                 i18n.t("error"),
-                err?.name === "AbortError" ? "上传超时，请稍后再试！" : "网络错误，请检查设备网络！"
+                err?.name === "AbortError" ? i18n.t("uploadTimeOut") : i18n.t("networkError")
             );
             throw err;
         });
 }
 // Get file detail by file hash
-export function reqGetFileByHash(data: ScFile, isLoading: boolean = true):Promise<APIResponse<ScFile>> {
+export function reqGetFileByHash(data: ScFile, isLoading: boolean = true): Promise<APIResponse<ScFile>> {
     return request({
         url: "/file/getfilebyhash",
         method: "post",
@@ -54,7 +53,7 @@ export function reqGetFileByHash(data: ScFile, isLoading: boolean = true):Promis
 }
 
 // Get file details by hash array
-export function reqGetFilesByHash(data: ScFile[], isLoading: boolean = true):Promise<APIResponse<ScFile[]>> {
+export function reqGetFilesByHash(data: ScFile[], isLoading: boolean = true): Promise<APIResponse<ScFile[]>> {
     return request({
         url: "/file/getfilesbyhash",
         method: "post",

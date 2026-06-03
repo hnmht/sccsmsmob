@@ -12,7 +12,7 @@ function PersonAvatar({ url, name }: PersonAvatarProps) {
     return (
         showAvatar
             ? <Avatar.Text size={48} label={name.charAt(0).toUpperCase()} />
-            : <Avatar.Image size={48} source={{ uri: url }} onError={(err) => { console.log(err) }} />
+            : <Avatar.Image size={48} source={{ uri: url }} onError={(err) => { console.error(err) }} />
     );
 };
 

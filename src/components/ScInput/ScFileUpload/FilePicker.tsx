@@ -40,6 +40,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
     const theme = useTheme();
     const imageUrls = filesToUrls(files);
     const location = useAppSelector(state => state.location.current);
+    const isOffLine = useAppSelector(state => state.appInfo.isOffline) === 1;
     // Button Position
     const { buttonPosition, orderPosition, bottomDistance, orderVisible } = useAppSelector(state => state.swapPosition);
     // Check Permissions
@@ -141,7 +142,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
             // Remove Duplicate files
             handleRemoveDupFile(fileArr);
         } catch (e) {
-            console.log(t("error"), e);
+            console.error(t("error"), e);
         }
     };
     // Actions after tapping "Select Image" button
@@ -164,7 +165,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
             handleRemoveDupFile(fileArr);
         }
         catch (err) {
-            console.log(t("error"), err)
+            console.error(t("error"), err)
         }
     }
     // Actions after tapping "Shoting Picture" button
@@ -271,7 +272,7 @@ const FilePicker = ({ isOnSitePhoto, isEdit, onOk, onCancel, initFiles, markText
                                 ? <Button mode="text" textColor="red" onPress={() => handleDeleteFile(index)}>{t("delete")}</Button>
                                 : null
                             }
-                            <Button mode="text" disabled={file.id === 0} onPress={() => handleSaveFile(file)}>{t("download")}</Button>
+                            <Button mode="text" disabled={file.id === 0 || isOffLine} onPress={() => handleSaveFile(file)} >{t("download")}</Button>
                         </View>
                     </Card>
                 })}

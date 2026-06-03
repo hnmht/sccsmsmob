@@ -1,4 +1,3 @@
-// import jsSHA from "jssha";
 import { Buffer } from "buffer"
 import { dayjs, i18n, DateTimeFormat } from "../../i18n/dayjs";
 import RNFS from "react-native-fs";
@@ -12,7 +11,7 @@ import { ScFile } from "../../dataType/types/file";
 export function parseFileName(path: string | null) {
     const safePath = path ?? "";
     const originFileName = safePath.split("/").pop() ?? "unknown"
-    const ext = originFileName.includes(".") ? originFileName.slice(originFileName.lastIndexOf(".")) : ""
+    const ext = originFileName.includes(".") ? originFileName.slice(originFileName.lastIndexOf(".")) : "";
     return { originFileName, ext }
 }
 // Read ScFile Header
@@ -104,6 +103,7 @@ const estimateTextWidth = (texts: string[], fontSize: number) => {
 export const imageAddWaterMark = async (file: Image, markTexts: MarkText[], currentLocation: Location): Promise<ScFile> => {
     const filePath = file.path;
     const imageInfo = await readImageInfo(file);
+
     // Return immediately if no size is provided
     if (!file.width || !file.height) {
         return imageInfo;

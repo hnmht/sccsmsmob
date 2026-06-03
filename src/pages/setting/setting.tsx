@@ -132,7 +132,7 @@ const Setting = () => {
     // Login out
     const handleExitLogin = () => {
         if (!isOffLine) {
-            console.log("Logout in online mode");
+            console.error("Logout in online mode");
             reqLogout();
         }
         navigation.replace("AuthStack", { screen: "Login" });
