@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { View, Alert, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, Switch, List, Divider, useTheme, Button, Surface, IconButton, Menu } from "react-native-paper";
+import { Text, Switch, List, Divider, useTheme, Button, Surface, IconButton } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 
 import { ThemeContext } from "../../theme/context";
@@ -124,6 +124,7 @@ const Setting = () => {
 
         } catch (err) {
             setOverlayStatus({ visible: false, description: "" });
+            console.error("Error syncing data for offline use", err);
             Alert.alert(t("error"), t("syncErrorMsg"));
         }
         // Switch to offline mode
@@ -132,7 +133,7 @@ const Setting = () => {
     // Login out
     const handleExitLogin = () => {
         if (!isOffLine) {
-            console.error("Logout in online mode");
+            console.log("Logout in online mode");
             reqLogout();
         }
         navigation.replace("AuthStack", { screen: "Login" });
@@ -145,7 +146,7 @@ const Setting = () => {
     const handleAbout = () => {
         settingNav.navigate("About");
     };
-   
+
     // Naviagte to Change Password page
     const handleChangePassword = () => {
         settingNav.navigate("ChangePassword");

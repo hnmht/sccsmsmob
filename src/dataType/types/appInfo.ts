@@ -1,5 +1,5 @@
 
-export interface ServerInfo {
+export interface ServerSoftInfo {
     scSoftName?: string;
     scServerVersion?: string;
     scServerState?: string;
@@ -30,7 +30,7 @@ export interface ServerInfo {
     timeZone?: string;
     utcOffset?: string;
     organization?: OrganizationInfo;
-    serverSoft?: ServerInfo;
+    serverSoft?: ServerSoftInfo;
 }
 
 

@@ -3,7 +3,7 @@ import { View, Alert } from "react-native";
 import { Button, Card, Text, IconButton, useTheme, Surface } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { dayjs, DateTimeFormat } from "../../i18n/dayjs";
+import { dayjs } from "../../i18n/dayjs";
 import ScFunctionTitle from "../../components/ScFunctionTitle/ScFunctionTitle";
 import DocListPaging from "../../components/DocList/DocListPaging";
 import { QueryPanel, transConditionsToString } from "../../components/QueryPanel";
@@ -139,8 +139,8 @@ function ExecutionOrderReviewList() {
                     <Text variant="titleMedium" style={{ width: "100%" }}>{t("sourceType")} : {eo.sourceType}</Text>
                     {eo.sourceType !== "UA"
                         ? <>
-                            <Text variant="titleSmall" style={{ width: "100%" }}>{t("sourceBillNumber")} : {eo.sourceBillNumber}</Text>
-                            <Text variant="titleSmall" style={{ width: "100%" }}>{t("sourceRowNumber")} : {eo.sourceRowNumber}</Text>
+                            <Text variant="titleMedium" style={{ width: "100%" }}>{t("sourceBillNumber")} : {eo.sourceBillNumber}</Text>
+                            <Text variant="titleMedium" style={{ width: "100%" }}>{t("sourceRowNumber")} : {eo.sourceRowNumber}</Text>
                         </>
                         : null
                     }

@@ -12,6 +12,7 @@ import { Person } from "../../dataType/types/person";
 import { ErrMsg, MarkText } from "../../dataType/types/scInput";
 import { ScDataTypeList } from "../../dataType/types/scDataType";
 import { ScFile } from "../../dataType/types/file";
+import { displayName } from "../../../app.json"
 
 // Generate Execution Order Data
 export const getInitialValue = (isNew: boolean, isModify: boolean, oriWOR: WorkOrderRow | undefined, oriEO: ExecutionOrder | undefined) => {
@@ -414,7 +415,7 @@ export const generateMarkText = (voucherData: ExecutionOrder | undefined, row: E
     }
     // Generate Author information
     const { appInfo, user } = store.getState();
-    mark.push({ position: { x: 0, y: 0 }, text: `${appInfo.serverInfo.organization?.organizationName} | ${user.person.name} | ${t("eo")}`, textSize: 20, color: " rgb(92, 93, 114)" });
+    mark.push({ position: { x: 0, y: 0 }, text: `${displayName} | ${user.person.name} | ${t("eo")}`, textSize: 20, color: " rgb(92, 93, 114)" });
     // Generate Construction Site Archive information
     if (voucherData.csa.name !== "") {
         mark.push({ position: { x: 0, y: 0 }, text: `${t("csa")}:${voucherData.csa.name}`, textSize: 20, color: " rgb(92, 93, 114)" });
@@ -425,4 +426,3 @@ export const generateMarkText = (voucherData: ExecutionOrder | undefined, row: E
     }
     return mark;
 };
-

@@ -35,7 +35,6 @@ function ReviewsList({ reviews, onCancel, theme, t }: ReviewsListProps) {
                                     <Text variant="bodyMedium" maxFontSizeMultiplier={1.5}>{t("startTime")} : {DateTimeFormat(item.startTime, "LTS")}</Text>
                                     <Text variant="bodyMedium" maxFontSizeMultiplier={1.5}>{t("endTime")} : {DateTimeFormat(item.endTime, "LTS")}</Text>
                                     <Text variant="bodyMedium" maxFontSizeMultiplier={1.5}>{t("timeSeconds")} : {item.consumeSeconds}</Text>
-
                                 </Card.Content>
                             </Card>
                         )

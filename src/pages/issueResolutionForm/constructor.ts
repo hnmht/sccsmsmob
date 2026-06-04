@@ -7,6 +7,7 @@ import { getEmptyIssueExecutionOrder } from "../../dataType/dataZero/issueExecut
 import { cloneDeep, unionBy } from "lodash";
 import { ErrMsg, MarkText } from "../../dataType/types/scInput";
 import { ScFile } from "../../dataType/types/file";
+import {displayName} from "../../../app.json"
 // Generate Issue Resolution Form
 export const getInitialValue = async (
     isNew: boolean,
@@ -129,7 +130,7 @@ export const generateMarkText = (voucherData: IssueResolutionForm | undefined) =
     }
     // Generate Author Information
     const { appInfo, user } = store.getState();
-    mark.push({ position: { x: 0, y: 0 }, text: `${appInfo.serverInfo.organization?.organizationName} | ${user.person.name} | ${t("irf")}`, textSize: 20, color: " rgb(92, 93, 114)" });
+    mark.push({ position: { x: 0, y: 0 }, text: `${displayName} | ${user.person.name} | ${t("irf")}`, textSize: 20, color: " rgb(92, 93, 114)" });
     // Generate Construction Site Archive information
     if (voucherData.csa.name !== "") {
         mark.push({ position: { x: 0, y: 0 }, text: `${t("csa")}:${voucherData.csa.name}`, textSize: 20, color: " rgb(92, 93, 114)" });

@@ -66,18 +66,18 @@ function WORefer({
                 <TouchableOpacity onPress={() => okPressAction(wor)} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", margin: 4 }}>
                     <Text variant="titleMedium" style={{ width: "100%", color: theme.colors.primary }} >{t("csa")} : {wor.csa.name}</Text>
                     <Text variant="titleMedium" style={{ width: "100%", color: theme.colors.primary }}>{t("ept")} : {wor.ept.name}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%", }}>{t("executor")} : {wor.executor.name}</Text>
                     <Text variant="titleMedium" style={{ width: "100%" }}>{t("startTime")} : {DateTimeFormat(wor.startTime, "LLL")}</Text>
                     <Text variant="titleMedium" style={{ width: "100%" }}>{t("endTime")} : {DateTimeFormat(wor.endTime, "LLL")}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("billNumber")} : {wor.billNumber}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("rowNumber")} : {wor.rowNumber}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("billDate")} : {DateTimeFormat(wor.billDate, "LL")}</Text>
-                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("executor")} : {wor.executor.name}</Text>
-                    <Text variant="bodyMedium" style={{ width: "100%" }}>{t("description")}: {wor.description}</Text>
-                    <Text variant="bodyMedium" style={{ width: "100%" }}>{t("status")}: {VoucherStatus[wor.status]}</Text>
-                    <Text variant="bodyMedium" style={{ width: "100%" }}>{t("creator")} : {wor.creator.name}</Text>
-                    <Text variant="bodyMedium" style={{ width: "100%" }}>{t("department")} : {wor.department.name}</Text>
-                    <Text variant="bodyMedium" style={{ width: "100%" }}>{t("confirmer")} : {wor.confirmer.name}</Text>
-                    <Text variant="titleSmall" style={{ width: "100%" }}>{t("confirmDate")} : {DateTimeFormat(wor.confirmDate, "LLL")}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("billNumber")} : {wor.billNumber}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("rowNumber")} : {wor.rowNumber}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("billDate")} : {DateTimeFormat(wor.billDate, "LL")}</Text>                   
+                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("description")}: {wor.description}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("status")}: {VoucherStatus[wor.status]}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("creator")} : {wor.creator.name}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("department")} : {wor.department.name}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("confirmer")} : {wor.confirmer.name}</Text>
+                    <Text variant="titleMedium" style={{ width: "100%" }}>{t("confirmDate")} : {DateTimeFormat(wor.confirmDate, "LLL")}</Text>
                 </TouchableOpacity>
             </Card>
         );

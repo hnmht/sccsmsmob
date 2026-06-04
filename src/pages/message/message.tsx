@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { SegmentedButtons, useTheme } from "react-native-paper";
+import { SegmentedButtons } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import ReadMessage from "./readMessage";
@@ -8,7 +8,6 @@ import UnReadMessages from "./unReadMessage";
 
 const Message = () => {
     const [content, setContent] = useState("unRead");
-    const theme = useTheme();
     const { t } = useTranslation();
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -20,13 +19,11 @@ const Message = () => {
                         {
                             value: 'unRead',
                             label: t('unreadMessages'),
-                            checkedColor: theme.colors.primary,
                             icon: "email-outline"
                         },
                         {
                             value: 'read',
                             label: t('readMessages'),
-                            checkedColor: theme.colors.primary,
                             icon: "email-open-outline"
                         }
                     ]}
