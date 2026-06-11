@@ -7,7 +7,7 @@ import { getEmptyIssueExecutionOrder } from "../../dataType/dataZero/issueExecut
 import { cloneDeep, unionBy } from "lodash";
 import { ErrMsg, MarkText } from "../../dataType/types/scInput";
 import { ScFile } from "../../dataType/types/file";
-import {displayName} from "../../../app.json"
+import { displayName } from "../../../app.json";
 // Generate Issue Resolution Form
 export const getInitialValue = async (
     isNew: boolean,
